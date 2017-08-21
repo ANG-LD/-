@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>企业后台管理系统</title>
+<link rel="stylesheet" href="assets/css/bootstrap.min.css"/>
+<link rel="stylesheet" href="assets/css/font-awesome.min.css"/>
+<link rel="stylesheet" href="assets/css/ace.min.css" />
+<link rel="stylesheet" href="assets/css/ace-rtl.min.css" />
+<link rel="stylesheet" href="assets/css/ace-skins.min.css" />
+<script src="assets/js/jquery-1.10.2.min.js"></script>
+</head>
+<body>
+<div class="page-content no-padding">
+	<div class="row">
+		<div class="col-xs-12">
+			<table class="table table-striped table-bordered table-hover no-margin-bottom no-border-top">
+				<thead>
+					<tr>
+						<th class="center">ID</th>
+						<th>名称</th>
+						<th>节点</th>
+						<th>状态</th>
+						<th>附加条件</th>
+						<th>操作 / <a href="{:U('Auth/editRule')}" title="添加节点"><i class="glyphicon glyphicon-plus"></i></a></th>
+					</tr>
+				</thead>
+				<tbody>
+					<foreach item="v" name="list">
+						<tr>
+							<td>{$v.id}</td>
+							<td>{$v.title}</td>
+							<td>{$v.name}</td>
+							<td>{$v['status']?'开启':'关闭'}</td>
+							<td>{$v['condition']|default='无'}</td>
+							<td>
+								<a href="{:U('Auth/editRule',['id'=>$v['id']])}" title="编辑节点规则">[修改]</a>
+								<a class="rule-del" dit-action="{:U('Auth/delRule',['id'=>$v['id']])}" title="删除节点规则">[删除]</a>
+							</td>
+						</tr>
+					</foreach>
+					<foreach item="v" name="list">
+						<tr>
+							<td>{$v.id}</td>
+							<td>{$v.title}</td>
+							<td>{$v.name}</td>
+							<td>{$v['status']?'开启':'关闭'}</td>
+							<td>{$v['condition']|default='无'}</td>
+							<td>
+								<a href="{:U('Auth/editRule',['id'=>$v['id']])}" title="编辑节点规则">[修改]</a>
+								<a class="rule-del" dit-action="{:U('Auth/delRule',['id'=>$v['id']])}" title="删除节点规则">[删除]</a>
+							</td>
+						</tr>
+					</foreach>
+					<foreach item="v" name="list">
+						<tr>
+							<td>{$v.id}</td>
+							<td>{$v.title}</td>
+							<td>{$v.name}</td>
+							<td>{$v['status']?'开启':'关闭'}</td>
+							<td>{$v['condition']|default='无'}</td>
+							<td>
+								<a href="{:U('Auth/editRule',['id'=>$v['id']])}" title="编辑节点规则">[修改]</a>
+								<a class="rule-del" dit-action="{:U('Auth/delRule',['id'=>$v['id']])}" title="删除节点规则">[删除]</a>
+							</td>
+						</tr>
+					</foreach>
+					<foreach item="v" name="list">
+						<tr>
+							<td>{$v.id}</td>
+							<td>{$v.title}</td>
+							<td>{$v.name}</td>
+							<td>{$v['status']?'开启':'关闭'}</td>
+							<td>{$v['condition']|default='无'}</td>
+							<td>
+								<a href="{:U('Auth/editRule',['id'=>$v['id']])}" title="编辑节点规则">[修改]</a>
+								<a class="rule-del" dit-action="{:U('Auth/delRule',['id'=>$v['id']])}" title="删除节点规则">[删除]</a>
+							</td>
+						</tr>
+					</foreach>
+				</tbody>
+			</table>
+			<div class="space-20"></div>
+			{$page}
+		</div>
+		<!-- ./ end col-xs-12 -->
+	</div>
+	<!-- ./ end row -->
+</div>
+<script>
+$(document).ready(function(){
+	$('.rule-del').click(function(){
+		if(!confirm("确认删除该节点么？")) return false;
+		var url = $(this).attr("dit-action");
+		$.get(url,function(data){
+			if(data.code == '200'){
+				window.location.href = window.location.href;
+			} else {
+				alert(data.msg);
+			}
+		},"json");
+		return false;
+	});
+});
+</script>
+</body>
+</html>

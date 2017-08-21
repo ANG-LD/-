@@ -1,0 +1,181 @@
+<include file="Public:header" />
+<load href="__PUBLIC__/admin/js/uploadify.css" />
+<load href="__PUBLIC__/admin/js/swfobject.js" />
+<script type="text/javascript" src="__PUBLIC__/admin/js/jquery.uploadify.v2.1.4.min.js"></script>
+
+<script type="text/javascript">
+    $(function($) {
+        $("#file_upload2").uploadify({
+            'uploader'       : '__PUBLIC__/admin/js/uploadify.swf',
+            'script'         : '__PUBLIC__/admin/js/uploadify.php',
+            'cancelImg'      : '__PUBLIC__/admin/images/cancel.png',
+            'folder'         : '__PUBLIC__/admin/Uploads/touxiang',
+            'queueID'        : 'fileQueue2',
+            'sizeLimit'      :	10 * 1000 * 1024,
+            'buttonImg'      : '__PUBLIC__/admin/images/llsc.jpg',
+            'width'          :  85,
+            'height'          :  28,
+            'fileExt'        : '*.jpg;*.gif;*.png;', //允许文件上传类型,和fileDesc一起使用.
+            'fileDesc'       : '*.jpg;*.gif;*.png;',  //选择文件对话框中的提示文本.
+            'auto'           : true,
+            'multi'          : false,
+            'onComplete':function(event,queueId,fileObj,response,data){
+                $('input[name="logo"]').val(response);
+                $('#pic2').attr('src', response);
+            }
+        });
+
+    });
+    window.onload=function(){
+        var leixing = document.getElementsByName("leixing");
+        for (i=0; i<leixing.length; i++) {
+            if (leixing[i].checked) {
+                b = leixing[i].value;
+            }
+        }
+        if(b==1){
+            document.getElementById("all").className="";
+        }else{
+            document.getElementById("all").className="all";
+        }
+        var radio = document.getElementsByName("type");
+        for (i=0; i<radio.length; i++) {
+            if (radio[i].checked) {
+                a = radio[i].value;
+            }
+        }
+        if(a==1){
+            document.getElementById("yincang").className="yincang";
+            document.getElementById("se").className="";
+        }else{
+            document.getElementById("yincang").className="";
+            document.getElementById("se").className="se";
+        }
+    }
+    function selleixing(key) {
+        if(key==1){
+            document.getElementById("all").className="";
+            document.getElementById("se").className="";
+            document.getElementById("dupiao").className="dupiao";
+        }else{
+            document.getElementById("all").className="all";
+            document.getElementById("se").className="se";
+            document.getElementById("dupiao").className="";
+        }
+    }
+    function sellei(key) {
+        if(key==1){
+            document.getElementById("yincang").className="yincang";
+            document.getElementById("se").className="";
+        }else{
+            document.getElementById("yincang").className="";
+            document.getElementById("se").className="se";
+        }
+    }
+    function checkss(){
+        var radio = document.getElementsByName("type");
+        for (i=0; i<radio.length; i++) {
+            if (radio[i].checked) {
+                a = radio[i].value;
+            }
+        }
+        if(a==2){
+            var money  = $("#money").val();
+            var meters  = $("#meters").val();
+            if (money==''){
+                layer.tips('填写金额', '#money', {
+                    tips: [1, '#3595CC'],
+                    time: 2000
+                });
+                $("#money").focus();
+                return false;
+            }else if (meters==''){
+                layer.tips('填写钻石数', '#meters', {
+                    tips: [1, '#3595CC'],
+                    time: 2000
+                });
+                $("#meters").focus();
+                return false;
+            }
+        }
+
+    }
+</script>
+<style>
+    .all{display: none}
+    .yincang{display: none}
+    .se{display: none}
+    .dupiao{display: none}
+</style>
+<div class="content">
+    <!-----------------------------------------内容开始--------------------------------------------------->
+    <div class="infoBox">
+        <form name="form" action="{:U('do_recharge')}"  method="post" onsubmit="return checkss();">
+            <table width="90%" border="0" cellpadding="0" cellspacing="0" id="basic">
+                <input type="hidden" value="{$user_id}" name="id" id="id">
+                <tr>
+                    <td  width="10%" class="infoBoxTd"><div style="width:55px;">类型:</div></td>
+                    <td >
+                        <input type="radio" name="leixing"  value="1" checked onchange="selleixing(this.value);">&nbsp;钻石 &nbsp;
+                        <input type="radio" name="leixing"  value="2" onchange="selleixing(this.value);">&nbsp;度票&nbsp;&nbsp;
+                    </td>
+
+                </tr>
+                <tr id="all" class="all">
+                    <td  width="10%" class="infoBoxTd"><div style="width:55px;">方式:</div></td>
+                    <td >
+                        <input type="radio" name="type"  value="1" checked onchange="sellei(this.value);">&nbsp;系统&nbsp;&nbsp;
+                        <input type="radio" name="type"  value="2" onchange="sellei(this.value);">&nbsp;自定义&nbsp;&nbsp;
+                    </td>
+
+                </tr>
+                <tr id="se" class="se">
+                    <td  width="10%" class="infoBoxTd"><div style="width:55px;">钻石价格:</div></td>
+                    <td >
+                        <ul>
+                            <volist name="price" id="l" key="i">
+                                <li><input type="radio" name="recharge" value="{$l.price_id}" <if condition=" $i eq 1 ">checked</if>>&nbsp;价格:{$l.price}&nbsp;&nbsp;&nbsp;&nbsp;钻石:{$l.meters}&nbsp;&nbsp;&nbsp;&nbsp;赠送:{$l.give}</li>
+                            </volist>
+                        </ul>
+                    </td>
+
+                </tr>
+                <tr id="yincang" class="yincang">
+                    <td  width="10%" class="infoBoxTd"><div style="width:55px;">充值钻石:</div></td>
+                    <td >
+                        金额:&nbsp;<input type="text" id="money"  name="money" value="" style="width:150px;" placeholder="">&nbsp;&nbsp;钻石:&nbsp;<input type="text" id="meters"  name="meters" value="" style="width:150px;" placeholder="">
+                    </td>
+
+                </tr>
+                <tr id="dupiao" class="dupiao">
+                    <td  width="10%" class="infoBoxTd"><div style="width:55px;">充值度票:</div></td>
+                    <td >
+                        度票数:&nbsp;<input type="text" id="get_money"  name="get_money" value="" style="width:150px;" placeholder="">&nbsp;&nbsp;<br />说明:&nbsp;<input type="text" id="dis"  name="dis" value="" style="width:60%;" placeholder="">
+                    </td>
+
+                </tr>
+
+
+            </table>
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td class="infoBoxTd">&nbsp;</td>
+                    <td align="left"><input type="submit" name="submit" value="保存" class="formInput01" /></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <script>
+        KindEditor.ready(function(K) {
+            k1 = K.create('#content', {});
+            k2 = K.create('#content2', {});
+            k3 = K.create('#content3', {});
+
+        });
+        ///var ue = UE.getEditor('content');
+        ///var ue = UE.getEditor('content2');
+        ///var ue = UE.getEditor('content3');
+    </script>
+    <!-----------------------------------------内容结束--------------------------------------------------->
+</div>
+<include file="Public:footer" />

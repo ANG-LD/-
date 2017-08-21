@@ -1,0 +1,62 @@
+{:W('public/breadcrumbs',[
+[
+['href'=>U('Porder/upgrade'),'text'=>'会员升级'],
+['href'=>'javascript:;;','text'=>'升级详情'],
+]
+])}
+<div class="page-container">
+  <div class="cl pd-5 bg-1 bk-gray">学员</div>
+  <div class="cl pd-20" style=" background-color:#5bacb6">
+    <img class="avatar size-XL l" src="{$re['img']}">
+    <dl style="margin-left:80px; color:#fff">
+      <dt><u><a style="color:#fff" href="{:U('User/view',['uid'=>$re['user_id']])}"><span class="f-18">{$re['username']}</span></a></u>
+        <span class="pl-10 f-12">账号：{$re['phone']}</span></dt>
+      <dd class="pt-10 f-12" style="margin-left:0">{$re['autograph']|default='这家伙很懒，什么也没有留下'}</dd>
+    </dl>
+  </div>
+  <div class="cl pd-5 bg-1 bk-gray mt-20">导师</div>
+  <div class="cl pd-20" style=" background-color:#5bacb6">
+    <img class="avatar size-XL l" src="{$re['timg']}">
+    <dl style="margin-left:80px; color:#fff">
+      <dt><u><a style="color:#fff" href="{:U('User/view',['uid'=>$re['tuser_id']])}"><span class="f-18">{$re['tusername']}</span></a></u>
+        <span class="pl-10 f-12">账号：{$re['tphone']}</span></dt>
+      <dd class="pt-10 f-12" style="margin-left:0">{$re['tautograph']|default='这家伙很懒，什么也没有留下'}</dd>
+    </dl>
+  </div>
+<div class="pd-20">
+  <table class="table">
+    <tbody>
+      <tr>
+        <th class="text-r" width="80">订单号：</th>
+        <td>{$re.order_no}</td>
+      </tr>
+      <tr>
+        <th class="text-r">订单金额：</th>
+        <td>{$re.amount}</td>
+      </tr>
+      <tr>
+        <th class="text-r">订单状态：</th>
+        <td><php>
+          $re['state'] == '1' && print "待支付";
+          $re['state'] == '2' && print "已支付";
+          $re['state'] == '3' && print "已退款";
+        </php></td>
+      </tr>
+      <tr>
+        <th class="text-r">升级类型：</th>
+        <td><php>
+          $re['status'] == '1' ? print "高级会员"  : print "钻石会员";
+        </php></td>
+      </tr>
+      <tr>
+        <th class="text-r">下单时间：</th>
+        <td>{$re.intime}</td>
+      </tr>
+      <tr>
+        <th class="text-r">结束时间：</th>
+        <td>{$record.date_value}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</div>

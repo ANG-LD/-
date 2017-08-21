@@ -1,0 +1,82 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible"content="IE=9; IE=8; IE=7; IE=EDGE" />
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/home/css/style.css" />
+<script type="text/javascript" src="__PUBLIC__/home/js/png.js" ></script>
+<script type="text/javascript" src="__PUBLIC__/home/js/jquery.js" ></script>
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/common/mypage.css" />
+
+<body onload="IFrameResize()">
+<div class="anli_list"  id="ss">
+<ul class="anlis">
+			
+			   <volist name="al" id="l">
+		    	<li>
+		    	   
+					<a href="#">
+						<div class="zhao_chushi">
+						<img class="" src="{$l.a_img}" />
+						<strong >{$l.a_title}</strong>
+						<p>{$l.a_dis}</p>
+						
+						<span>{$l.leixing}</span>
+						<volist name="l.hy" id="s">
+						<span>{$s.h_title}</span>
+						</volist>
+						</div>
+					</a>
+					
+		    		<notin name="l.a_lxid" value="4">
+		    		<div style="position:absolute;">
+		    			<div class="zhao_div_jl2" style="display: none;">
+		    			<a href="{$l.a_url}" target="_blank"><img src="__PUBLIC__/home/images/anli_more.png" /></a>
+						<strong><a href="">{$l.a_title}</a></strong>
+						<p>{$l.a_dis}</p>
+						<span>{$l.leixing}</span>
+						<volist name="l.hy" id="s">
+						<span>{$s.h_title}</span>
+						</volist>
+		    			</div>
+		    		</div>
+		    		<else/>
+		    		 <div style="position:absolute;">
+		    			<div class="zhao_div_jl2" style="display: none;">
+		    			<a  ><img src="{$l.a_logo4}" style="margin:119px auto;width:150px;height:150px"/></a>
+						<strong><a href="">{$l.a_title}</a></strong>
+						<p>{$l.a_dis}</p>
+						<span>{$l.leixing}</span>
+						<volist name="l.hy" id="s">
+						<span>{$s.h_title}</span>
+						</volist>
+		    			</div>
+		    		</div>
+		    		</notin>
+		    	</li>
+		    	</volist>
+		    	   </ul>
+		    <script>
+                /*人风注:这个地方有改动,改进运营支持效果,html没动*/
+		$(function(){	
+			$(".anli_list .zhao_chushi").mouseenter(function(){
+			$(this).parent().parent().find(".zhao_div_jl2").fadeIn(800);
+		});
+		$(".zhao_div_jl2").mouseleave(function(){
+		    $(this).fadeOut(1000);
+		});
+		})
+		</script>	
+		   <div class="pages">
+             {$show}
+          </div>
+ </div>
+         <script type="text/javascript" language="javascript">
+     
+          function IFrameResize(){ 
+        	//alert(document.getElementById("ss").offsetHeight); //弹出当前页面的高度 
+        	var obj = parent.document.getElementById("iframe"); //取得父页面IFrame对象 
+        	//alert(obj.height); //弹出父页面中IFrame中设置的高度 
+        	obj.height = document.getElementById("ss").offsetHeight; //调整父页面中IFrame的高度为此页面的高度 
+        	} 
+        	
+        	
+   </script>
+   </body>

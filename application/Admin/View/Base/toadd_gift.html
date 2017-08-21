@@ -1,0 +1,108 @@
+<include file="Public:header" />
+<load href="__PUBLIC__/admin/js/uploadify.css" />
+<load href="__PUBLIC__/admin/js/swfobject.js" />
+<script type="text/javascript" src="__PUBLIC__/admin/js/jquery.uploadify.v2.1.4.min.js"></script>
+
+<script type="text/javascript">
+ $(function($) {
+	$("#file_upload").uploadify({
+	 		'uploader'       : '__PUBLIC__/admin/js/uploadify.swf',
+	 		'script'         : '__PUBLIC__/admin/js/uploadify.php',
+	 		'cancelImg'      : '__PUBLIC__/admin/images/cancel.png',
+	 		'folder'         : '__PUBLIC__/admin/Uploads',
+	 		'queueID'        : 'fileQueue',
+	 		'sizeLimit'      :	10 * 1000 * 1024,
+			'buttonImg'      : '__PUBLIC__/admin/images/llsc.jpg',
+			'width'          :  85,
+			'height'          :  28,
+	 		'fileExt'        : '*.jpg;*.gif;*.png;', //允许文件上传类型,和fileDesc一起使用.
+	 		'fileDesc'       : '*.jpg;*.gif;*.png;',  //选择文件对话框中的提示文本.
+	 		'auto'           : true,
+	 		'multi'          : false,	
+	 		'onComplete':function(event,queueId,fileObj,response,data){
+	 			$('input[name="logo"]').val(response);
+	 			$('#pic').attr('src', response);
+	 		}
+	 	});
+
+	 });
+</script>
+<SCRIPT language=JavaScript>
+	     function checkss(){
+	    	 var title    = $("#username").val();
+	    	 var person   = $("#person").val();
+	    	 if(title==''){
+	    		 alert('名称不能为空！');
+	        	 return false;
+	    	 }
+	    	 
+	     }  
+	</script>
+<div class="content">
+<!-----------------------------------------内容开始--------------------------------------------------->
+<div class="infoBox">
+<form name="form" action="{:U('doadd_gift')}"  method="post" onsubmit="return checkss();">
+<table width="90%" border="0" cellpadding="0" cellspacing="0" id="basic">
+               <input type="hidden" value="{$p.gift_id}" name="id">
+                <tr>
+                    <td  width="10%" class="infoBoxTd"><div style="width:55px;">图片:</div></td>
+                    <td colspan="2">
+                        <div class="upimg-box"><div id="fileQueue"></div>
+                            <input id="file_upload" type="file" />
+                            <input name="logo" type="hidden" id="fileDoc" value="{$p.img}" />
+                            &nbsp;&nbsp;<img  id="pic" src="<if condition='$p.img eq "" '>__PUBLIC__/admin/images/nopic.gif<else/>{$p.img}</if>" width="110"  height="60"/>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td  width="10%" class="infoBoxTd"><div style="width:55px;">名称:</div></td>
+                    <td colspan="2"><input type="text" id="name"  name="name" value="{$p.name}" style="width:280px;"></td>
+                </tr>
+                 <tr>
+                  <td  width="10%" class="infoBoxTd"><div style="width:55px;">价格:</div></td>
+		  		  <td colspan="2"><input type="text" id="price"  name="price" value="{$p.price}" style="width:280px;">&nbsp;钻石</td>
+                 </tr>
+                <tr>
+                    <td  width="10%" class="infoBoxTd"><div style="width:55px;">经验:</div></td>
+                    <td colspan="2"><input type="text" id="experience"  name="experience" value="{$p.experience}" style="width:280px;"></td>
+                </tr>
+                <tr>
+                    <td  width="10%" class="infoBoxTd"><div style="width:55px;">是否连击:</div></td>
+                    <td colspan="2">
+                        <input type="radio" name="is_running" value="2" <if condition=" $p.is_running eq '' ">checked<elseif condition=" $p.is_running eq 2 "/>checked<else/></if>>&nbsp;连续&nbsp;&nbsp;&nbsp;
+                        <input type="radio" name="is_running" value="1" <if condition=" $p.is_running eq 1 ">checked<else/></if>>&nbsp;不连续
+                    </td>
+                </tr>
+                <tr>
+                    <td  width="10%" class="infoBoxTd"><div style="width:55px;">是否特效:</div></td>
+                    <td colspan="2">
+                        <input type="radio" name="is_special" value="-1" <if condition=" ($p.is_special eq '') or ($p.is_special eq -1) ">checked</if>>&nbsp;非特效&nbsp;&nbsp;&nbsp;&nbsp;
+                        <input type="radio" name="is_special" value="1" <if condition=" $p.is_special eq 1 ">checked</if>>&nbsp;汽车&nbsp;
+                        <input type="radio" name="is_special" value="2" <if condition=" $p.is_special eq 2 ">checked</if>>&nbsp;轮船
+                    </td>
+                </tr>
+
+              
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td class="infoBoxTd">&nbsp;</td>
+<td align="left"><input type="submit" name="submit" value="保存" class="formInput01" /></td>
+</tr>
+</table>
+</form>
+</div>
+<script>
+KindEditor.ready(function(K) {
+    k1 = K.create('#content', {});
+    k2 = K.create('#content2', {});
+    k3 = K.create('#content3', {});
+
+});
+///var ue = UE.getEditor('content');
+///var ue = UE.getEditor('content2');
+///var ue = UE.getEditor('content3');
+</script>
+<!-----------------------------------------内容结束--------------------------------------------------->
+</div>
+<include file="Public:footer" />

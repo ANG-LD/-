@@ -1,0 +1,159 @@
+<include file="Public:header" />
+<load href="__PUBLIC__/admin/js/uploadify.css" />
+<load href="__PUBLIC__/admin/js/swfobject.js" />
+<script type="text/javascript" src="__PUBLIC__/admin/js/jquery.uploadify.v2.1.4.min.js"></script>
+
+<script type="text/javascript">
+ $(function($) {
+	$("#file_upload2").uploadify({
+	 		'uploader'       : '__PUBLIC__/admin/js/uploadify.swf',
+	 		'script'         : '__PUBLIC__/admin/js/uploadify.php',
+	 		'cancelImg'      : '__PUBLIC__/admin/images/cancel.png',
+	 		'folder'         : '__PUBLIC__/admin/Uploads/touxiang',
+	 		'queueID'        : 'fileQueue2',
+	 		'sizeLimit'      :	10 * 1000 * 1024,
+			'buttonImg'      : '__PUBLIC__/admin/images/llsc.jpg',
+			'width'          :  85,
+			'height'          :  28,
+	 		'fileExt'        : '*.jpg;*.gif;*.png;', //允许文件上传类型,和fileDesc一起使用.
+	 		'fileDesc'       : '*.jpg;*.gif;*.png;',  //选择文件对话框中的提示文本.
+	 		'auto'           : true,
+	 		'multi'          : false,	
+	 		'onComplete':function(event,queueId,fileObj,response,data){
+	 			$('input[name="logo"]').val(response);
+	 			$('#pic2').attr('src', response);
+	 		}
+	 	});
+
+	 });
+</script>
+<SCRIPT language=JavaScript>
+	     function checkss(){
+             var id = $("#id").val();
+	    	 var phone    = $("#phone").val();
+	    	 if(phone==''){
+                 $(".yzphone").html('填写账号！');
+                 $("#phone").focus();
+                 return false;
+	    	 }else {
+                 $(".yzphone").html('');
+                 var result=false;
+                 $.ajax({async:false//要设置为同步的，要不CheckUserName的返回值永远为false
+                     ,url:'{:U("yzmobile")}',data:{id:id,mobile:phone}
+                     ,success:function(data){
+                         if(data == 1){
+                             $(".yzphone").html('账号已注册');
+                             $("#phone").focus();
+                             result = false;
+                         } else {
+                             result = true;
+                         }
+                     }});
+                 return result;
+             }
+	    	 
+	     }
+
+         function area_linke1(value){
+             $.post("{:U('get_area')}", {value:value,type:1}, function(v){
+
+                 $("#shi").html(v);
+
+             });
+         }
+         function area_linke2(value){
+             $.post("{:U('get_area')}", {value:value,type:2}, function(v){
+
+                 $("#qu").html(v);
+
+             });
+         }
+	</script>
+<div class="content">
+<!-----------------------------------------内容开始--------------------------------------------------->
+<div class="infoBox">
+<form name="form" action="{:U('do_eidt')}"  method="post" onsubmit="return checkss();">
+<table width="90%" border="0" cellpadding="0" cellspacing="0" id="basic">
+               <input type="hidden" value="{$d.withdraw_id}" name="id" id="id">
+                <tr >
+                    <td width="18%" class="infoBoxTd">账号：</td>
+                    <td colspan="2"><input type="text" id="phone"  name="phone" value="{$d.phone}" style="width:250px;" placeholder="手机号" readonly>&nbsp;ID:<input type="text" name="" value="{$d.id}" style="width:250px;" placeholder="手机号" readonly></td>
+                </tr>
+                <tr>
+                    <td width="18%" class="infoBoxTd">昵称：</td>
+		  		  <td ><input type="text" id="username"  name="username" value="{$d.username}" style="width:250px;" readonly>&nbsp;&nbsp;&nbsp;
+                  </td>
+                </tr>
+                <tr>
+                    <td width="18%" class="infoBoxTd">K币：</td>
+                    <td ><input type="text" id="k"  name="k" value="{$d.k}" style="width:250px;" readonly>&nbsp;&nbsp;&nbsp;
+                    </td>
+                </tr>
+                <tr>
+                    <td width="18%" class="infoBoxTd">金额：</td>
+                    <td ><input type="text" id="money"  name="money" value="{$d.money}" style="width:250px;" readonly>&nbsp;&nbsp;&nbsp;元
+                    </td>
+                </tr>
+                <tr>
+                    <td width="18%" class="infoBoxTd">返现账户：</td>
+                    <td ><input type="text" id=""  name="" value="{$d.withdraw_way}" style="width:250px;" readonly>&nbsp;&nbsp;&nbsp;
+                    </td>
+                </tr>
+                <tr>
+                    <td width="18%" class="infoBoxTd">账户类型：</td>
+                    <td ><input type="text" id=""  name="" value="{$d.withdraw_type}" style="width:250px;" readonly>&nbsp;&nbsp;&nbsp;
+                    </td>
+                </tr>
+                <tr>
+                    <td width="18%" class="infoBoxTd">账户类型：</td>
+                    <td ><input type="text" id=""  name="" value="{$d.withdraw_type}" style="width:250px;" readonly>&nbsp;&nbsp;&nbsp;
+                    </td>
+                </tr>
+                <tr>
+                    <td width="18%" class="infoBoxTd">申请时间：</td>
+                    <td ><input type="text" id=""  name="" value="{$d.intime|date="Y-m-d H:i:s",###}" style="width:250px;" readonly>&nbsp;&nbsp;&nbsp;
+                    </td>
+                </tr>
+                <tr>
+                    <td width="18%" class="infoBoxTd">审核：</td>
+                    <td >
+                        <if condition=" $d.status eq 1 ">
+                        <select name="status" id="status">
+                            <option value="1">等待审核</option>
+                            <option value="2">驳回</option>
+                            <option value="3">已返现</option>
+                        </select>
+                        <elseif condition=" $d.status eq 1 "/>
+                            <input type="text" id=""  name="" value="驳回" style="width:250px;" readonly>&nbsp;&nbsp;&nbsp;
+                            <else/>
+                            <input type="text" id=""  name="" value="已返现" style="width:250px;" readonly>&nbsp;&nbsp;&nbsp;
+                        </if>
+                    </td>
+                </tr>
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td class="infoBoxTd">&nbsp;</td>
+    <if condition=" $d.status eq 1 ">
+<td align="left"><input type="submit" name="submit" value="保存" class="formInput01" /></td>
+        <else/>
+        <td align="left"><input type="" name="button" onclick="javascript:window.location.href='{:U('withdraw')}'" value="返回" class="formInput01" /></td>
+        </if>
+</tr>
+</table>
+</form>
+</div>
+<script>
+KindEditor.ready(function(K) {
+    k1 = K.create('#content', {});
+    k2 = K.create('#content2', {});
+    k3 = K.create('#content3', {});
+
+});
+///var ue = UE.getEditor('content');
+///var ue = UE.getEditor('content2');
+///var ue = UE.getEditor('content3');
+</script>
+<!-----------------------------------------内容结束--------------------------------------------------->
+</div>
+<include file="Public:footer" />

@@ -1,0 +1,295 @@
+{:W('public/breadcrumbs',[
+[
+['href'=>U('Marketing/prize_record'),'text'=>'中奖记录'],
+['href'=>'','text'=>'中奖详情']
+]
+])}
+</if>
+<style>
+    .layui-layer-btn {
+        text-align: center!important;
+        padding: 0 10px 12px;
+        pointer-events: auto;
+    }
+    .ibutton { padding: 3px 15px; *padding: 0 15px; *height: 24px;  font-size: 12px; text-align: center; text-shadow: #CF510B 0 1px 0; border:1px solid #ec5c0d; border-radius: 2px; background: #FC750A; background-image: -webkit-linear-gradient(top, #fc8746, #ec5d0e); color:#FFF; cursor: pointer; display: inline-block; }
+    .ibutton2 { padding: 3px 15px; *padding: 0 15px; *height: 24px;  font-size: 12px; text-align: center; text-shadow: #CF510B 0 1px 0; border:1px solid #ec5c0d; border-radius: 2px; background: #FC750A; background-image: -webkit-linear-gradient(top, #fc8746, #ec5d0e); color:#FFF; cursor: pointer; display: inline-block; }
+    .beizhu_btn { padding: 3px 3px; *padding: 0 3px; *height: 24px;  font-size: 12px; text-align: center; border:1px solid #4898d5; border-radius: 2px; background-color: #2e8ded; color:#fff;cursor: pointer; display: inline-block; }
+    .blue_btn { padding: 3px 3px; *padding: 0 3px; *height: 24px;  font-size: 12px; text-align: center; border:1px solid #4898d5; border-radius: 2px; background-color: #2e8ded; color:#fff;cursor: pointer; display: inline-block; }
+    .mt-20{margin-top:20px;}
+</style>
+<script type="text/javascript" src="__ROOT__/public/admin/layer/layer.js"></script>
+<div class="page-content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div><b>奖品信息</b></div>
+            <table width="100%" class="tab" style="margin-top:10px;">
+                <thead>
+                <tr>
+                    <td>奖品名称</td>
+                    <td>图片</td>
+                    <td>类型</td>
+                    <td>中奖人</td>
+                    <td>联系方式</td>
+                    <td>中奖时间</td>
+                </tr>
+                </thead>
+                <tr align="center" onmouseout="this.style.background='#FFFFFF';" onmouseover="this.style.background='#FFFFBB';">
+                    <td>{$re.name}</td>
+                    <td><img src="{$re.img}" style="width:50px; height:50px; border-radius:25px;"></td>
+                    <td><php>
+                        $re['type'] == 1 && print "实物";
+                        $re['type'] == 2 && print "积分";
+                        $re['type'] == 3 && print "无奖励";
+                    </php></td>
+                    <td>{$re['nickname']}</td>
+                    <td>{$re['phone']}</td>
+                    <td>{$re['intime']}</td>
+                </tr>
+            </table>
+
+
+
+        <!--快递编辑-->
+        <div class="mt-20"  ><b>快递编辑</b>
+        <table width="100%"   style="margin-top:10px;border:0">
+            <form data-action="{:U('Marketing/edit_kuaidi',['id'=>$re['id']])}" class="ajax-form">
+                <tr>
+                    <td style="vertical-align: middle;">物流公司</td>
+                    <td width="65%"><input value="{$re['kuaidi_name']}" name="kuaidi_name" id="kuaidi_name" type="text" size="50"></td>
+                </tr>
+                <tr><td width="5%">&emsp;</td><td width="65%">&emsp;</td></tr>
+                <tr>
+                    <td style="vertical-align: middle;">物流单号</td>
+                    <td width="65%"><input value="{$re['kuaidi']}" name="kuaidi" id="kuaidi" type="text" size="50"></td>
+                </tr>
+                <tr><td width="5%">&emsp;</td><td width="65%">&emsp;</td></tr>
+                <tr>
+                    <td style="vertical-align: middle;">物流状态</td>
+                    <td width="65%">
+                        <select name="kuaidi_state" id="kuaidi_state" style="width:327px;">
+                            <option value="1" <if condition="$re['kuaidi_state'] eq 1">selected</if>>待发货</option>
+                            <option value="2" <if condition="$re['kuaidi_state'] eq 2">selected</if>>已出货</option>
+                            <option value="3" <if condition="$re['kuaidi_state'] eq 3">selected</if>>派送中</option>
+                            <option value="4" <if condition="$re['kuaidi_state'] eq 4">selected</if>>已签收</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr><td width="5%">&emsp;</td><td width="65%">&emsp;</td></tr>
+                <tr>
+                    <td style="vertical-align: middle;"></td>
+                    <td width="65%">
+                        <button class="blue_btn" type="submit"> 保存信息 </button>
+                        <span class="blue_btn view_kuaidi" style="margin-left:50px"> 查看物流 </span>
+                    </td>
+                </tr>
+            </form>
+        </table>
+    </div>
+
+        <table width="100%" border="0" class="all">
+            <tr><td width="5%">&emsp;</td><td width="65%">&emsp;</td></tr>
+            <tr>
+            <td style="vertical-align: middle;">备注信息</td>
+                <td><textarea name="beizhu" style="width:400px;height:100px;" id="beizhu">{$re['beizhu']}</textarea>
+                <span class="beizhu_btn"> 提交备注 </span>
+                </td>
+                <td></td>
+            </tr>
+            <tr><td width="5%">&emsp;</td><td width="65%">&emsp;</td></tr>
+        </table>
+        <hr/>
+        <volist name="log" id="vo">
+            <div style="margin-bottom: 5px;">
+                <span style="margin-left:50px; width:100px;display:inline-block"><a href='javascript:void(0)'>{$vo.uname}</a></span>
+                <span style="margin-left: 5px;display:inline-block">{$vo.title}</span>
+                <span style="margin-left:50px;">{$vo.intime}</span>
+            </div>
+        </volist>
+    </div>
+</div>
+</div>
+<script src="__ROOT__/assets/js/asyncbox/asyncbox.js"></script>
+<script src="/public/admin/js/layer/extend/layer.ext.js"></script>
+<script>
+    $(function(){
+    $('.ibutton').click(function(){
+        if(!confirm("您是否要改变订单状态\n状态一旦改变将不能回退，请谨慎操作")){
+            return false;
+        }
+        var state = $(this).attr('data');
+        $.post("{:U('Horder/change_order_status')}",{id:{$_GET["id"]},state:state},function(data){
+            if(data.status == 'ok'){
+                alert(data.info);
+                window.location.href = data.url;
+            }else{
+                alert(data.info);
+            }
+        },'json');
+        return false;
+    });
+        $('.ibutton2').click(function(){
+            if(!confirm("您是否要取消订单，订单一旦取消将不能往下操作\n请谨慎操作")){
+                return false;
+            }
+            var status = $(this).attr('data');
+            $.post("{:U('Horder/change_order_status')}",{id:{$_GET["id"]},status:status},function(data){
+                if(data.status == 'ok'){
+                    alert(data.info);
+                    window.location.href = data.url;
+                }else{
+                    alert(data.info);
+                }
+            },'json');
+            return false;
+        });
+
+        $('.beizhu_btn').click(function(){
+            var beizhu = $('#beizhu').val();
+            $.post("{:U('Marketing/beizhu')}",{id:{$_GET["id"]},beizhu:beizhu},function(data){
+                console.log(data);
+                if(data.status == 'ok'){
+                    alert(data.info);
+                }else{
+                    alert(data.info);
+                }
+            },'json');
+        });
+
+        $(".ajax-form").submit(function(){
+            var obj = $(this);
+            var url = obj.attr("data-action");
+            $.get(url,obj.serializeArray(),function(data){
+                if(data.status == 'ok'){
+                    window.location.href = window.location.href;
+                }else{
+                    alert(data.info);
+                }
+            },'json');
+        })
+
+        $(".view_kuaidi").click(function(){
+            var kuaidi_name = $('#kuaidi_name').val();
+            var kuaidi = $('#kuaidi').val();
+            var url = document.URL;
+            if(kuaidi.length < 5){
+                alert("单号不能小于5个字符");
+                return false;
+            }else{
+                window.location.href = 'http://m.kuaidi100.com/index_all.html?type='+kuaidi_name+'&postid='+kuaidi+'&callbackurl='+url;
+            }
+        });
+
+    });
+
+
+    function change_paid(id,v){
+        $.ajax({
+            type: "GET",
+            url:"{:U('Horder/change_paid')}",
+            dataType:'json',
+            data:{id:id},
+            success:function(data){
+                if(data['status']=='ok'){
+                    $('#paid').val(data['info']['paid']);
+                    $('#cost').val(data['info']['cost']);
+                }
+            }
+        })
+        var html='<table class="table table-striped table-hover">' +
+                '<tr>' +
+                '<td style="vertical-align: middle;">实收价格</td>' +
+                '<td><input type="text" name="paid" value="" id="paid" style="width:320px;"/>' +
+                '<span class="red important"> * </span> ' +
+                '</td>' +
+                '<td></td> ' +
+                '</tr>' +
+                '<tr>' +
+                '<td style="vertical-align: middle;">成本价格</td>' +
+                '<td><input type="text" name="cost" value="" id="cost" style="width:320px;"/>' +
+                '<span class="red important"> * </span> ' +
+                '</td>' +
+                '<td></td> ' +
+                '</tr>' +
+                '<tr>' +
+                '<td></td>' +
+                '<td>' +
+                '</td>' +
+                '<td></td> ' +
+                '</tr>' +
+                '</table>'
+        layer.open({
+            type: 1,
+            title: '修改订单价格',
+            closeBtn: 0,
+            area: ['500px','200px'],
+            skin: '', //没有背景色
+            shadeClose: true,
+            content: html,
+            btn:['保存'],
+            yes:function(){
+                var paid = $('#paid').val();
+                var cost = $('#cost').val();
+                $.ajax({
+                    url:"{:U('Horder/change_paid')}",
+                    type:'post',
+                    data:{id:id,paid:paid,cost:cost},
+                    dataType:'json',
+                    success:function(data){
+                        if(data.status=='ok'){
+                            alert(data['info']);
+                            window.location.href = window.location.href
+                        }else{
+                            alert(data.info);
+                        }
+                    }
+                })
+            }
+        });
+    }
+
+    //相册层
+    function view_img(e) {
+        var url = "{:U('Horder/get_returns_img')}";
+        $.get(url, {id: e}, function (json) {
+            layer.photos({
+                photos: json, //格式见API文档手册页
+                anim: 5 //0-6的选择，指定弹出图片动画类型，默认随机
+            });
+        },'json');
+    }
+
+    function change_returns_state(id,e){
+        var url = "{:U('Horder/change_returns_state')}";
+        $.post(url,{id:id,status:e},function(data){
+            if(data.status == 'ok'){
+                window.location.href = window.location.href;
+            }else{
+                alert("操作失败");
+            }
+        },'json');
+    }
+
+    function down(v,e){
+        window.location.href = "system.php?m=Admin&c=Horder&a=down_diy&order_no="+v+"&url="+e;
+    }
+    $("#start_time").datetimepicker({
+        format: 'yyyy-mm-dd',
+        weekStart: 1,
+        autoclose: true,
+        todayBtn: 'linked',
+        language: 'zh-CN',
+        minView: 2
+    }).on('changeDate', function(ev) {
+        $("#end_time").datetimepicker('setStartDate', $(this).val());
+    });
+
+    $("#end_time").datetimepicker({
+        format: 'yyyy-mm-dd',
+        weekStart: 1,
+        autoclose: true,
+        todayBtn: 'linked',
+        language: 'zh-CN',
+        minView: 2
+    });
+</script>
+

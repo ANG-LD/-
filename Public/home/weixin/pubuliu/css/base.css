@@ -1,0 +1,73 @@
+
+
+
+
+
+
+
+
+.loading-box {
+	text-align: center;
+}
+.loading {
+	display: inline-block;
+	padding: 15px 15px 15px 55px;
+	font-size: 16px;
+	color: #FFF;
+	border-radius: 5px;
+	background: url(../images/loading.gif) no-repeat 15px center #565656;
+}
+.loadings {
+	display: inline-block;
+	padding: 15px 15px 15px 15px;
+	font-size: 16px;
+	color: #FFF;
+	border-radius: 5px;
+	background: #565656;
+}
+
+
+/* 返回顶部样式 */
+#gotoTop{
+	display:none;
+	position:fixed;
+	top:75%;
+	left:50%;
+	cursor:pointer;
+	margin-top:-50px;
+	margin-left:520px;
+	width: 64px;
+	height:64px;
+	line-height: 100;
+	overflow: hidden;
+	background: url(../images/gTopa.png) no-repeat;
+}
+#gotoTop{
+	_position:absolute;
+	_top:expression_r(documentElement.scrollTop + documentElement.clientHeight * 3/4 + "px");
+}
+
+/* 瀑布流 */
+
+
+
+
+
+
+
+
+
+.footer .ft-main {
+
+	margin-left: auto;
+
+	margin-right: auto;
+
+	padding: 15px 0;
+
+	width: 1000px;
+
+	line-height: 1.8;
+
+}
+

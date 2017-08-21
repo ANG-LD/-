@@ -1,0 +1,76 @@
+{:W('public/breadcrumbs',[
+[
+['href'=>U('Charts/index'),'text'=>'交易统计'],
+]
+])}
+<div class="page-container">
+    <div class="cl pd-5 bg-1 bk-gray">
+        <div id="container" style="min-width:700px;height:400px"></div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+
+        var url = "{:U('Charts/code')}";
+        function code(e) {
+            $.get(url,{code:e},function (data) {
+                if (data['status'] = 'ok') {
+                    var a = data.data.a;
+                    var b = data.data.b;
+                    var c = data.data.c;
+                    var d = data.data.d;
+                    var e = data.data.e;
+                    $('#container').highcharts({
+                        title: {
+                            text: '平台交易统计',
+                            x: -20 //center
+                        },
+                        subtitle: {
+                            text: '',
+                            x: -20
+                        },
+                        xAxis: {
+                            categories: ['一月', '二月', '三月', '四月', '五月', '六月','七月', '八月', '九月', '十月', '十一月', '十二月']
+                        },
+                        yAxis: {
+                            title: {
+                                text: '金额(万元)'
+                            },
+                            plotLines: [{
+                                value: 0,
+                                width: 1,
+                                color: '#808080'
+                            }]
+                        },
+                        tooltip: {
+                            valueSuffix: '万元'
+                        },
+                        legend: {
+                            layout: 'vertical',
+                            align: 'right',
+                            verticalAlign: 'middle',
+                            borderWidth: 0
+                        },
+                        series: [{
+                            name: '平台交易',
+                            data: a
+                        }, {
+                            name: '平台提现',
+                            data: b
+                        }, {
+                            name: '商城交易',
+                            data: c
+                        }, {
+                            name: '平台充值',
+                            data: d
+                        },{
+                            name: '名师交易',
+                            data: e
+                        }]
+                    });
+                }
+            }, 'json');
+        }
+        code();
+    });
+</script>

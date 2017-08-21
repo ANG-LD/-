@@ -1,0 +1,105 @@
+<if condition="$_GET['id'] eq ''">
+	{:W('public/breadcrumbs',[
+		[
+			['href'=>U("Auth/user"),'text'=>'管理员用户'],
+			['href'=>'#','text'=>'添加用户']
+		]
+	])}
+<else />
+	{:W('public/breadcrumbs',[
+		[
+			['href'=>U("Auth/user"),'text'=>'管理员用户'],
+			['href'=>'#','text'=>'修改用户']
+		]
+	])}
+</if>
+<div class="page-content">
+	<div class="row">
+		<div class="col-xs-12">
+			<form  class="form-horizontal ajax-form" role="form" dit-action="{:U('Auth/editUser')}">
+				<div class="space-10"></div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label" for="uname">用户名:</label>
+					<div class="col-sm-9">
+						<input type="text" id="uname" name="uname" placeholder="用户名" class="col-xs-10 col-sm-5" value="{$d['uname']}">
+						<span class="help-inline col-xs-12 col-sm-7">
+							<strong class="red">*</strong>
+							<span class="middle">用户名不能为空</span>
+						</span>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label class="col-sm-3 control-label" for="realname">真名:</label>
+					<div class="col-sm-9">
+						<input type="text" id="realname" name="realname" placeholder="用户名" class="col-xs-10 col-sm-5" value="{$d['realname']}">
+						<span class="help-inline col-xs-12 col-sm-7">
+							<strong class="red">*</strong>
+							<span class="middle">用户名不能为空</span>
+						</span>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label class="col-sm-3 control-label" for="gid">用户分组:</label>
+					<div class="col-sm-9">
+						<select class="col-xs-10 col-sm-5" name="gid">
+							<option>--请选择分组--</option>
+							<foreach item="v" name="groups">
+								<option value="{$v['id']}" <if condition="$_GET['gid'] eq $v['id']">selected</if>>{$v['title']}</option>
+							</foreach>
+						</select>
+						<span class="help-inline col-xs-12 col-sm-7">
+							<span class="middle"></span>
+						</span>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label class="col-sm-3 control-label" for="condition">密码:</label>
+					<div class="col-sm-9">
+						<input type="text" id="password" name="password" placeholder="密码" class="col-xs-10 col-sm-5" value="">
+						<span class="help-inline col-xs-12 col-sm-7">
+							<strong>*</strong>
+							<span class="middle">
+								<if condition="$_GET['id'] eq ''">
+									密码不能为空
+								<else />
+									密码不为空，表示修改密码
+								</if>
+							</span>
+						</span>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label class="col-sm-3 control-label" for="status">状态:</label>
+					<div class="col-sm-9">
+						<select class="col-xs-10 col-sm-5" name="status">
+							<option value="1" <if condition="$d['status'] == '1'">selected</if>>开启</option>
+							<option value="0" <if condition="$d['status'] == '0'">selected</if>>关闭</option>
+						</select>
+						<span class="help-inline col-xs-12 col-sm-7">
+							<span class="middle"></span>
+						</span>
+					</div>
+				</div>
+				
+				<div class="form-tip claerfix col-md-offset-3 red"></div>
+				<div class="clearfix form-actions">
+					<div class="col-md-offset-3 col-md-9">
+						<input type="hidden" name="id" value="{$_GET['id']}" />
+						<button class="btn btn-info" type="submit">
+							<i class="icon-ok bigger-110"></i>{$_GET['id']?'修改':'添加'}用户
+						</button>
+						<a class="btn btn-info" id="backward">返回</a>
+					</div>
+				</div>
+			</form>
+			<!-- ./ end form -->
+			
+		</div>
+		<!-- ./ end col-xs-12 -->
+	</div>
+	<!-- ./ end row -->
+</div>

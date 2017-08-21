@@ -1,0 +1,32 @@
+<include file="Public:header" />
+{:W("Easyui")}
+<div class="content">
+<!-----------------------------------------内容开始--------------------------------------------------->
+<div class="infoBox">
+<form name="form" action="__URL__/dochangepass"  method="post" >
+<table width="100%" border="0" cellpadding="0" cellspacing="0" id="basic">
+ <tr>
+                  <td width="18%" class="infoBoxTd">用户名</td>
+		  		  <td colspan="2">{$_SESSION.user.username}</td>
+                </tr>
+               <tr>
+                 <td width="18%" class="infoBoxTd">密码</td>
+                  <td colspan="2"><input type="password" id="pwd" name="password" value="" size="61"></td>
+                </tr>
+               <tr>
+                 <td width="18%" class="infoBoxTd">再次输入密码</td>
+                  <td colspan="2"><input type="password" id="pwd2" name="pwd2" value="" size="61"></td>
+                </tr>
+               
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td class="infoBoxTd">&nbsp;</td>
+<td align="left"><input type="submit" name="submit" value="保存" class="formInput01" /></td>
+</tr>
+</table>
+</form>
+</div>
+<!-----------------------------------------内容结束--------------------------------------------------->
+</div>
+<include file="Public:footer" />

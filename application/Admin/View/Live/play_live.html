@@ -1,0 +1,65 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <LINK rel="Bookmark" href="/favicon.ico" >
+    <LINK rel="Shortcut Icon" href="/favicon.ico" />
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="/lib/html5.js"></script>
+    <script type="text/javascript" src="/lib/respond.min.js"></script>
+    <script type="text/javascript" src="/lib/PIE_IE678.js"></script>
+    <![endif]-->
+    <!--<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css">-->
+    <link rel="stylesheet" type="text/css" href="/static/h-ui/css/H-ui.min.css" />
+    <link rel="stylesheet" type="text/css" href="/Public/admin/css/base.css" />
+    <link rel="stylesheet" type="text/css" href="/Public/admin/css/base.css" />
+    <link rel="stylesheet" type="text/css" href="/static/h-ui.admin/css/H-ui.admin.css" />
+    <link rel="stylesheet" type="text/css" href="/lib/Hui-iconfont/1.0.7/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="/lib/icheck/icheck.css" />
+    <link rel="stylesheet" type="text/css" href="/static/h-ui.admin/skin/default/skin.css" id="skin" />
+    <link rel="stylesheet" type="text/css" href="/static/h-ui.admin/css/style.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/base.css" />
+    <link rel="stylesheet" href="/assets/js/asyncbox/skins/default.css" />
+    <script src="https://cdn.bootcss.com/jquery/1.11.2/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <!--[if IE 6]>
+    <script>DD_belatedPNG.fix('*');</script>
+    <![endif]-->
+    <title>{$system['title']}-后台管理系统</title>
+</head>
+<body>
+<div id="Player" style="width: 1000px;height: 567px;"></div>
+<script type="text/javascript" src="/lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="/lib/layer/2.1/layer.js"></script>
+<script type="text/javascript" src="/assets/js/jquery.form.js"></script>
+<script type="text/javascript" src="/lib/icheck/jquery.icheck.min.js"></script>
+<script type="text/javascript" src="/lib/jquery.validation/1.14.0/jquery.validate.min.js"></script>
+<script type="text/javascript" src="/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+<script type="text/javascript" src="/lib/jquery.validation/1.14.0/messages_zh.min.js"></script>
+<script type="text/javascript" src="/assets/js/asyncbox/asyncbox.js"></script>
+<script type="text/javascript" src="/assets/js/kindeditor/kindeditor-all-min.js"></script>
+<script type="text/javascript" src="/assets/js/kindeditor/lang/zh_CN.js"></script>
+<script type="text/javascript" src="/static/h-ui/js/H-ui.js"></script>
+<script type="text/javascript" src="/static/h-ui.admin/js/H-ui.admin.js"></script>
+<script type="text/javascript" src="/assets/js/common.js"></script>
+<script type="text/javascript" src="/Public/admin/player/sewise.player.min.js"></script>
+<script>
+    SewisePlayer.setup({
+        server: 'vod',
+        type: 'm3u8',
+        autostart: 'true',    /*是否自动播放*/
+        poster: "{$l.play_img}",    /*此处可填写封面地址*/
+        videourl: "{$l.url}",    /*此处填写购买获取到的m3u8地址 必填*/
+        skin: 'vodOrange',
+        title: '{$l.title}',
+        claritybutton: 'disable',
+        lang: 'zh_CN'
+    },'Player');
+
+</script>
+</body>
+</html>

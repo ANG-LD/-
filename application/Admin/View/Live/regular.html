@@ -1,0 +1,70 @@
+<include file="Public:header" />
+<load href="__PUBLIC__/admin/js/uploadify.css" />
+<load href="__PUBLIC__/admin/js/swfobject.js" />
+<script type="text/javascript" src="__PUBLIC__/admin/js/jquery.uploadify.v2.1.4.min.js"></script>
+
+<script type="text/javascript">
+ $(function($) {
+	$("#file_upload2").uploadify({
+	 		'uploader'       : '__PUBLIC__/admin/js/uploadify.swf',
+	 		'script'         : '__PUBLIC__/admin/js/uploadify.php',
+	 		'cancelImg'      : '__PUBLIC__/admin/images/cancel.png',
+	 		'folder'         : '__PUBLIC__/admin/Uploads/touxiang',
+	 		'queueID'        : 'fileQueue2',
+	 		'sizeLimit'      :	10 * 1000 * 1024,
+			'buttonImg'      : '__PUBLIC__/admin/images/llsc.jpg',
+			'width'          :  85,
+			'height'          :  28,
+	 		'fileExt'        : '*.jpg;*.gif;*.png;', //允许文件上传类型,和fileDesc一起使用.
+	 		'fileDesc'       : '*.jpg;*.gif;*.png;',  //选择文件对话框中的提示文本.
+	 		'auto'           : true,
+	 		'multi'          : false,	
+	 		'onComplete':function(event,queueId,fileObj,response,data){
+	 			$('input[name="logo"]').val(response);
+	 			$('#pic2').attr('src', response);
+	 		}
+	 	});
+
+	 });
+</script>
+
+<div class="content">
+<!-----------------------------------------内容开始--------------------------------------------------->
+<div class="infoBox">
+<form name="form" action="{:U('regular')}"  method="post" onsubmit="return checkss();">
+<table width="90%" border="0" cellpadding="0" cellspacing="0" id="basic">
+               <input type="hidden" value="{$s.id}" name="id" id="id">
+                <tr>
+                    <td  width="10%" class="infoBoxTd"><div style="width:95px;">热门排列规则:</div></td>
+                    <td>
+                      <input type="radio" name="regular" value="1" <if condition=" $s.regular eq  1 ">checked</if>>&nbsp;开播时间&nbsp;&nbsp;
+                      <input type="radio" name="regular" value="2" <if condition=" $s.regular eq  2 ">checked</if>>&nbsp;观看人数&nbsp;&nbsp;
+                      <input type="radio" name="regular" value="3" <if condition=" $s.regular eq  3 ">checked</if>>&nbsp;收益&nbsp;&nbsp;
+                    </td>
+                </tr>
+
+                
+              
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td class="infoBoxTd">&nbsp;</td>
+<td align="left"><input type="submit" name="submit" value="保存" class="formInput01" /></td>
+</tr>
+</table>
+</form>
+</div>
+<script>
+KindEditor.ready(function(K) {
+    k1 = K.create('#content', {});
+    k2 = K.create('#content2', {});
+    k3 = K.create('#content3', {});
+
+});
+///var ue = UE.getEditor('content');
+///var ue = UE.getEditor('content2');
+///var ue = UE.getEditor('content3');
+</script>
+<!-----------------------------------------内容结束--------------------------------------------------->
+</div>
+<include file="Public:footer" />

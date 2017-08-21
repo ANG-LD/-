@@ -1,0 +1,309 @@
+{:W('public/breadcrumbs',[
+[
+['href'=>U('Tailor/first'),'text'=>'商品分类'],
+]
+])}
+</if>
+<style type="text/css">
+    .modal-sm{width:510px;}
+    .layui-layer-btn {
+        text-align: center!important;
+        padding: 0 10px 12px;
+        pointer-events: auto;
+    }
+    #big{
+        position:absolute;
+        left:490px;
+        top:0px;
+        z-index:999;
+        display:none;
+    }
+</style>
+<script type="text/javascript" src="__ROOT__/public/admin/js/jquery-1.7.min.js"></script>
+<script type="text/javascript" src="__ROOT__/public/admin/layer/layer.js"></script>
+<script src="/assets/js/jquery.form.js"></script>
+<div class="page-content">
+    <div class="row">
+        <div class="col-xs-12">
+            <form class="search" action="__SELF__" method="get">
+                <input name="m" value="{:MODULE_NAME}" hidden>
+                <input name="c" value="{:CONTROLLER_NAME}" hidden>
+                <input name="a" value="{:ACTION_NAME}" hidden>
+                <input type="text" name="title" value="{$_GET['title']}" id="title" placeholder="搜索分类名称" size="30" style="margin-right: 20px;">
+                <input type="submit"  class="btn" value="搜索">
+                <span style="float:right;padding:10px 30px 20px 0">
+		          <a href="#"  data-toggle="modal" data-target="#popup" data-action="{:U('User/add_user')}" style="text-decoration:none;color:#000000">
+                       <span style="padding:10px 10px 10px 10px;background-color:#DDDDDD;">添加分类名</span>
+                   </a>
+		        </span>
+            </form>
+
+            <!--分类弹出框-->
+            <div class="modal fade" id="popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div id="big"></div>
+                <div id="big2"></div>
+                <div class="modal-dialog modal-sm" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button"  class="close" data-dismiss="modal" aria-label="Close">
+                                <span  aria-hidden="true">&times;</span>
+                            </button>
+                            <h4 class="modal-title" style="text-align: center" id="myModalLabel">添加商城分类</h4>
+                        </div>
+                        <div class="modal-body">
+                    <form method="post" class="ajax-frm">
+                    <table class="table table-striped table-hover">
+                    <tr>
+                        <td style="vertical-align: middle;">分类名称</td>
+                        <td><input type="text" name="category" value="" id="category" style="width:270px;"/>
+                            <span class="yz category" style="color:red"> * </span>
+                            </td>
+                        <td></td>
+                        </tr>
+                    <tr>
+                        <td style="vertical-align: middle;">分类图片</td>
+                        <td style="text-align:left">
+                            <div class="droparea spot" id="image1" style="background-image: url('');background-size: 220px 160px;" >
+                                <div class="instructions" onclick="del_image(1)">删除</div>
+                                <div id="uparea1"></div>
+                                <input type="hidden" name="picture" id="image_1" value="" />
+                                </div>
+                            <span class="yz picture" id="picture" style="color:red"> * </span>
+                            </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="vertical-align: middle;">权重排序</td>
+                        <td><input type="text" name="sort" value="" id="sort" style="width:270px;"/>
+                            <span class="yz sort" style="color:red"> * 请填写整型数字 </span>
+                            </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <input type="hidden" name="id" id="data" value="" />
+                            <input type="hidden" name="cate_id" id="cate_id" value="0" />
+                            <input type="hidden" name="type"  value="2" />
+                            <button type="submit" style="margin-left:50px;padding:10px 30px 10px 30px;background-color:#DDDDDD;" >保存</button></td>
+                        <td></td>
+                    </tr>
+                    </table>
+                    </form>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            <table width="100%" class="tab" style="margin-top:10px;">
+                <thead>
+                <tr><td colspan="6" align="left">
+                <span style="float:left;padding-right:30px;padding-top:8px;padding-bottom:18px">
+	              <a href="javascript:void(0);" style="text-decoration:none;color:#000000">
+                      <span onclick="del();" style="padding:10px 10px 10px 10px;background-color:#DDDDDD;">删除</span></a>
+	            </span>
+                </td></td>
+                </tr>
+                <tr>
+                    <td><a href="javascript:;" id="selall">全选</a></td>
+                    <td width="20%">分类名称</td>
+                    <td width="35%">分类图片</td>
+                    <td width="15%">创建时间</td>
+                    <td width="20%">操作</td>
+                </tr>
+                </thead>
+                <volist name="list" id="vo">
+                    <tr align="center" onmouseout="this.style.background='#FFFFFF';" onmouseover="this.style.background='#FFFFBB';">
+                        <td align="center"><input type="checkbox" name="ids" id="ids"  value="{$vo.id}"/>
+                        </td>
+                        <td>{$vo['category']}</td>
+                        <td width="400px"><img src="{$vo.picture}" style="width:80px; height:60px;"></td>
+                        <td>{$vo.intime}</td>
+                        <td>
+                            [ <a href="{:U('Tailor/second',['cate_id'=>$vo['id']])}">二级分类</a> ]
+                            [ <a href="#" data-toggle="modal"  onclick="edit_category({$vo.id})" data-target="#popup">编辑</a> ]
+                            [ <a href="javascript:;"  onclick="del({$vo.id});">删除</a> ]
+                        </td>
+                    </tr>
+                </volist>
+                <!--<tr><td colspan="7" align="right">{$page}</td></td></tr>-->
+            </table>
+            {$page}
+        </div>
+    </div>
+</div>
+<!--<script src="__ROOT__/public/admin/js/common.js"></script>-->
+<script type="text/javascript">
+    $(function() {
+        var  content ;
+        KindEditor.ready(function(K) {
+            content = K.create('#content',{
+                allowFileManager : true,
+                uploadJson:"{:U('Tools/upload_tx',['dirname'=>goods])}"
+            });
+        });
+
+        KindEditor.ready(function(K) {
+            K.create();
+            var editor = K.editor({
+                allowFileManager : true,
+                uploadJson:"{:U('Tools/upload_tx',['dirname'=>goods])}"
+                //sdl:false
+            });
+            K('#uparea1').click(function() {
+                editor.loadPlugin('image', function() {
+                    editor.plugin.imageDialog({
+                        imageUrl : K('#image_1').val(),
+                        clickFn : function(url, title, width, height, border, align) {
+                            $('#image1').css('background-image','url('+url+')').css('background-size','220px 160px');
+                            K('#image_1').val(url);
+                            // K('#getImgUrl').val(url);
+                            editor.hideDialog();
+                        }
+                    });
+                });
+            });
+
+            K('#uparea2').click(function() {
+                editor.loadPlugin('image', function() {
+                    editor.plugin.imageDialog({
+                        imageUrl : K('#image_2').val(),
+                        clickFn : function(url, title, width, height, border, align) {
+                            $('#image2').css('background-image','url('+url+')').css('background-size','220px 160px');
+                            K('#image_2').val(url);
+                            // K('#getImgUrl').val(url);
+                            editor.hideDialog();
+                        }
+                    });
+                });
+            });
+
+        });
+
+        $("#uparea1").mouseover(function(e){
+            $("#big").css({top:e.pageY,right:e.pageX});//鼠标定位一个点
+            var img = $('#image_1').val();
+            if(img.length !== 0) {
+                $("#big").html('<img src="' + $('#image_1').val() + '" width=380 height=300>');
+                $("#big").show();        //show：显示
+            }
+        });
+        $("#uparea1").mouseout(function(){
+            $("#big").hide();
+        });
+
+        $("#uparea2").mouseover(function(e){
+            $("#big").css({top:e.pageY,right:e.pageX});//鼠标定位一个点
+            var img = $('#image_2').val();
+            if(img.length !== 0) {
+                $("#big").html('<img src="' + $('#image_2').val() + '" width=380 height=300>');
+                $("#big").show();        //show：显示
+            }
+        });
+        $("#uparea2").mouseout(function(){
+            $("#big").hide();
+        });
+
+        $(".pic3").mouseover(function(e){
+            $("#big2").css({top:e.pageY,right:e.pageX});//鼠标定位一个点
+            $("#big2").html('<img src="'+this.src+'" width=380 height=300>');
+            $("#big2").show();        //show：显示
+        });
+        $(".pic3").mouseout(function(){
+            $("#big2").hide();
+        });
+
+
+        $("#selall").toggle(function() {
+            $("input[name='ids']").each(function() {
+                $(this).attr("checked", true);
+            });
+        },function(){
+            $("input[name='ids']").each(function() {
+                $(this).attr("checked", false);
+            });
+        });
+
+        $(".dClick").click(function(){
+            var num=$(this).attr("class").substring(14);
+            console.log(num);
+            for(var i=1;i<$(".fl-list"+num).length;i++){
+                if($(".fl-list"+num)[i].style.display=="none"){
+                    $(".fl-list"+num)[i].style.display="";
+                    $(this).children("i").attr("class","glyphicon glyphicon-triangle-bottom");
+                }else{
+                    $(".fl-list"+num)[i].style.display="none";
+                    $(this).children("i").attr("class","glyphicon glyphicon-triangle-right");
+                }
+            }
+        })
+
+        $(".ajax-frm").submit(function(){
+            var url = "{:U('Goods/edit_first_category')}";
+            $.post(url,$(this).serializeArray(),function(data){
+                if(data.status=='ok'){
+                    popup.success(data.info);
+                    setTimeout(function(){
+                        popup.close("asyncbox_success");
+                    },2000);
+                    window.location.href = data.url;
+                }else {
+                    if (data['class'].length > 0) {
+                        $('.yz').html('');
+                        $('.' + data.class).html(data.info);
+                        $('#' + data.class).focus();
+                    } else {
+                        popup.error(data.info);
+                        setTimeout(function () {
+                            popup.close("asyncbox_error");
+                        }, 2000);
+                    }
+                }
+            },'json');
+            return false;
+        })
+
+
+    });
+
+
+    function del(kid){
+
+        kid = kid ? kid : getChecked();
+        kid = kid.toString();
+        if(kid == ''){
+            layer.msg('你没有选择任何选项！', {offset: 95,shift: 6});
+            return false;
+        }
+        if(!confirm('确定要删除该记录？\n删除一级分类，相应的下级分类也会被删除'))
+            return false;
+        $.post("{:U('Goods/del_first_category')}", {ids:kid}, function(data){
+            if( data['status'] == 'ok' ){
+                alert(data.info);
+                window.location.href = data.url;
+            }else{
+                alert(data.info);
+            }
+        },'json');
+        return false;
+    }
+    function getChecked() {
+        var gids = new Array();
+        $.each($('input:checked'), function(i, n){
+            gids.push( $(n).val() );
+        });
+        return gids;
+    }
+
+    function edit_category(e){
+        var url = "{:U('Goods/edit_first_category')}";
+        $.get(url,{id:e},function(data){
+            $("#data").val(data.info.id);
+            $("#category").val(data.info.category);
+            $('#image1').css('background-image','url('+data.info.picture+')').css('background-size','220px 160px');
+            $('#image_1').val(data.info.picture);
+            $("#sort").val(data.info.sort);
+        },'json');
+    }
+
+</script>

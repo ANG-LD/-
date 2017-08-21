@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible"content="IE=9; IE=8; IE=7; IE=EDGE" />
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/home/css/style.css" />
+<script type="text/javascript" src="__PUBLIC__/home/js/png.js" ></script>
+<script type="text/javascript" src="__PUBLIC__/home/js/jquery.js" ></script>
+<title>{$base.name}-客户案例</title>
+</head>
+<script type="text/javascript">
+   function leixing(id){
+	   $("#leixing .hover").removeClass();
+ 	   document.getElementById("colo_"+id).className="hover"; 
+	   var  leixing  = $("#leixing .hover").attr("data-id");
+ 	   var  hangye   = $("#hangye .hover").attr("data-id");
+ 	   var url="{:U('Anli/selal')}?leixing="+leixing+"&hangye="+hangye;
+ 	   $("#iframe").attr("src",url);
+	  /* $("#leixing .hover").removeClass();
+ 	   document.getElementById("colo_"+id).className="hover"; 
+ 	   var  leixing  = $("#leixing .hover").attr("data-id");
+ 	   var  hangye   = $("#hangye .hover").attr("data-id");
+ 	   //window.location.href="__URL__/index?leixing="+leixing+"&hangye="+hangye;
+ 	   $.get("{:U('selal')}",{leixing:leixing,hangye:hangye},function(v){   
+			$("#ss").html(v);	  
+	   });*/
+   }
+   function hangye(id){
+	   /*var classs = $("#colos_"+id).attr('class');
+	   if(id!=-1){
+		   if(classs=='hover'){
+			   this.onclick = function(){
+				   $("#colos_"+id).removeClass(); 
+			   } 
+		   }
+		   $("#hangyes #coloss").removeClass();
+		   document.getElementById("colos_"+id).className="hover"; 
+	 	   var  leixing  = $("#leixing .hover").attr("data-id");
+	 	   var  hangye  = $("#colos_"+id).attr("data-id");
+	 	   alert(hangye);
+	   }else{
+		   $("#hangye .hover").removeClass();
+		   document.getElementById("coloss").className="hover"; 
+	   } */
+	   $("#hangye .hover").removeClass();
+ 	   document.getElementById("colos_"+id).className="hover"; 
+ 	   var  leixing  = $("#leixing .hover").attr("data-id");
+ 	   var  hangye   = $("#hangye .hover").attr("data-id");
+ 	  var url="{:U('Anli/selal')}?leixing="+leixing+"&hangye="+hangye;
+ 	  $("#iframe").attr("src",url);
+   }
+</script>
+
+<body >
+<!--header-->
+<include file="Public:head" />
+<!--banner-->
+<div class="anli_ban">
+通往成功的路有很多种
+我们为您做的就是其中一种；
+</div>
+<!--案例列表-->
+<div class="w1200_mian">
+<div class="anli_tit"><img src="__PUBLIC__/home/images/anli_tit.png" /></div>
+<dl class="anli_fl">
+<dt>类型：</dt>
+<dd>
+<ul>
+<li><h id="leixing"><a href="javascript:;" data-id="0"  id="colo_0" class="hover" onclick="leixing(0)">全部</a></h></li>
+<volist name="lx" id="l">
+<li><h id="leixing"><a href="javascript:;" class="" data-id="{$l.t_id}"  id="colo_{$l.t_id}" onclick="leixing({$l.t_id})">{$l.t_title}</a></h></li>
+</volist>
+</ul>
+</dd>
+</dl>
+<dl class="anli_fl">
+<dt>行业：</dt>
+<dd>
+<ul>
+<li><h id="hangye"><a href="javascript:;" data-id="-1"  id="colos_-1" class="hover" onclick="hangye(-1)">全部</a></h></li>
+<volist name="hy" id="l">
+<li><h id="hangye"><a href="javascript:;" class="" data-id="{$l.h_id}"  id="colos_{$l.h_id}" onclick="hangye({$l.h_id})">{$l.h_title}</a></h></li>
+</volist>
+</ul>
+</dd>
+</dl>
+
+ <iframe name="iframe" id="iframe" src="{:U('Anli/selal',array('leixing'=>0,'hangye'=>-1))}" frameborder="0" scrolling="no" width="1230"  ></iframe>
+
+
+
+</div>
+<!--footer-->
+<include file="Public:footer" />
+
+</body>
+</html>

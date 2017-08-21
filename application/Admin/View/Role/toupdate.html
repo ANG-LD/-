@@ -1,0 +1,99 @@
+<include file="Public:header" />
+{:W("Easyui")}
+<div class="content">
+<!-----------------------------------------内容开始--------------------------------------------------->
+<div class="infoBox">
+<form name="form" action="__URL__/doupdate"  method="post" >
+<input type="hidden" name="id" value="{$role.id}">
+<table width="100%" border="0" cellpadding="0" cellspacing="0" id="basic">
+ <tr>
+                  <td width="18%" class="infoBoxTd">角色名称</td>
+		  		  <td colspan="2"><input type="text" id="username"  name="name" value="{$role.name}" size="60">*</td>
+                </tr>
+              
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0"  class="menutable">
+				<tr>
+					<td class="infoBoxTd" style="vertical-align: top;">菜单</td>
+					<td align="left"><volist name="list" id="row" >
+							<div>
+								<div>
+									<input name="menuIds[]" type="checkbox" value="{$row.id}"
+										class="menu1 menu0" />{$row.title}
+								</div>
+
+								<div style="padding-left:40px;">
+									<volist name="row['xjmenus']" id="row2">
+										<input name="menuIds[]" type="checkbox" value="{$row2.id}"
+											class="menu2 menu0" />
+										<abbr title="__APP__{$row2.url}">{$row2.title}</abbr>&nbsp;&nbsp;
+									</volist>
+								</div>
+							</div>
+						</volist> </td>
+				</tr>
+			</table>
+			
+			
+		<!--<table width="100%" border="0" cellspacing="0" cellpadding="0"  class="menutable">-->
+				<!--<tr>-->
+					<!--<td class="infoBoxTd" style="vertical-align: top;">资源</td>-->
+					<!--<td align="left">-->
+							<!--<div>-->
+								<!--<div>-->
+									<!--<input  type="checkbox" -->
+										<!--class="menu1 menu0" />全选-->
+								<!--</div>-->
+
+								<!--<div style="padding-left:40px;">-->
+									<!--<volist name="ress" id="row2">-->
+										<!--<input name="res[]" type="checkbox" value="{$row2.id}"-->
+											<!--class="menu2 menu3" />-->
+										<!--<abbr title="__APP__{$row2.url}">{$row2.title}</abbr>-->
+									<!--</volist>-->
+								<!--</div>-->
+							<!--</div>-->
+						<!--</td>-->
+				<!--</tr>-->
+			<!--</table>-->
+			<script type="text/javascript">
+				$(".menu2").click(function() {
+					var menu1 = $(this).parent().parent().find(".menu1").eq(0);
+					if ($(this).parent().find(".menu2:checked").length > 0) {
+						menu1.attr("checked", "checked");
+					} else {
+						menu1.removeAttr("checked");
+					}
+
+				});
+				$(".menu1").click(
+						function() {
+							if (!$(this).attr("checked")) {
+								$(this).parent().parent().find(".menu2")
+										.removeAttr("checked");
+							} else {
+								$(this).parent().parent().find(".menu2").attr(
+										"checked", "checked");
+							}
+
+						});
+			</script>
+<script type="text/javascript">
+<volist name="yixuan" id="r">
+$(".menu0[value={$r.menuid}]").attr("checked","checked");
+</volist>
+<volist name="rress" id="r">
+$(".menu3[value={$r.resid}]").attr("checked","checked");
+</volist>
+</script>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td class="infoBoxTd">&nbsp;</td>
+<td align="left"><input type="submit" name="submit" value="保存" class="formInput01" /></td>
+</tr>
+</table>
+</form>
+</div>
+<!-----------------------------------------内容结束--------------------------------------------------->
+</div>
+<include file="Public:footer" />

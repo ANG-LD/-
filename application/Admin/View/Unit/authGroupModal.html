@@ -1,0 +1,49 @@
+<div class="modal fade" id="authGroupModal" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+			  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			  <h4 class="modal-title" id="myModalLabel">分组列表</h4>
+			</div>
+			<div class="modal-body">
+				<form class="form-inline" id="form-update-auth-group" dit-action="{:U('Auth/updateAuthGroup')}">
+					<div class="form-group">
+						<label for="gid">选择分组名称:</label>
+						<select id="gid" name="gid">
+							<foreach item="v" name="groups">
+								<option value="{$v['id']}">{$v['title']}</option>
+							</foreach>
+						</select>
+					</div>
+					<input type="hidden" id="uid" name="uid" value="">
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+				<button type="button" class="btn btn-primary" id="btn-update-auth-group">确认分组</button>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+$(document).ready(function(){
+	$(".update-auth-group").click(function(){
+		var v = $(this).attr('dit-params');
+		$('#uid').val(v);
+	});
+
+	$("#btn-update-auth-group").click(function(){
+		var obj = $("#form-update-auth-group");
+		var url = obj.attr("dit-action");
+		if(!confirm("确认修改分组")) return false;
+		$.post(url,obj.serialize(),function(data){
+			if(data.code=='200'){
+				window.location.href = window.location.href;
+			} else {
+				$("#amount").siblings(".help-block").addClass("red").html(data.msg);
+			}
+		},"json");
+		return false;
+	});
+});
+</script>

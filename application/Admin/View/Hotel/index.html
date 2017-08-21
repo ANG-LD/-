@@ -1,0 +1,200 @@
+{:W('public/breadcrumbs',[
+[
+['href'=>U('Hotel/index'),'text'=>'酒店列表'],
+]
+])}
+</if>
+<script type="text/javascript" src="__ROOT__/public/admin/js/jquery-1.7.min.js"></script>
+<script type="text/javascript" src="__ROOT__/public/admin/layer/layer.js"></script>
+<div class="page-content">
+    <div class="row">
+        <div class="col-xs-12">
+            <form class="search" action="__SELF__" method="get">
+                <input name="m" value="{:MODULE_NAME}" hidden>
+                <input name="c" value="{:CONTROLLER_NAME}" hidden>
+                <input name="a" value="{:ACTION_NAME}" hidden>
+                <input type="text" name="name" value="{$_GET['name']}" id="name" placeholder="搜索酒店名称、标签" size="30" style="margin-right: 20px;">
+                <input type="text" name="star" value="{$_GET['star']}" id="star" placeholder="搜索酒店星级、城市" size="30" style="margin-right: 20px;">
+                类别：<select name="city" id="city">
+                <option value="">请选择城市</option>
+                <volist name="city" id="vo">
+                <option value="{$vo['city']}" <if condition=" $_GET['city'] eq $vo['city']">selected<else/></if>>{$vo['city']}</option>
+                </volist>
+            </select>
+                类别：<select name="status" id="status">
+                <option value="">请选择状态</option>
+                <option value="1" <if condition=" $_GET['status'] eq 1">selected<else/></if>>默认状态</option>
+                <option value="2" <if condition=" $_GET['status'] eq 2">selected<else/></if>>上架状态</option>
+                </select>
+                <input type="submit"  class="btn" value="搜索">
+                
+                <span style="float:right;padding-right:30px;padding-top:10px">
+		           <a href="javascript:void(0)" class="check_auth" data-action="{:U('Hotel/add_hotel')}" style="text-decoration:none;color:#000000">
+                       <span style="padding:10px 10px 10px 10px;background-color:#DDDDDD;">添加酒店</span>
+                   </a>
+		           <a href="javascript:;" style="text-decoration:none;color:#000000"><span style="padding:10px 10px 10px 10px;background-color:#DDDDDD;" onclick="xiazai()">导出excl</span></a>
+		        </span>
+            </form>
+
+            <table width="100%" class="tab" style="margin-top:10px;">
+                <thead>
+                <tr><td colspan="11" align="left">
+                <span style="float:left;padding-right:30px;padding-top:8px;padding-bottom:18px">
+	              <a href="javascript:void(0);" style="text-decoration:none;color:#000000">
+                      <span onclick="del();" style="padding:10px 10px 10px 10px;background-color:#DDDDDD;">删除</span></a>
+	            </span>
+                <span style="float:left;padding-top:8px;">每页显示
+				<select id="nus" onchange="getnums();">
+                    <volist name="nums" id="l">
+                        <option value="{$l}" <if condition=" $l eq $nus ">selected<else/></if>>{$l}</option>
+                    </volist>
+                </select>
+				条</span>
+                </td></td>
+                </tr>
+                <tr>
+                    <td><a href="javascript:;" id="selall">全选</a></td>
+                    <td>图片</td>
+                    <td>酒店名称</td>
+                    <td>所在城市</td>
+                    <td>酒店地址</td>
+                    <td>酒店星级</td>
+                    <td>标签</td>
+                    <td>上架状态</td>
+                    <td>推荐状态</td>
+                    <td>创建时间</td>
+                    <td width="190">操作</td>
+                </tr>
+                </thead>
+                <volist name="list" id="vo">
+                    <tr align="center" onmouseout="this.style.background='#FFFFFF';" onmouseover="this.style.background='#FFFFBB';">
+                        <td align="center"><input type="checkbox" name="ids" id="ids"  value="{$vo.member_id}"/>
+                            <php>
+                                if($_GET['num'])$num=$_GET['num'];else $num ='10';
+                                if($_GET['p'] > 0){
+                                echo $key+1+($_GET['p']-1)*$num;
+                                }else{
+                                echo $key+1;
+                                }
+                            </php>
+                        </td>
+                        <td><img src="{$vo.img}" style="width:50px; height:50px; border-radius:25px;"></td>
+                        <td>{$vo.name}</td>
+                        <td>{$vo.tag_city}</td>
+                        <td>{$vo.province}{$vo.city}{$vo.area}{$vo.address}</td>
+                        <td>{$vo['star']}</td>
+                        <td>{$vo['tags']}</td>
+                        <td>
+                            <a href="javascript:void(0)" onclick="change_status({$vo.hotel_id},this)" <if condition="$vo['status'] eq 2">style="color:red"</if>>
+                            <php>
+                                $vo['status'] == '1' && print "下架状态";
+                                $vo['status'] == '2' && print "上架状态";
+                            </php>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="javascript:void(0)" onclick="change_tuijian({$vo.hotel_id},this)" <if condition="$vo['is_tuijian'] eq 2">style="color:red"</if>>
+                            <php>
+                                $vo['is_tuijian'] == '1' && print "默认状态";
+                                $vo['is_tuijian'] == '2' && print "推荐状态";
+                            </php>
+                            </a>
+                        </td>
+                        <td>{$vo.intime}</td>
+                        <td>
+                            [ <a href="{:U('Hotel/edit_hotel',array('id'=>$vo['hotel_id'], 'str'=>CONTROLLER_NAME.'/'.ACTION_NAME))}">编辑</a> ]
+                            [ <a href="{:U('Hotel/room_list',array('uid'=>$vo['hotel_id'], 'str'=>CONTROLLER_NAME.'/'.ACTION_NAME))}">房间详情</a> ]
+                            [ <a href="javascript:;"  onclick="del({$vo.hotel_id});">删除</a> ]
+
+                        </td>
+                    </tr>
+                </volist>
+                <!--<tr><td colspan="7" align="right">{$page}</td></td></tr>-->
+            </table>
+            {$page}
+        </div>
+    </div>
+</div>
+<!--<script src="__ROOT__/public/admin/js/common.js"></script>-->
+<script type="text/javascript">
+    $(function() {
+        $("#selall").toggle(function() {
+            $("input[name='ids']").each(function() {
+                $(this).attr("checked", true);
+            });
+        },function(){
+            $("input[name='ids']").each(function() {
+                $(this).attr("checked", false);
+            });
+        });
+
+    });
+
+    function del(kid){
+
+        kid = kid ? kid : getChecked();
+        kid = kid.toString();
+        if(kid == ''){
+            layer.msg('你没有选择任何选项！', {offset: 95,shift: 6});
+            return false;
+        }
+        if(!confirm('确定要删除该记录？'))
+            return false;
+        $.post("{:U('Hotel/del_hotel')}", {ids:kid}, function(data){
+            if( data['status'] == 'ok' ){
+                alert(data.info);
+                window.location.href = data.url;
+            }else{
+                alert(data.info);
+            }
+        },'json');
+        return false;
+    }
+    function getChecked() {
+        var gids = new Array();
+        $.each($('input:checked'), function(i, n){
+            gids.push( $(n).val() );
+        });
+        return gids;
+    }
+
+    function xiazai(){
+        var download = 'download';
+        window.location.href="__SELF__&act="+download;
+    }
+    function getnums(){
+        var num = $("#nus").val();
+        window.location.href="__SELF__&num="+num;
+    }
+    function change_status(id,v){
+        var id = id;
+        $.post("{:U('Hotel/change_hotel_status')}",{id:id},function(data){
+            if(data['status'] == 'ok'){
+                $(v).html(data['info']);
+            }else{
+                alert(data['info']);
+            }
+        },'json');
+        return false;
+    }
+
+    function change_tuijian(id,v){
+        var id = id;
+        $.post("{:U('Hotel/change_hotel_tuijian')}",{id:id},function(data){
+            if(data['status'] == 'ok'){
+                $(v).html(data['info']);
+            }else{
+                alert(data['info']);
+            }
+        },'json');
+        return false;
+    }
+
+    //$('.check_auth').click(function(){
+    //    var url = $(this).attr('data-action');
+    //    console.log(url+'&chek=1');
+    //    $.get(url+'&chek=1',function(data){
+    //
+    //    })
+    //})
+</script>

@@ -1,0 +1,78 @@
+<include file="Public:header" />
+{:W("Easyui")}
+
+<load href="__PUBLIC__/admin/js/uploadify.css" />
+<load href="__PUBLIC__/admin/js/swfobject.js" />
+<script type="text/javascript" src="__PUBLIC__/admin/js/jquery.uploadify.v2.1.4.min.js"></script>
+<script type="text/javascript">
+	$(function($) {
+		$("#file_upload2").uploadify({
+			'uploader'       : '__PUBLIC__/admin/js/uploadify.swf',
+			'script'         : '__PUBLIC__/admin/js/uploadify.php',
+			'cancelImg'      : '__PUBLIC__/admin/images/cancel.png',
+			'folder'         : '__PUBLIC__/admin/Uploads',
+			'queueID'        : 'fileQueue2',
+			'sizeLimit'      :	10 * 1000 * 1024,
+			'buttonImg'      : '__PUBLIC__/admin/images/llsc.jpg',
+			'width'          :  85,
+			'height'          :  28,
+			'fileExt'        : '*.jpg;*.gif;*.png;', //允许文件上传类型,和fileDesc一起使用.
+			'fileDesc'       : '*.jpg;*.gif;*.png;',  //选择文件对话框中的提示文本.
+			'auto'           : true,
+			'multi'          : false,
+			'onComplete':function(event,queueId,fileObj,response,data){
+				$('input[name="logo"]').val(response);
+				$('#pic2').attr('src', response);
+			}
+		});
+
+	});
+</script>
+<div class="content">
+	<!-----------------------------------------内容开始--------------------------------------------------->
+	<div class="infoBox">
+		<form name="form" action="__URL__/common_problems" method="post" enctype="multipart/form-data">
+			<input type="hidden" name="id" value="{$a.about_us_id}">
+			<table width="100%" border="0" cellpadding="0" cellspacing="0" id="basic">
+
+				<tr >
+					<td  width="2%"  style="text-align:right;color:#2d52a5"><div style="width:55px;">常见问题:</div></td>
+					<td colspan="2">
+						<textarea id="content" name="content" style="width:80%;height:380px;">{$a.clause} </textarea>
+					</td>
+				</tr>
+				
+			</table>
+			<table width="100%" border="0" cellspacing="0" cellpadding="0">
+				<tr>
+					<td class="infoBoxTd">&nbsp;</td>
+					<td align="left"><input type="submit" name="submit" value="保存"
+						class="formInput01" /></td>
+				</tr>
+			</table>
+		</form>
+		
+		<script type="text/javascript">
+			KindEditor.ready(function(K) {
+				k1 = K.create('#content', {});
+
+			});
+				$(function() {
+					$(".zhifustatus[value={$base.zhifustatus}]").attr("checked","checked");
+				})
+				function check1(e){
+					if($("#yongjin").val()>100){
+						alert("佣金抽取不能超过100！");
+						return false;
+					}
+				}
+				function check2(e){
+					if($("#sunshibai").val()>100){
+						alert("外汇损失率不能超过100！");
+						return false;
+					}
+				}
+			</script>
+	</div>
+</div>
+<include file="Public:footer" />

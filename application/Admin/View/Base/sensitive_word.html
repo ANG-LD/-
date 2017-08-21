@@ -1,0 +1,51 @@
+<include file="Public:header" />
+{:W("Easyui")}
+
+<load href="__PUBLIC__/admin/js/uploadify.css" />
+<load href="__PUBLIC__/admin/js/swfobject.js" />
+<script type="text/javascript" src="__PUBLIC__/admin/js/jquery.uploadify.v2.1.4.min.js"></script>
+
+<div class="content">
+	<!-----------------------------------------内容开始--------------------------------------------------->
+	<div class="infoBox">
+		<form name="form" action="__URL__/sensitive_word" method="post" enctype="multipart/form-data">
+			<input type="hidden" name="id" value="{$s.id}">
+			<table width="100%" border="0" cellpadding="0" cellspacing="0"
+				id="basic">
+				<tr bgcolor="white">
+					<td width="18%" class="infoBoxTd" bgcolor="white">敏感词:</td>
+					<td colspan="2">
+						<textarea name="sensitive_word" id="sensitive_word" style="width: 750px;height: 200px">{$s.sensitive_word}</textarea><span style="color: red;">注:用英文','隔开!</span>
+					</td>
+				</tr>
+				
+			</table>
+			<table width="100%" border="0" cellspacing="0" cellpadding="0">
+				<tr>
+					<td class="infoBoxTd">&nbsp;</td>
+					<td align="left"><input type="submit" name="submit" value="保存"
+						class="formInput01" /></td>
+				</tr>
+			</table>
+		</form>
+		
+		<script type="text/javascript">
+				$(function() {
+					$(".zhifustatus[value={$base.zhifustatus}]").attr("checked","checked");
+				})
+				function check1(e){
+					if($("#yongjin").val()>100){
+						alert("佣金抽取不能超过100！");
+						return false;
+					}
+				}
+				function check2(e){
+					if($("#sunshibai").val()>100){
+						alert("外汇损失率不能超过100！");
+						return false;
+					}
+				}
+			</script>
+	</div>
+</div>
+<include file="Public:footer" />

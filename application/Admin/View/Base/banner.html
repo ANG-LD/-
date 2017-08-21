@@ -1,0 +1,111 @@
+<include file="Public:header" />
+<script type="text/javascript">
+function edit(id){
+	location.href="__URL__/edit/id/"+id;
+}
+//进入到下级
+function xj(id){
+	location.href="__URL__/index2/id/"+id;
+}
+//下面是简单的图片放大功能
+$(function(){
+	  $(".photo").mouseover(function(e){
+		  $("#big").css({top:e.pageY,right:e.pageX});//鼠标定位一个点
+		  $("#big").html('<img src="'+this.src+'" width=480 height=400>');
+		  $("#big").show();        //show：显示
+	  });
+	  $(".photo").mouseout(function(){
+		  $("#big").hide();
+	  });
+});
+</script>
+<!--下面是css样式-->
+<style>
+    .input{
+	   color:red;
+	   text-align:center;
+    }
+    #big{
+       position:absolute;
+       left:590px;
+       top:0px;
+	   z-index:999;
+	   display:none;
+    }
+</style>
+<form action="__URL__/delete/ids/{$ids}" method="post">
+<div class="tools"> 
+<div class="add"><span><a href="__URL__/toadd">添加</a></span></div>
+<div class="del"><span><span><a href="javascript:;">
+<input name="dele" type="submit" value="删除" onclick="return tips('chois[]')" class="wr"   style="border:none; background-color:#F2F7FD; color:#2D52A5;margin-top:3px;" /></a></span></div>
+
+</div>
+
+<div class="content">
+
+<!-----------------------------------------内容开始--------------------------------------------------->
+<table width="100%" border="0" cellpadding="0" cellspacing="0" class="tabBox">
+<tr class="tabTitleMain">
+    <td width="5%" align="center">
+    <input type="checkbox" name="checkbox11" id="checkbox11"  onclick="return checkAll(this,'chois[]')"  value="0">全选</td>
+    <!--<td width="10%" align="center">类型</td>-->
+    <!--<td width="15%" align="center">直播间ID/用户ID/URL</td>-->
+    <td width="15%" align="center">标题</td>
+    <td width="15%" align="center">banner</td>
+    <td width="15%" align="center">排序</td>
+    <td width="15%" align="center">时间</td>
+    <td width="10%" align="center">操作</td>
+</tr>
+
+
+<volist name='ban' id='l' key='i'>
+<tr class="tabTextMain" id="f_{$l.id}" onmouseout="this.style.background='#FFFFFF';" onmouseover="this.style.background='#fbf435';">
+  <td align="center"><input type="checkbox" class="deleteids" value="{$l.b_id}" name="chois[]"/>{$i}</td>
+  <!--<td align="center"><if condition=" $l.b_type eq 1 ">外链<elseif condition=" $l.b_type eq 2 "/>直播<elseif condition=" $l.b_type eq 3 "/>用户</if></td>-->
+  <!--<td align="center"><if condition=" $l.b_type eq 1 ">{$l.url}<elseif condition=" $l.b_type eq 2 "/>{$l.live_id}<else/>{$l['user']['id']}</if></td>-->
+    <td align="center">{$l.title}</td>
+  <td align="center" class="onerow"><img src="{$l.b_img}" width="50" height="50" class="photo"><div id="big"></div></td>
+  <td align="center">{$l.remark}</td>
+  <td align="center">{$l.intime|date="Y-m-d H:i",###}</td>
+  <td align="center">
+                  <a href="__URL__/upbanner/b_id/{$l.b_id}/ids/{$ids}">修改</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+                  <a href="__URL__/del/b_id/{$l.b_id}/ids/{$ids}" onclick="return confirm('一旦删除不可修复，确定删除吗？')" >删除</a>
+               
+               </td>
+</tr>
+</volist>
+</table> 
+</form>
+<div class="pages">{$show}</div>
+<!-----------------------------------------内容结束--------------------------------------------------->
+</div>
+
+<script type="text/javascript">
+function checkAll(e,chois)
+{
+	var aa=document.getElementsByName(chois);
+	for(var i=0;i<aa.length;i++)
+	{  
+		aa[i].checked=e.checked;
+	}
+}
+function tips(itemName){
+    var f=false;
+    var aa=document.getElementsByName(itemName);
+	for(var i=0;i<aa.length;i++){
+ 		if(aa[i].checked==true){
+  	 		f=true;
+ 		}
+	}
+	if(f==false){
+		alert("请选择要删除的选项");
+		return false;
+	}else{
+  return  confirm("一旦删除不可修复，确定删除吗？");
+}
+return true;
+}
+</script>
+    
+
+<include file="Public:footer" />

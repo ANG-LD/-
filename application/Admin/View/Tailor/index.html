@@ -1,0 +1,218 @@
+{:W('public/breadcrumbs',[
+[
+['href'=>U('Tailor/index'),'text'=>'预售列表'],
+]
+])}
+</if>
+<script type="text/javascript" src="__ROOT__/public/admin/js/jquery-1.7.min.js"></script>
+<script type="text/javascript" src="__ROOT__/public/admin/layer/layer.js"></script>
+<div class="page-content">
+    <div class="row">
+        <div class="col-xs-12">
+            <form class="search" action="__SELF__" method="get">
+                <input name="m" value="{:MODULE_NAME}" hidden>
+                <input name="c" value="{:CONTROLLER_NAME}" hidden>
+                <input name="a" value="{:ACTION_NAME}" hidden>
+                <input type="text" name="name" value="{$_GET['name']}" id="name" placeholder="搜索商品名称、分类" size="30" style="margin-right: 20px;">
+                分类：<select name="first_category" id="first_category" onclick="change_category(this.value)" style="width: 100px;">
+                <option value="">请选择分类</option>
+                <foreach name="first_category" item="v">
+                    <option value="{$v.id}" <if condition=" $_GET['first_category'] eq $v['id']">selected<else/></if>>{$v.category}</option>
+                </foreach>
+            </select>
+                分类：<select name="second_category" id="second_category" style="width: 100px;">
+                <option value="">请选择分类</option>
+                <if condition="!empty($_GET['second_category'])">
+                    <foreach name="second_category" item="v">
+                        <option value="{$v.id}" <if condition=" $_GET['second_category'] eq $v['id']">selected<else/></if>>{$v.category}</option>
+                    </foreach>
+                </if>
+            </select>
+                <input type="submit"  class="btn" value="搜索">
+                
+                <span style="float:right;padding-right:30px;padding-top:10px">
+		           <a  href="{:U('Tailor/add_tailor')}" style="text-decoration:none;color:#000000">
+                       <span style="padding:10px 10px 10px 10px;background-color:#DDDDDD;">添加商品</span>
+                   </a>
+		           <!--<a href="javascript:;" style="text-decoration:none;color:#000000"><span style="padding:10px 10px 10px 10px;background-color:#DDDDDD;" onclick="xiazai()">导出excl</span></a>-->
+		        </span>
+            </form>
+
+            <table width="100%" class="tab" style="margin-top:10px;">
+                <thead>
+                <tr><td colspan="10" align="left">
+                <span style="float:left;padding-right:30px;padding-top:8px;padding-bottom:18px">
+	              <a href="javascript:void(0);" style="text-decoration:none;color:#000000">
+                      <span onclick="del();" style="padding:10px 10px 10px 10px;background-color:#DDDDDD;">删除</span></a>
+	            </span>
+                <span style="float:left;padding-top:8px;">每页显示
+				<select id="nus" onchange="getnums();">
+                    <volist name="nums" id="l">
+                        <option value="{$l}" <if condition=" $l eq $nus ">selected<else/></if>>{$l}</option>
+                    </volist>
+                </select>
+				条</span>
+                </td></td>
+                </tr>
+                <tr>
+                    <td><a href="javascript:;" id="selall">全选</a></td>
+                    <td>商品名称</td>
+                    <td>一级分类</td>
+                    <td>二级分类</td>
+                    <td>库存</td>
+                    <td>销售数量</td>
+                    <td>参团数（有效数）</td>
+                    <td>上架状态</td>
+                    <td>结束时间</td>
+                    <td width="190">操作</td>
+                </tr>
+                </thead>
+                <volist name="list" id="vo">
+                    <tr align="center" onmouseout="this.style.background='#FFFFFF';" onmouseover="this.style.background='#FFFFBB';">
+                        <td align="center"><input type="checkbox" name="ids" id="ids"  value="{$vo.tailor_id}"/>
+                            <php>
+                                if($_GET['num'])$num=$_GET['num'];else $num ='10';
+                                if($_GET['p'] > 0){
+                                echo $key+1+($_GET['p']-1)*$num;
+                                }else{
+                                echo $key+1;
+                                }
+                            </php>
+                        </td>
+                        <td align="left" width="250px;"><a href="{:U('Tailor/edit_goods',['id'=>$vo['goods_id']])}">{$vo.name}</a></td>
+                        <td>{$vo['first_category']}</td>
+                        <td>{$vo['second_category']}</td>
+                        <td>{$vo['number']}</td>
+                        <td>{$vo['sale_number']}</td>
+                        <td>
+                            {$vo['pay_count']|default = 0}人  ({$vo['min_count']|default = 0})人
+                        </td>
+                        <td>
+                            <a href="javascript:void(0)" onclick="change_status({$vo.tailor_id},this)" <if condition="$vo['status'] eq 2">style="color:red"</if>>
+                            <php>
+                                $vo['status'] == '1' && print "下架中";
+                                $vo['status'] == '2' && print "已上架";
+                            </php>
+                            </a>
+                        </td>
+                        <td>{$vo.end_time}</td>
+                        <td>
+                            [ <a href="{:U('Tailor/edit_tailor',array('id'=>$vo['tailor_id'], 'str'=>CONTROLLER_NAME.'/'.ACTION_NAME))}">编辑</a> ]
+                            [ <a href="javascript:;"  onclick="del({$vo.tailor_id});">删除</a> ]
+                        </td>
+                    </tr>
+                </volist>
+                <!--<tr><td colspan="7" align="right">{$page}</td></td></tr>-->
+            </table>
+            {$page}
+        </div>
+    </div>
+</div>
+<!--<script src="__ROOT__/public/admin/js/common.js"></script>-->
+<script type="text/javascript">
+    $(function() {
+        $("#selall").toggle(function() {
+            $("input[name='ids']").each(function() {
+                $(this).attr("checked", true);
+            });
+        },function(){
+            $("input[name='ids']").each(function() {
+                $(this).attr("checked", false);
+            });
+        });
+
+    });
+
+    function del(kid){
+
+        kid = kid ? kid : getChecked();
+        kid = kid.toString();
+        if(kid == ''){
+            layer.msg('你没有选择任何选项！', {offset: 95,shift: 6});
+            return false;
+        }
+        if(!confirm('确定要删除该记录？'))
+            return false;
+        $.post("{:U('Tailor/del_tailor')}", {ids:kid}, function(data){
+            if( data['status'] == 'ok' ){
+                alert(data.info);
+                window.location.href = data.url;
+            }else{
+                alert(data.info);
+            }
+        },'json');
+        return false;
+    }
+    function getChecked() {
+        var gids = new Array();
+        $.each($('input:checked'), function(i, n){
+            gids.push( $(n).val() );
+        });
+        return gids;
+    }
+
+    function xiazai(){
+        var download = 'download';
+        window.location.href="__SELF__&act="+download;
+    }
+    function getnums(){
+        var num = $("#nus").val();
+        window.location.href="__SELF__&num="+num;
+    }
+    function change_status(id,v){
+        var id = id;
+        $.post("{:U('Tailor/change_tailor_status')}",{id:id},function(data){
+            if(data['status'] == 'ok'){
+                $(v).html(data['info']);
+            }else{
+                alert(data['info']);
+            }
+        },'json');
+        return false;
+    }
+
+    function copy(id,v){
+        var id = id;
+        $.post("{:U('Goods/copy_goods')}",{id:id},function(data){
+            if(data['status'] == 'ok'){
+                alert("复制商品成功");
+                window.location.href = window.location.href;
+            }else{
+                alert(data['info']);
+            }
+        },'json');
+         return false;
+    }
+    function plus(v){
+        $.post("{:U('Goods/plus_goods_sort')}",{goods_id:v},function(data){
+            console.log(data);
+            if(data['status'] == 'ok'){
+                window.location.href = window.location.href;
+            }else{
+                alert(data.info);
+            }
+        },'json');
+    }
+
+    function minus(v){
+        $.post("{:U('Goods/minus_goods_sort')}",{goods_id:v},function(data){
+            if(data['status'] == 'ok'){
+                window.location.href = window.location.href;
+            }else{
+                alert(data.info);
+            }
+        },'json');
+    }
+
+    function change_category(e){
+        if(!e || e==''){
+            return false;
+        }
+        var url = "{:U('Goods/get_son_category')}";
+        $.post(url,{first:e},function(data){
+            console.log(data);
+            $("#second_category").html(data);
+        })
+    }
+
+</script>

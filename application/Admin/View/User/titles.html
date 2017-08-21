@@ -1,0 +1,94 @@
+<include file="Public:header" />
+<load href="__PUBLIC__/admin/js/uploadify.css" />
+<load href="__PUBLIC__/admin/js/swfobject.js" />
+<script type="text/javascript" src="__PUBLIC__/admin/js/jquery.uploadify.v2.1.4.min.js"></script>
+
+<SCRIPT language=JavaScript>
+	     function checkss(){
+             var id = $("#id").val();
+	    	 var phone    = $("#phone").val();
+	    	 if(phone==''){
+                 $(".yzphone").html('填写账号！');
+                 $("#phone").focus();
+                 return false;
+	    	 }
+//	    	 else {
+//                 $(".yzphone").html('');
+//                 var result=false;
+//                 $.ajax({async:false//要设置为同步的，要不CheckUserName的返回值永远为false
+//                     ,url:'{:U("yzmobile")}',data:{id:id,mobile:phone}
+//                     ,success:function(data){
+//                         if(data == 1){
+//                             $(".yzphone").html('账号已注册');
+//                             $("#phone").focus();
+//                             result = false;
+//                         } else {
+//                             result = true;
+//                         }
+//                     }});
+//                 return result;
+//             }
+	    	 
+	     }
+
+         function area_linke1(value){
+             $.post("{:U('get_area')}", {value:value,type:1}, function(v){
+
+                 $("#shi").html(v);
+
+             });
+         }
+         function area_linke2(value){
+             $.post("{:U('get_area')}", {value:value,type:2}, function(v){
+
+                 $("#qu").html(v);
+
+             });
+         }
+	</script>
+<div class="content">
+<!-----------------------------------------内容开始--------------------------------------------------->
+<div class="infoBox">
+<form name="form" action="{:U('do_titles')}"  method="post" onsubmit="return checkss();">
+<table width="90%" border="0" cellpadding="0" cellspacing="0" id="basic">
+               <input type="hidden" value="{$user_id}" name="id" id="id">
+                <tr>
+                    <td  width="10%" class="infoBoxTd"><div style="width:125px;">封号:</div></td>
+                    <td >
+                        <input type="radio" name="titles" value="-1" checked>&nbsp;永久封号
+                        <volist name="banned_data" id="l">
+                             <input type="radio" name="titles" value="{$l.date}">&nbsp;{$l.date}天&nbsp;&nbsp;
+                        </volist>
+                    </td>
+                </tr>
+                 <tr>
+                  <td class="infoBoxTd">封号说明:</td>
+		  		  <td colspan="2">
+		  		  <textarea id="titles_dis" name="titles_dis" style="width: 450px;height: 80px"></textarea>
+		  		  </td>
+                </tr>
+                
+              
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td class="infoBoxTd">&nbsp;</td>
+<td align="left"><input type="submit" name="submit" value="保存" class="formInput01" /></td>
+</tr>
+</table>
+</form>
+</div>
+<script>
+KindEditor.ready(function(K) {
+    k1 = K.create('#content', {});
+    k2 = K.create('#content2', {});
+    k3 = K.create('#content3', {});
+
+});
+///var ue = UE.getEditor('content');
+///var ue = UE.getEditor('content2');
+///var ue = UE.getEditor('content3');
+</script>
+<!-----------------------------------------内容结束--------------------------------------------------->
+</div>
+<include file="Public:footer" />

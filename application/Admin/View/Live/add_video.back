@@ -1,0 +1,236 @@
+<php>
+	$uid = $_GET['uid'];
+	$_GET['uid']?$text='视频编辑':$text='视频添加';
+</php>
+{:W('public/breadcrumbs',[
+[
+['href'=>U('Live/video'),'text'=>'视频管理'],
+['href'=>'','text'=>$text]
+]
+])}
+
+<style>
+	.ibutton { padding: 3px 15px; *padding: 0 15px; *height: 24px;  font-size: 12px; text-align: center; text-shadow: #CF510B 0 1px 0; border:1px solid #ec5c0d; border-radius: 2px; background: #FC750A; background-image: -webkit-linear-gradient(top, #fc8746, #ec5d0e); color:#FFF; cursor: pointer; display: inline-block; }
+	/*a  upload */
+	.a-upload {
+		padding: 4px 10px;
+		height: 30px;
+		line-height: 20px;
+		position: relative;
+		cursor: pointer;
+		color: #888;
+		background: #fafafa;
+		border: 1px solid #ddd;
+		border-radius: 4px;
+		overflow: hidden;
+		display: inline-block;
+		*display: inline;
+		*zoom: 1
+	}
+
+	.a-upload  input {
+		position: absolute;
+		font-size: 100px;
+		right: 0;
+		top: 0;
+		opacity: 0;
+		filter: alpha(opacity=0);
+		cursor: pointer
+	}
+
+	.a-upload:hover {
+		color: #444;
+		background: #eee;
+		border-color: #ccc;
+		text-decoration: none
+	}
+</style>
+<style>
+	#big{
+		position:absolute;
+		left:490px;
+		top:0px;
+		z-index:999;
+		display:none;
+	}
+</style>
+<div class="page-content">
+	<div id="big"></div>
+	<div id="big2"></div>
+	<div class="row">
+		<div class="col-xs-12"><br/>
+			<div>
+				<span style="padding-top:20px;font-weight:bold;"><php>echo $text</php></span>
+			</div>
+			<hr/>
+			<form   method="post">
+				<table width="100%" border="0" class="all">
+					<tr><td width="5%">&emsp;</td><td width="65%">&emsp;</td></tr>
+					<tr>
+						<td width="10%">视频主题</td>
+						<td width="65%"><input value="{$m.title}" name="title" id="title" type="text" size="50">&nbsp;<span class="yz title" style="color:red"></span></td>
+					</tr>
+					<tr><td width="5%">&emsp;</td><td width="65%">&emsp;</td></tr>
+					<tr>
+						<td width="10%">视频封面</td>
+						<td colspan="2">
+							<div class="droparea spot" id="image1" style="background-image: url('{$m['img']}');background-size: 220px 160px;" >
+								<div class="instructions" onclick="del_image('1')">删除</div>
+								<div id="uparea1"></div>
+								<input type="hidden" name="play_img" id="image_1" value="{$m['play_img']}" />
+							</div>
+							&nbsp;<span class="yz play_img" style="color:red"></span>
+						</td>
+					</tr>
+					<tr><td width="5%">&emsp;</td><td width="65%">&emsp;</td></tr>
+					<tr>
+						<td width="10%">视频</td>
+						<td width="65%">
+							<a href="javascript:;" class="a-upload">
+								<input name="video" value="" id="video" type="file" accept="video/mp4,video/3gpp">点击这里上传视频
+							</a>
+							&nbsp;<span class="yz url" style="color:red"></span></td>
+							<input name="url" type="hidden" id="url" value="{$m['url']}" />
+					</tr>
+					<tr><td width="5%">&emsp;</td><td width="65%">&emsp;</td></tr>
+					<tr>
+						<td width="10%">关联账号</td>
+						<td width="65%">
+							<select name="user_id" id="user_id" style="width:220px;">
+								<option value="">选择账号</option>
+								<volist name="official" id="vo">
+									<option value="{$vo.user_id}" <if condition="$m['user_id'] eq $vo['user_id']">selected</if> >{$vo.username}</option>
+								</volist>
+							</select>
+							&nbsp;<span class="yz username" style="color:red"></span></td>
+					</tr>
+					<tr><td width="5%">&emsp;</td><td width="65%">&emsp;</td></tr>
+				</table>
+				<input type="hidden" name="uid" id="uid" value="{$_GET['uid']}">
+				<button type="button" class="ibutton">&emsp;保&emsp;存&emsp;
+				</button>
+			</form>
+		</div>
+	</div>
+</div>
+<script src="/public/admin/js/common.js"></script>
+<script type="text/javascript">
+	$(function(){
+		var  content ;
+		KindEditor.ready(function(K) {
+			content = K.create('#content',{
+				allowFileManager : true,
+				uploadJson:'system.php/tools/upload_tx?dirname=user'
+			});
+		});
+
+		KindEditor.ready(function(K) {
+			K.create();
+			var editor = K.editor({
+				allowFileManager : true,
+				uploadJson:'system.php/tools/upload_tx?dirname=user'
+				//sdl:false
+			});
+			K('#uparea1').click(function() {
+				editor.loadPlugin('image', function() {
+					editor.plugin.imageDialog({
+						imageUrl : K('#image_1').val(),
+						clickFn : function(url, title, width, height, border, align) {
+							console.log(url);
+							$('#image1').css('background-image','url('+url+')').css('background-size','220px 160px');
+							K('#image_1').val(url);
+							// K('#getImgUrl').val(url);
+							editor.hideDialog();
+						}
+					});
+				});
+			});
+
+		});
+
+		$(".ibutton").click(function(){
+			commonAjaxSubmit();
+			return false;
+		});
+
+		$("#uparea1").mouseover(function(e){
+			$("#big").css({top:e.pageY,right:e.pageX});//鼠标定位一个点
+			var img = $('#image_1').val();
+			if(img.length !== 0) {
+				$("#big").html('<img src="' + $('#image_1').val() + '" width=380 height=300>');
+				$("#big").show();        //show：显示
+			}
+		});
+		$("#uparea1").mouseout(function(){
+			$("#big").hide();
+		});
+
+		$("#video").change(function(){
+			$('.url').html('正在上传中，请稍后...');
+			var formData = new FormData();
+			formData.append("video", $('#video')[0].files[0]);
+			console.log(formData);
+			$.ajax({
+				url: "{:U('Tools/upload_video')}" ,
+				type: 'POST',
+				data: formData,
+				async: false,
+				cache: false,
+				contentType: false,
+				processData: false,
+				dataType:"JSON",
+				success: function (data) {
+					console.log(data);
+					if(data['status'] == 'ok'){
+						console.log(data['url']);
+						$('#url').val(data['url']);
+						$('.url').html('上传成功！');
+					}else{
+						$('.url').html(data['info']);
+					}
+				},
+				error: function (data) {
+					console.log(data);
+				}
+			});
+		});
+
+		$(".preview").mouseover(function(e){
+			$("#big").css({top:e.pageY,right:e.pageX});//鼠标定位一个点
+			var data = $(this).attr('data');
+			console.log(data);
+			var img = $('#preview_'+data).val();
+			if(img.length !== 0) {
+				$("#big").html('<img src="' + img + '" width=380 height=300>');
+				$("#big").show();        //show：显示
+			}
+		});
+		$(".preview").mouseout(function(){
+			$("#big").hide();
+		});
+
+		$(".pic3").mouseover(function(e){
+			$("#big2").css({top:e.pageY,right:e.pageX});//鼠标定位一个点
+			$("#big2").html('<img src="'+this.src+'" width=380 height=300>');
+			$("#big2").show();        //show：显示
+		});
+		$(".pic3").mouseout(function(){
+			$("#big2").hide();
+		});
+	});
+	function area_linke1(value){
+		$.post("{:U('get_area')}", {value:value,type:1}, function(v){
+
+			$("#shi").html(v);
+
+		});
+	}
+	function area_linke2(value){
+		$.post("{:U('get_area')}", {value:value,type:2}, function(v){
+
+			$("#qu").html(v);
+
+		});
+	}
+</script>
+

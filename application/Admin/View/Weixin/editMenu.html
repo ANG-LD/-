@@ -1,0 +1,104 @@
+<layout name="Layout/index" />
+<empty name="Think.get.id">
+	{:W('public/breadcrumbs',['添加微信菜单'])}
+<else />
+	{:W('public/breadcrumbs',['修改微信菜单'])}
+</empty>
+</if>
+<div class="page-content">
+	<div class="row">
+		<div class="col-xs-12">
+			<form class="form-horizontal" method="post" class="ajax-frm">
+				<div class="space-10"></div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label" for="title">菜单名称:</label>
+					<div class="col-sm-9">
+						<input type="text" id="title" name="title" class="col-xs-10 col-sm-5" value="{$d['title']}">
+						<span class="help-inline col-xs-12 col-sm-7">
+							<span class="middle"></span>
+						</span>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label class="col-sm-3 control-label" for="pid">父级菜单:</label>
+					<div class="col-sm-9">
+						<select class="col-xs-10 col-sm-5" id="pid" name="pid">
+							<option value="0">主菜单</option>
+							<foreach item="v" name="wmenu">
+								<option value="{$v['id']}" <if condition="$d['pid'] eq $v['id']">selected="selected"</if>>{$v['title']}</option>							
+							</foreach>
+						</select>
+						<span class="help-inline col-xs-12 col-sm-7">
+							<span class="middle"></span>
+						</span>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label class="col-sm-3 control-label" for="menu_type">菜单类型:</label>
+					<div class="col-sm-9">
+						<select class="col-xs-10 col-sm-5" id="menu_type" name="menu_type">
+							<option value="menu" <if condition="$d['menu_type'] eq 'menu'">selected="selected"</if>>一级菜单</option>
+							<option value="click" <if condition="$d['menu_type'] eq 'click'">selected="selected"</if>>点击推事件</option>
+							<option value="view" <if condition="$d['menu_type'] eq 'view'">selected="selected"</if>>跳转URL</option>
+						</select>
+						<span class="help-inline col-xs-12 col-sm-7">
+							<span class="middle"></span>
+						</span>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label class="col-sm-3 control-label" for="sort">菜单值:</label>
+					<div class="col-sm-9">
+						<input class="col-xs-10 col-sm-5" type="text" id="menu_value" name="menu_value" value="{$d['menu_value']}">
+						<span class="help-inline col-xs-12 col-sm-7">
+							<a class="btn btn-default btn-xs" id="choose-url-event" dit-params="{$v['id']}">选择</a>
+						</span>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label class="col-sm-3 control-label" for="sort">排序:</label>
+					<div class="col-sm-9">
+						<input type="text" id="sort" name="sort" class="col-xs-10 col-sm-5" value="{$d['sort']}">
+						<span class="help-inline col-xs-12 col-sm-7">
+							<span class="middle"></span>
+						</span>
+					</div>
+				</div>
+				
+				<div class="form-tip col-md-offset-3 red">
+				
+				</div>
+				
+				<div class="clearfix form-actions">
+					<div class="col-md-offset-3 col-md-9">
+						<input type="hidden" name="id" value="{$_GET['id']}" />
+						<button class="btn btn-info submit" type="button">
+							<i class="icon-ok bigger-110"></i>{$_GET['id']?'修改':'添加'}微信菜单项
+						</button>
+					</div>
+				</div>
+			</form>
+			<!-- ./ end form -->
+		</div>
+		<!-- ./ end col-xs-12 -->
+	</div>
+	<!-- ./ end row -->
+</div>
+<script type="text/javascript" src="/public/admin/js/popwin.js"></script>
+<script>
+$(document).ready(function(){
+	$(".submit").click(function(){
+		console.log(1);
+		commonAjaxSubmit();
+		return false;
+	});
+	
+	$("#choose-url-event").click(function(){
+		popWin.showWin("800","300","通用的iframe弹层插件","http://www.xwcms.net/");
+	});
+});
+</script>

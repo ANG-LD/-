@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible"content="IE=9; IE=8; IE=7; IE=EDGE" />
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/home/css/style.css" />
+<script type="text/javascript" src="__PUBLIC__/home/js/png.js" ></script>
+<script type="text/javascript" src="__PUBLIC__/home/js/jquery.js" ></script>
+<title>{$base.name}-新闻中心</title>
+</head>
+
+<body>
+<!--header-->
+<include file="Public:head" />
+<!--banner-->
+<div class="news_ban">
+明创新闻中心
+</div>
+<!--01-->
+<div class="app_huibg">
+<div class="app_tit"><img src="__PUBLIC__/home/images/news_tit.png" /></div>
+<!--left-->
+<script type="text/javascript">
+
+$(window).scroll(function(){
+		if($(this).scrollTop() > 400){
+			$(".fh_box").show();
+		}
+		if($(this).scrollTop() < 400){
+			$(".fh_box").hide();
+		}
+})
+function nian(id){
+	   //location.href="{:U('index',array(id=>$ids))}";
+	   $.post("{:U('commen')}",{id:id},function(v){
+		  // alert(v);
+			$("#aaa").html(v);	  
+	   });
+   }
+function seled(id){
+	   $("#nfs .hover").removeClass();
+	    document.getElementById("colo_"+id).className="hover"; 
+}
+</script>
+
+
+<ol class="dsj_sjz fh_box" style="display:none;">
+
+
+<volist name="nian" id="l" >
+
+<h id="nfs"><li name="ids" data-id="{$l.t_id}"  id="colo_{$l.t_id}" <if condition=" $l.t_id eq $ids ">class="hover"<else/></if> >
+<a href="javascript:;" onclick="nian({$l.t_id}),seled({$l.t_id});">
+{$l.t_title}</a>
+<span></span><strong></strong></li></h>
+
+</volist>
+<li><span></span><font></font></li>
+</ol>
+
+<div id="aaa">
+<div class="news_art">
+<h1 class="news_h1">{$ne.n_title}</h1>
+<p class="news_rq">{$ne.n_intime|date='Y-m-d',###}</p>
+<div class="news_artnr">
+{$ne.n_content}
+</div>
+
+<ul class="xiangguang">
+<li>上一篇：<if condition=" $front eq '' ">没有了<else/><a href="{:U('sel',array(id=>$front[n_id],nid=>$ids))}">{$front.n_title}</a></if></li>
+<li>下一篇：<if condition=" $next eq '' ">没有了<else/><a href="{:U('sel',array(id=>$next[n_id],nid=>$ids))}">{$next.n_title}</a></if></li>
+</ul>
+</div>
+
+
+
+</div>
+</div>
+
+
+
+<!--footer-->
+<include file="Public:footer" />
+</body>
+</html>

@@ -1,0 +1,203 @@
+<include file="Public:header" />
+<load href="__PUBLIC__/admin/js/uploadify.css" />
+<load href="__PUBLIC__/admin/js/swfobject.js" />
+<script type="text/javascript" src="__PUBLIC__/admin/js/jquery.uploadify.v2.1.4.min.js"></script>
+
+<script type="text/javascript">
+ $(function($) {
+	$("#file_upload2").uploadify({
+	 		'uploader'       : '__PUBLIC__/admin/js/uploadify.swf',
+	 		'script'         : '__PUBLIC__/admin/js/uploadify.php',
+	 		'cancelImg'      : '__PUBLIC__/admin/images/cancel.png',
+	 		'folder'         : '__PUBLIC__/admin/Uploads/touxiang',
+	 		'queueID'        : 'fileQueue2',
+	 		'sizeLimit'      :	10 * 1000 * 1024,
+			'buttonImg'      : '__PUBLIC__/admin/images/llsc.jpg',
+			'width'          :  85,
+			'height'          :  28,
+	 		'fileExt'        : '*.jpg;*.gif;*.png;', //允许文件上传类型,和fileDesc一起使用.
+	 		'fileDesc'       : '*.jpg;*.gif;*.png;',  //选择文件对话框中的提示文本.
+	 		'auto'           : true,
+	 		'multi'          : false,	
+	 		'onComplete':function(event,queueId,fileObj,response,data){
+	 			$('input[name="logo"]').val(response);
+	 			$('#pic2').attr('src', response);
+	 		}
+	 	});
+
+	 });
+</script>
+<SCRIPT language=JavaScript>
+	     function checkss(){
+             var id = $("#id").val();
+	    	 var phone    = $("#phone").val();
+	    	 if(phone==''){
+                 $(".yzphone").html('填写账号！');
+                 $("#phone").focus();
+                 return false;
+	    	 }else {
+                 $(".yzphone").html('');
+                 var result=false;
+                 $.ajax({async:false//要设置为同步的，要不CheckUserName的返回值永远为false
+                     ,url:'{:U("yzmobile")}',data:{id:id,mobile:phone}
+                     ,success:function(data){
+                         if(data == 1){
+                             $(".yzphone").html('账号已注册');
+                             $("#phone").focus();
+                             result = false;
+                         } else {
+                             result = true;
+                         }
+                     }});
+                 return result;
+             }
+	    	 
+	     }
+
+         function area_linke1(value){
+             $.post("{:U('get_area')}", {value:value,type:1}, function(v){
+
+                 $("#shi").html(v);
+
+             });
+         }
+         function area_linke2(value){
+             $.post("{:U('get_area')}", {value:value,type:2}, function(v){
+
+                 $("#qu").html(v);
+
+             });
+         }
+         //下面是简单的图片放大功能
+         $(function(){
+             $(".photo").mouseover(function(e){
+                 $("#big").css({top:e.pageY,right:e.pageX});//鼠标定位一个点
+                 $("#big").html('<img src="'+this.src+'" width=480 height=400>');
+                 $("#big").show();        //show：显示
+             });
+             $(".photo").mouseout(function(){
+                 $("#big").hide();
+             });
+         });
+
+         window.onload=function(){
+             var key =  $("#status").val();
+             if(key==1 || key==2){
+                 document.getElementById("yincang").className="yincang";
+             }else{
+                 document.getElementById("yincang").className="";
+             }
+         }
+
+         function sellei(key) {
+             if(key==1 || key==2){
+                 document.getElementById("yincang").className="yincang";
+             }else{
+                 document.getElementById("yincang").className="";
+             }
+         }
+	</script>
+<!--下面是css样式-->
+<style>
+    .input{
+        color:red;
+        text-align:center;
+    }
+    #big{
+        position:absolute;
+        left:230px;
+        top:0px;
+        z-index:999;
+        display:none;
+    }
+</style>
+<style>
+    .yincang{display: none}
+</style>
+<div class="content">
+<!-----------------------------------------内容开始--------------------------------------------------->
+<div class="infoBox">
+<form name="form" action="{:U('doadd_authen_details')}"  method="post" onsubmit="return checkss();">
+<table width="90%" border="0" cellpadding="0" cellspacing="0" id="basic">
+               <input type="hidden" value="{$details.user_authen_id}" name="id">
+                <tr>
+                    <td  class="infoBoxTd"><div style="width:75px;">用户:</div></td>
+                    <td>
+                        昵称&nbsp;:&nbsp;{$details.username}&nbsp;&nbsp;&nbsp;&nbsp;ID&nbsp;:&nbsp;{$details.id}
+                    </td>
+                </tr>
+                <tr>
+                  <td  class="infoBoxTd"><div style="width:75px;">真实姓名:</div></td>
+		  		  <td >
+                      {$details.realname}
+                  </td>
+                </tr>
+                <tr>
+                    <td  class="infoBoxTd"><div style="width:75px;">身份证号:</div></td>
+                    <td >
+                        {$details.idcard}
+                    </td>
+                </tr>
+                <tr>
+                    <td  class="infoBoxTd"><div style="width:75px;">身份证照片:</div></td>
+                    <td >
+                        <img src="{$details.idcard_img}" style="width: 60px;height: 60px;" class="photo"><div id="big"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td  class="infoBoxTd"><div style="width:75px;">手机号:</div></td>
+                    <td >
+                        {$details.mobile}
+                    </td>
+                </tr>
+                <tr>
+                    <td  class="infoBoxTd"><div style="width:85px;">银行卡开户行:</div></td>
+                    <td >
+                        {$details.band_card_where}
+                    </td>
+                </tr>
+                <input type="hidden" name="status" id="status" value="{$details.status}">
+                <tr>
+                    <td  class="infoBoxTd"><div style="width:85px;">审核:</div></td>
+                    <td >
+                        <if condition=" $details.status eq 1 ">
+                        <input type="radio" name="shenhe" onchange="sellei(1);" value="1" <if condition=" $details.status eq 1 ">checked</if>>&nbsp;&nbsp;等待审核&nbsp;
+                        <input type="radio" name="shenhe" onchange="sellei(2);" value="2" <if condition=" $details.status eq 2 ">checked</if>>&nbsp;&nbsp;通过&nbsp;
+                        <input type="radio" name="shenhe" onchange="sellei(3);" value="3" <if condition=" $details.status eq 3 ">checked</if>>&nbsp;&nbsp;不通过&nbsp;
+                            <elseif condition=" $details.status eq 2 "/>
+                            <input type="radio" name="shenhe" value="2"checked>&nbsp;&nbsp;通过&nbsp;
+                            <else/>
+                            <input type="radio" name="shenhe" value="3"checked>&nbsp;&nbsp;不通过&nbsp;
+                        </if>
+                    </td>
+                </tr>
+                <tr id="yincang" class="yincang">
+                    <td  class="infoBoxTd"><div style="width:85px;">原因:</div></td>
+                    <td >
+                        <textarea name="why" id="why" style="width: 400px;height: 80px">{$details.why}</textarea>
+                    </td>
+                </tr>
+              
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td class="infoBoxTd">&nbsp;</td>
+<td align="left"><input type="submit" name="submit" value="保存" class="formInput01" /></td>
+</tr>
+</table>
+</form>
+</div>
+<script>
+KindEditor.ready(function(K) {
+    k1 = K.create('#content', {});
+    k2 = K.create('#content2', {});
+    k3 = K.create('#content3', {});
+
+});
+///var ue = UE.getEditor('content');
+///var ue = UE.getEditor('content2');
+///var ue = UE.getEditor('content3');
+</script>
+<!-----------------------------------------内容结束--------------------------------------------------->
+</div>
+<include file="Public:footer" />

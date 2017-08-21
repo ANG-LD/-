@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>度络直播</title>
+    <link rel="stylesheet" href="__PUBLIC__/home/index/css/style.css"/>
+    <script src="__PUBLIC__/home/index/js/jquery-2.2.4.min.js"></script>
+</head>
+<body>
+<div id="Account_recharge">
+    <div class="head">
+        <div class="logo">
+            <a href="{:U('index')}">
+                <img src="__PUBLIC__/home/index/image/chongzhilogo.png" alt="度络直播"/>
+            </a>
+        </div>
+        <div class="headbtn">
+            <p class="home"><a href="{:U('index')}">首页</a></p>
+            <p class="account_Recharge"><a href="{:U('Account_recharge')}">账户充值</a></p>
+        </div>
+        <div class="signbtn">登录</div>
+    </div>
+    <div class="diamond_Recharge Recharge">
+        <p class="diamond_Recharge_tit zfbRecharge_tit">正在使用支付宝进行支付</p>
+        <div class="diamond_Recharge_contens Recharge_contens">
+            <div class="diamond_Recharge_conten Recharge_conten">
+                <div class="Recharge_conten_tips">
+                    <img src="__PUBLIC__/home/index/image/zhifubaoshaoyishao.png" alt=""/>
+                </div>
+                <div class="indicate">
+                    <img src="__PUBLIC__/home/index/image/jiantou.png" alt=""/>
+                </div>
+                <div class="two_code">
+                    <p>支付金额：6元</p>
+                    <p>为确保安全，请尽快完成支付</p>
+                    <p>
+                        <img src="__PUBLIC__/home/index/image/erweima_03.png" alt=""/>
+                    </p>
+                    <p>请使用支付宝扫描二维码进行支付</p>
+                </div>
+            </div>
+            <div class="Recharge_conten_left">
+                <div></div>
+                <a href="Account_recharge.html">返回修改支付信息</a>
+            </div>
+        </div>
+    </div>
+    <!-- 登录框 -->
+    <div class="loginbox">
+        <div class="loginboxback"></div>
+        <div class="loginboxshow">
+            <div class="loginboxshows">
+                <div class="del">
+                    <img src="__PUBLIC__/home/index/image/del.png" alt=""/>
+                </div>
+                <div class="loginbox_tit">登录度络</div>
+                <div class="mobile">
+                    <input type="text" placeholder="请输入手机号"/>
+                </div>
+                <div class="codeimgs">
+                    <input type="text" placeholder="请输入图文验证码"/>
+                    <div>图文验证码</div>
+                </div>
+                <div class="code">
+                    <input type="text" placeholder="请输入手机验证码"/>
+                    <div>获取验证码</div>
+                </div>
+                <div class="loginsbutton">登录</div>
+                <div class="agreement">登录即代表你同意<span>《度珞服务协议》</span> 和 <span>《隐私条款》</span></div>
+            </div>
+        </div>
+    </div>
+    <div class="fool pulicefool">
+        <p class="doc">
+            <a href="#" target="_blank" class="">隐私政策</a>
+            <a href="#" target="_blank" class="">服务条款</a>
+            <a href="#" target="_blank" class="">联系我们</a>
+        </p>
+        <p class="company_inf">
+            <span class="company_name">上海度珞信息科技有限公司</span>
+            <span class="service_telephone">客服热线：4008-123-321</span>
+        </p>
+        <p>Copyright 2017-2017 duluo.com All rights reserved. 沪ICP备16012345号-1</p>
+    </div>
+</div>
+</body>
+<script>
+    $(function(){
+        $(".signbtn").click(function(){
+            $(".loginbox").fadeIn();
+        })
+        $(".del").click(function(){
+            $(".loginbox").fadeOut();
+        })
+        $(".loginboxback").click(function(){
+            $(".loginbox").fadeOut();
+        })
+        $(".loginsbutton").click(function(){
+            if($(".mobile input").val()==''){
+                alert("请输入手机号")
+            }else if($(".code input").val()==''){
+                alert("请输入验证码")
+            }else{
+                $(".loginbox").fadeOut();
+            }
+        })
+        $(".getcode").click(function(){
+            if($(".mobile input").val()==''){
+                alert("请输入手机号")
+            }
+        })
+    })
+</script>
+</html>

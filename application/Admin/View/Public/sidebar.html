@@ -1,0 +1,65 @@
+<div class="sidebar" id="sidebar">
+	<!-- #sidebar-shortcuts -->
+	<div class="bar_nav"><i class="glyphicon glyphicon-retweet"></i> <span class="menu-text">{:empty($m_name)?'系统信息':$m_name}</span></div>
+	<ul class="nav nav-list">
+		<foreach name="menu" item="m">
+			<if condition="$m.sonList eq ''">
+				<php>$arr = explode('/', $m['name']);</php>
+				<if condition="$arr[1] eq ACTION_NAME">
+					<li class="active">
+						<a   href="{:U($m['name'])}">
+							<i class="{$m.icon}"></i> <span class="menu-text">{$m.title}</span>
+						</a>
+						<else/>
+					<li>
+						<a   href="{:U($m['name'])}">
+							<i class="{$m.icon}"></i> <span class="menu-text">{$m.title}</span>
+						</a>
+				</if>
+				<else />
+				<if condition="ACTION_NAME eq $key">
+					<li class="active">
+						<a   href="{:U($m['url'])}">
+							<i class="{$m.icon}"></i> <span class="menu-text">{$m.text}</span>
+						</a>
+						<else/>
+					<li>
+						<a   href="{:U($m['url'])}">
+							<i class="{$m.icon}"></i> <span class="menu-text">{$m.text}</span>
+						</a>
+				</if>
+				<if condition="($type neq '') and (ACTION_NAME eq $key)">
+					<div class="sidebar-collapse upside" hidden  id="up{$m.id}"  values="{$m.id}">
+						<i class="icon-double-angle-down" ></i>
+					</div>
+					<ul class="nav nav-list conside"  id="con{$m.id}" values="{$m.id}">
+						<else />
+						<div class="sidebar-collapse upside"  id="up{$m.id}"  values="{$m.id}">
+							<i class="icon-double-angle-down" ></i>
+						</div>
+						<ul class="nav nav-list conside" hidden id="con{$m.id}" values="{$m.id}">
+				</if>
+				<volist name="m.sonList" id="m2" key="k">
+					<li <if condition="ACTION_NAME eq $k">class="active"</if>>
+					<a href="{:U($m['url'],['type'=>$k])}">
+						<i class="{$m.icon}"></i><span class="menu-text">——{$m2.text}</span>
+					</a>
+					</li>
+				</volist>
+				<div class="sidebar-collapse downside"  id="down{$m.id}" values="{$m.id}">
+					<i class="icon-double-angle-up" ></i>
+				</div>
+	</ul>
+	</li>
+	</if>
+	</foreach>
+	</ul>
+	<!-- /.nav-list -->
+	<div class="sidebar-collapse" id="sidebar-collapse">
+		<i class="icon-double-angle-left" data-icon1="icon-double-angle-left"
+		   data-icon2="icon-double-angle-right"></i>
+	</div>
+	<script type="text/javascript">
+		try{ace.settings.check('sidebar' , 'collapsed')}catch(e){}
+	</script>
+</div>

@@ -1,0 +1,112 @@
+<include file="Public:header" />
+<load href="__PUBLIC__/admin/js/uploadify.css" />
+<load href="__PUBLIC__/admin/js/swfobject.js" />
+<script type="text/javascript" src="__PUBLIC__/admin/js/jquery.uploadify.v2.1.4.min.js"></script>
+
+<script type="text/javascript">
+ $(function($) {
+     $("#file_upload").uploadify({
+         'uploader'       : '__PUBLIC__/admin/js/uploadify.swf',
+         'script'         : '__PUBLIC__/admin/js/uploadify.php',
+         'cancelImg'      : '__PUBLIC__/admin/images/cancel.png',
+         'folder'         : '__PUBLIC__/admin/Uploads',
+         'queueID'        : 'fileQueue',
+         'sizeLimit'      :	10 * 1000 * 1024,
+         'buttonImg'      : '__PUBLIC__/admin/images/llsc.jpg',
+         'width'          :  85,
+         'height'          :  28,
+         'fileExt'        : '*.jpg;*.gif;*.png;', //允许文件上传类型,和fileDesc一起使用.
+         'fileDesc'       : '*.jpg;*.gif;*.png;',  //选择文件对话框中的提示文本.
+         'auto'           : true,
+         'multi'          : false,
+         'onComplete':function(event,queueId,fileObj,response,data){
+             $('input[name="logo"]').val(response);
+             $('#pic').attr('src', response);
+         }
+     });
+
+ });
+</script>
+<SCRIPT language=JavaScript>
+        window.onload=function(){
+            var key =  $("#state").val();
+            if(key==1){
+                document.getElementById("yincang").className="";
+            }else{
+                document.getElementById("yincang").className="yincang";
+            }
+        }
+	     function checkss(){
+	    	 var name    = $("#name").val();
+             var leixing = $('input:radio:checked').val();
+	    	 if(leixing==undefined){
+                 alert('请选择类别！');
+                 return false;
+             }else if (name==''){
+                 alert('名称不能为空！');
+                 return false;
+             }
+	    	 
+	     }
+         function sellei(key) {
+             if(key==1){
+                 document.getElementById("yincang").className="";
+             }else{
+                 document.getElementById("yincang").className="yincang";
+             }
+         }
+	</script>
+<style>
+    .yincang{display: none}
+</style>
+<div class="content">
+<!-----------------------------------------内容开始--------------------------------------------------->
+<div class="infoBox">
+<form name="form" action="{:U('doadd_message')}"  method="post" onsubmit="return checkss();">
+<table width="90%" border="0" cellpadding="0" cellspacing="0" id="basic">
+               <input type="hidden" value="{$u.id}" name="id">
+                <tr>
+                    <td  width="10%" class="infoBoxTd"><div style="width:55px;">类别:</div></td>
+                    <td colspan="2">
+                        <input type="radio" name="state" id="state[]" value="1" onchange="sellei(1);" <if condition=" $u.state eq '' or $u.state eq 1 ">checked</if>>&nbsp;即时消息&nbsp;&nbsp;
+                        <input type="radio" name="state" id="state[]" value="2" onchange="sellei(2);" <if condition=" $u.state eq 2 ">checked</if>>&nbsp;新注册消息
+                    </td>
+                </tr>
+                <!--<tr id="yincang" class="yincang">-->
+                    <!--<td  width="10%" class="infoBoxTd"><div style="width:55px;">对象:</div></td>-->
+                    <!--<td colspan="2">-->
+                        <!--<input type="radio" name="type" value="1" <if condition=" $u.state eq '' or $u.type eq 1 ">checked</if>>&nbsp;全部&nbsp;&nbsp;-->
+                        <!--<input type="radio" name="type" value="2" <if condition=" $u.type eq 2 ">checked</if>>&nbsp;vip用户&nbsp;&nbsp;-->
+                        <!--<input type="radio" name="type" value="3" <if condition=" $u.type eq 3 ">checked</if>>&nbsp;非vip用户-->
+                    <!--</td>-->
+                <!--</tr>-->
+                 <tr>
+                  <td  width="10%" class="infoBoxTd"><div style="width:55px;">内容:</div></td>
+		  		  <td colspan="2">
+                      <textarea name="content" id="content" style="width: 70%;height: 100px">{$u.content}</textarea>
+                  </td>
+                 </tr>
+
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td class="infoBoxTd">&nbsp;</td>
+<td align="left"><input type="submit" name="submit" value="保存" class="formInput01" /></td>
+</tr>
+</table>
+</form>
+</div>
+<script>
+KindEditor.ready(function(K) {
+//k1 = K.create('#content', {});
+k2 = K.create('#content2', {});
+k3 = K.create('#content3', {});
+
+});
+///var ue = UE.getEditor('content');
+///var ue = UE.getEditor('content2');
+///var ue = UE.getEditor('content3');
+</script>
+<!-----------------------------------------内容结束--------------------------------------------------->
+</div>
+<include file="Public:footer" />

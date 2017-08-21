@@ -1,0 +1,235 @@
+<include file="Public:header" />
+<script type="text/javascript">
+function edit(id){
+	location.href="__URL__/edit/id/"+id;
+}
+//进入到下级
+function xj(id){
+	location.href="__URL__/index2/id/"+id;
+}
+function getnums(){
+    var num = $("#nus").val();
+    var start = $("#start").val();
+    var end = $("#end").val();
+    var is_tuijian_info = $("#is_tuijian_info").val();
+    var live_status = $("#live_status").val();
+    var username = $("#username").val();
+    var is_shenhe = $("#is_shenhe").val();
+    window.location.href="__URL__/video?nums="+num+"&start="+start+"&end="+end+"&username="+username+"&live_status="+live_status+"&is_tuijian_info="+is_tuijian_info+"&is_shenhe="+is_shenhe;
+}
+function sendname() {
+    var num = $("#nus").val();
+    var start = $("#start").val();
+    var end = $("#end").val();
+    var live_status = $("#live_status").val();
+    var username = $("#username").val();
+    window.location.href="__URL__/video?nums="+num+"&start="+start+"&end="+end+"&username="+username+"&live_status="+live_status;
+}
+</script>
+
+<form action="javascript:;" method="post">
+<div class="tools"> 
+<!--<div class="add"><span><a href="__URL__/toadd_video">添加</a></span></div>-->
+<div class="del"><span><span><a href="javascript:;">
+<input name="dele" type="submit" value="删除" onclick="del();" class="wr"   style="border:none; background-color:#F2F7FD; color:#2D52A5;margin-top:3px;" /></a></span></div>
+    <span style="float:left;padding-top:8px;">每页显示
+        <select id="nus" onchange="getnums();">
+          <volist name="nums" id="l">
+             <option value="{$l}" <if condition=" $l eq $nus ">selected<else/></if>>{$l}</option>
+              </volist>
+        </select> 条
+    </span>
+
+    <span style="float:right;padding-right:50px;padding-top:5px;">
+        审核状态: <select id="is_shenhe" name="is_shenhe" onchange="getnums();">
+            <option value="">全部</option>
+            <option value="1" <if condition=" $is_shenhe eq 1 ">selected</if>>待审核</option>
+            <option value="2" <if condition=" $is_shenhe eq 2 ">selected</if>>已审核</option>
+            <option value="3" <if condition=" $is_shenhe eq 3 ">selected</if>>未通过</option>
+        </select>
+   &nbsp;&nbsp;日期： <input type="text" class="laydate-icon" name="start_time" id="start" size="12" value="{$start}" readonly> - <input type="text" class="laydate-icon" name="end_time" id="end" size="12" value="{$end}" readonly>
+        关键词: <input type="text" name="username" id="username" value="{$username}" placeholder="标题、作者、ID" size="30">
+&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" name="button" value="搜索" id="button" onclick="getnums()">
+</span>
+
+</div>
+
+<div class="content">
+
+<!-----------------------------------------内容开始--------------------------------------------------->
+<table width="100%" border="0" cellpadding="0" cellspacing="0" class="tabBox">
+<tr class="tabTitleMain">
+    <td width="8%" align="center">
+    <input type="checkbox" name="checkbox11" id="checkbox11"  onclick="return checkAll(this,'chois[]')"  value="0">全选</td>
+    <td width="8%" align="center">视频封面</td>
+    <td width="10%" align="center">标题</td>
+    <td width="8%" align="center">作者</td>
+    <td width="7%" align="center">观看次数</td>
+    <td width="7%" align="center">评论数</td>
+    <td width="7%" align="center">赞</td>
+    <td width="7%" align="center">分享次数</td>
+    <td width="7%" align="center">审核</td>
+    <td width="8%" align="center">时间</td>
+    <td width="12%" align="center">操作</td>
+</tr>
+
+
+<volist name='list' id='l' key='i'>
+<tr class="tabTextMain" id="f_{$l.id}" onmouseout="this.style.background='#FFFFFF';" onmouseover="this.style.background='#fbf435';">
+  <td align="center"><input type="checkbox" class="deleteids" value="{$l.video_id}" name="chois[]"/>{$i}</td>
+
+    <td align="center" class="onerow"><img src="{$l.video_img}" style="width: 50px;height: 50px;border-radius:50%"></td>
+    <td align="center" class="onerow">{$l.title}</td>
+    <td align="center" class="onerow">{$l.username}({$l.id})</td>
+    <td align="center" class="onerow">{$l.watch_nums}</td>
+    <td align="center" class="onerow">{$l.comments}</td>
+    <td align="center" class="onerow">{$l.zan}</td>
+    <td align="center" class="onerow">{$l.share}</td>
+    <td align="center" class="onerow">
+        <select name="shenhe" id="shenhe" onchange="to_shenhe({$l.video_id},this.value)">
+            <option value="1" <if condition=" $l.is_shenhe eq 1 ">selected</if>>待审核</option>
+            <option value="2" <if condition=" $l.is_shenhe eq 2 ">selected</if>>已成功</option>
+            <option value="3" <if condition=" $l.is_shenhe eq 3 ">selected</if>>未通过</option>
+        </select>
+    </td>
+    <td align="center" class="onerow">{$l.intime|date="Y-m-d H:i:s",###}</td>
+  <td align="center">
+      <!--<a href="{:U('toadd_video',array('id'=>$l['video_id']))}">编辑</a>|&nbsp;-->
+      &nbsp;<a href="javascript:;"  onclick="del({$l.video_id});">删除</a>
+      |&nbsp;&nbsp;<a href="javascript:;" onclick="sel({$l.video_id});" >播放</a>
+               
+               </td>
+</tr>
+</volist>
+</table> 
+</form>
+<div class="pages">{$show}</div>
+<!-----------------------------------------内容结束--------------------------------------------------->
+</div>
+
+<script type="text/javascript">
+    function offline(id) {
+        if(!confirm('确定强制下线？'))
+            return false;
+        $.post("{:U('offline')}", {id:id}, function(v){
+            if( v == 1 ){
+                alert('已强制下线！');
+                location.reload("{:U('index')}");
+            }else{
+                alert('强制下线失败！');
+            }
+        });
+    }
+    function to_shenhe(video_id,id) {
+        $.post("{:U('shenhe_video')}", {video_id:video_id,id:id}, function(v){
+            if( v == 1 ){
+                alert('成功！');
+                //location.reload("{:U('recorded')}");
+            }else{
+                alert('失败！');
+            }
+        });
+    }
+    function sel(id) {
+        layer.open({
+            type: 2,
+            title: false,
+            area: ['1020px', '587px'],
+            shade: 0.1,
+            closeBtn: 1,
+            shadeClose: false,
+            content: "__URL__/play_video?id="+id,
+        });
+    }
+function checkAll(e,chois)
+{
+	var aa=document.getElementsByName(chois);
+	for(var i=0;i<aa.length;i++)
+	{  
+		aa[i].checked=e.checked;
+	}
+}
+//function tips(itemName){
+//    var f=false;
+//    var aa=document.getElementsByName(itemName);
+//	for(var i=0;i<aa.length;i++){
+// 		if(aa[i].checked==true){
+//  	 		f=true;
+// 		}
+//	}
+//	if(f==false){
+//		alert("请选择要删除的选项");
+//		return false;
+//	}else{
+//  return  confirm("一旦删除不可修复，确定删除吗？");
+//}
+//return true;
+//}
+
+function del(kid){
+    kid = kid ? kid : getChecked();
+    kid = kid.toString();
+    if(kid == ''){
+        alert("请选择要删除的选项");
+        return false;
+    }
+    if(!confirm('确定删除？'))
+        return false;
+    $.post("{:U('del_video')}", {ids:kid}, function(v){
+        if( v == 1 ){
+            alert('删除成功！');
+            location.reload("{:U('video')}");
+        }else{
+            alert('删除失败！');
+        }
+    });
+}
+function getChecked() {
+    var gids = new Array();
+    $.each($('input:checked'), function(i, n){
+        gids.push( $(n).val() );
+    });
+    return gids;
+}
+</script>
+<script>
+    layui.use('laydate', function(){
+        var laydate = layui.laydate;
+        var start = {
+            elem: '#start',
+            format: 'YYYY-MM-DD',
+            //min: laydate.now(), //设定最小日期为当前日期
+            max: '2099-06-16', //最大日期
+            istime: false,
+            istoday: false,
+            choose: function(datas){
+                $("#start").attr("value",datas);
+                end.min = datas; //开始日选好后，重置结束日的最小日期
+                end.start = datas //将结束日的初始值设定为开始日
+            }
+        };
+        var end = {
+            elem: '#end',
+            format: 'YYYY-MM-DD',
+            //min: laydate.now(),
+            max: '2099-06-16',
+            istime: false,
+            istoday: false,
+            choose: function(datas){
+                $("#end").attr("value",datas);
+                start.max = datas; //结束日选好后，重置开始日的最大日期
+            }
+        };
+        document.getElementById('start').onclick = function(){
+            start.elem = this;
+            laydate(start);
+        }
+        document.getElementById('end').onclick = function(){
+            end.elem = this
+            laydate(end);
+        }
+    });
+</script>
+    
+
+<include file="Public:footer" />

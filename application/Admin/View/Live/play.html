@@ -1,0 +1,17 @@
+
+<script src="__PUBLIC__/admin/player/sewise.player.min.js"></script>
+<div id="Player" style="width: 1000px;height: 567px;"></div>
+<script>
+    SewisePlayer.setup({
+        server: 'vod',
+        type: 'm3u8',
+        autostart: 'true',    /*是否自动播放*/
+        poster: "{$l.play_img}",    /*此处可填写封面地址*/
+        videourl: "{$l.url}",    /*此处填写购买获取到的m3u8地址 必填*/
+        skin: 'vodOrange',
+        title: '{$l.title}',
+        claritybutton: 'disable',
+        lang: 'zh_CN'
+    },'Player');
+
+</script>

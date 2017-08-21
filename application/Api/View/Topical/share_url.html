@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+    <title>{$re.title}</title>
+    <link rel="stylesheet" href="__ROOT__/public/share/css/reset.css">
+    <link rel="stylesheet" href="__ROOT__/public/share/css/style.css">
+    <script src="__ROOT__/public/share/js/phlice.js"></script>
+    <script type="text/javascript" src="/public/admin/js/jquery-1.7.min.js"></script>
+    <style>
+        .dow{width:100%;height:1rem;text-align: center;position: fixed;bottom:0;left:0;background:#f0f0f0;}
+        .dows{margin:auto;width:60%;overflow: hidden;}
+        .logos{height:.7rem;display: block;float: left;margin-top:.15rem;}
+        .button{float: right;width:1.5rem;height:.5rem;line-height: .5rem;text-align:center;background:#ce1939;border-radius:5px;text-align: center;display: block;color:#fff;margin-top:.2rem;}
+    </style>
+</head>
+<body>
+<div class="user_xx">
+    <div class="user_img">
+        <img src="{$re.head_img}" alt="">
+    </div>
+    <div class="user_names">
+        <div class="user_name <if condition='$re.sex eq 2'>woman<else/>man</if>">{$re.username}</div>
+        <div class="Speak_time">{$re.date_value}</div>
+    </div>
+</div>
+<div class="title">{$re.title}</div>
+<div class="text">{$re.content}</div>
+<div class="imgboxs">
+    <volist name="re.img" id="l">
+       <img src="{$l['img']}" alt="">
+    </volist>
+</div>
+<div class="Speakbox">
+    <div class="Speaktop"></div>
+    <div class="Speak">
+        <ul>
+            <volist name="re.comment" id="vo">
+            <li>
+                <div class="user_box">
+                    <div class="user_img">
+                        <img src="{$vo.img}" alt="">
+                    </div>
+                    <div class="user_names">
+                        <div class="user_name <if condition='$vo.sex eq 2'>woman<else/>man</if>">{$vo.username}</div>
+                    </div>
+                    <div class="report tz">举报</div>
+                </div>
+                <div class="Speak_content">{$vo.content}</div>
+                <div class="Speaks_time">
+                    <div class="tz">{$vo.date_value}</div>
+                    <p class="">
+                        <span class="tz">回复</span>
+                        <span class="tz">0</span>
+                    </p>
+                </div>
+            </li>
+            </volist>
+        </ul>
+    </div>
+</div>
+<div class="foodts"></div>
+<div class="dow">
+    <div class="dows">
+        <img class="logos" src="/public/Img/60pt@2x.png" alt="" class="">
+        <a href="{$url}" class="button">立即下载</a>
+    </div>
+</div>
+<script>
+    $(".tz").click(function(){
+        console.log(1);
+        window.location.href = "{$url}";
+    })
+</script>
+</body>
+</html>

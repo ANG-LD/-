@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible"content="IE=9; IE=8; IE=7; IE=EDGE" />
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/home/css/style.css" />
+<script type="text/javascript" src="__PUBLIC__/home/js/png.js" ></script>
+<script type="text/javascript" src="__PUBLIC__/home/js/jquery.js" ></script>
+<title>{$base.name}-APP开发</title>
+</head>
+
+<body>
+<!--header-->
+<include file="Public:head" />
+<!--banner-->
+<div class="APP_ban">
+定制手机应用
+</div>
+<!--01-->
+<div class="w1200_mian">
+<div class="APP_tp1"><img src="__PUBLIC__/home/images/APP_tp1.png" /></div>
+</div>
+
+<!--02-->
+<div class="app_huibg">
+<div class="app_tit"><img src="__PUBLIC__/home/images/APP_tit.png" /></div>
+<div class="warp">
+	<div class="in_hzhb1">
+	<div class=" in_hzhb_left1"><a href="javascript:;" onclick="uppage();"><img src="__PUBLIC__/home/images/jt_left2.png" /></a></div>
+	<div class="in_hzhb_kuan1" style="overflow:hidden; position:relative;">
+	<div class="in_hzhb_lie1" style=" position:absolute;">
+	<ul>
+	<volist name="app" id="l">
+	<li><a href="{$l.a_url}" target="_blank"><img class="hzhb_img" src="{$l.a_logo6}" /></a></li>
+	</volist>
+	</ul>
+	</div>
+	</div>
+	<div class="in_hzhb_right1"><a href="javascript:;" onclick="downpage();"><img src="__PUBLIC__/home/images/jt_right2.png" /></a></div>
+	<script>
+	var htmlclass=".in_hzhb_lie1";
+	var dom = "li";//循环的小节点
+	var lilength = $(htmlclass+" "+dom).length;/*一共几个*/
+	var thisindex = 1;/*当前第几个*/
+	var everywidth=305;/*每一个人宽度*/
+	$(htmlclass).css("width",lilength*everywidth+"px");
+	var pagesize = 1;/*每一次翻几个*/
+	var allpage = Math.floor(lilength/pagesize);/*总页数*/
+	if(lilength%pagesize>0){
+		allpage++;
+	}
+	
+	function uppage(){
+		if(thisindex<=1){
+			return;}
+			$(htmlclass).animate({"left":(pagesize*everywidth-((thisindex-1)*pagesize*everywidth))+"px"},"slow");
+		thisindex--;
+	}
+		
+	function downpage(){
+		if(thisindex>=allpage){
+			return;
+		}
+		$(htmlclass).animate({"left":(0-pagesize*everywidth-((thisindex-1)*pagesize*everywidth))+"px"},"slow");
+		thisindex++;
+		
+	}
+	</script>
+	</div>
+</div>
+</div>
+
+<!--03-->
+<div class="w1200_mian">
+<div class="APP_tp1"><img src="__PUBLIC__/home/images/APP_tp2.png" /></div>
+</div>
+
+
+
+<!--footer-->
+<include file="Public:footer" />
+
+</body>
+</html>

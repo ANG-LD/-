@@ -1,0 +1,36 @@
+<include file="Public:header" />
+<div class="content">
+<!-----------------------------------------内容开始--------------------------------------------------->
+<div class="infoBox">
+<form name="form" action="__URL__/insert"  method="post" >
+<input type="hidden" name="id" value="{$us.id}">
+<input type="hidden" name="y_pwd" value="{$us.pwd}">
+<table width="100%" border="0" cellpadding="0" cellspacing="0" id="basic">
+<tr>
+	<td width="18%" class="infoBoxTd">菜单名称：</td>
+	<td colspan="2"><input type="text" name="title" value="" id='title'></td>
+</tr>
+<tr>
+	<td width="18%" class="infoBoxTd">状态：</td>
+	<td colspan="2">
+		<input type="radio" name="status" value="1" id="yes" checked/>启用
+		<input type="radio" name="status" value="0" id="no" />禁用
+
+	</td>
+</tr>
+<tr>
+	<td width="18%" class="infoBoxTd">排序：</td>
+	<td colspan="2"><input type="text" name="px" value="" id='px'></td>
+</tr>
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td class="infoBoxTd">&nbsp;</td>
+<td align="left"><input type="submit" name="submit" value="保存" class="formInput01" /></td>
+</tr>
+</table>
+</form>
+</div>
+<!-----------------------------------------内容结束--------------------------------------------------->
+</div>
+<include file="Public:footer" />

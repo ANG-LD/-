@@ -1,0 +1,160 @@
+<script>
+/*环信登录*/
+$scope.conn.open({
+apiUrl: WebIM.config.apiURL,
+user: $cookies.get('hx_username'),
+pwd: $cookies.get('hx_password'),
+appKey: WebIM.config.appkey,
+success:function(e){
+console.log('登录成功！');
+},
+error: function(){
+console.log("登录失败！")
+}
+});
+/*判断本地有没有这个数据*/
+if(localStorage.getItem("msgArr")){ //有，将数据赋值给对象，
+$scope.msgArr = JSON.parse(localStorage.getItem("msgArr"));
+console.log($scope.msgArr);
+}else{  //没有，新建一个对象
+$scope.msgArr = {};
+}
+
+$scope.appendDom = angular.element('#append');
+/*用户列表点击事件*/
+$scope.msgUserListClick = function(hx_username,img,username){ //点击的用户的环信用户名,头像,用户名
+$scope.msgU_hx = hx_username;
+$scope.u_txImg = img;
+$scope.u_name = username;
+angular.element("#append").empty();//清空DOM节点
+var mLen = $scope.msgArr[hx_username]["msgData"].length;
+for(var i=0;i<mLen;i++){
+$scope.onDate = new Date();
+$scope.onNewsTime = $filter('date')($scope.onDate, "yyyy-MM-dd hh:mm:ss");
+if($scope.msgArr[hx_username]["msgData"][i].to == hx_username){ //自己发送的信息
+console.log($scope.msgArr[hx_username]["msgData"][i].to);
+$scope.appendDom.append('<div class="newsListBox pt20"><div class="newsTime f12 col_b7 mb5">'+ $scope.onNewsTime + '</div><div class="clearfix"><div class="fr chat_userImg">< img src="'+ $scope.userInfo.img +'" alt=""></div><div class="fr newsTxtBox bor back_fff f12">'+ $scope.msgArr[hx_username]["msgData"][i].data +'</div></div></div>');
+}else{ //收到的消息
+$scope.appendDom.append('<div class="newsListBox pt20"><div class="newsTime f12 col_b7 mb5">'+ $scope.onNewsTime + '</div><div class="clearfix"><div class="fl chat_userImg">< img src="'+ $scope.msgArr[hx_username].img +'" alt=""></div><div class="fl newsTxtBox bor back_fff f12">'+ $scope.msgArr[hx_username]["msgData"][i].data +'</div></div></div>');
+}
+}
+}
+/*删除聊天*/
+$scope.delMesListClick = function(hx_username){ //环信用户名
+delete $scope.msgArr[hx_username];
+$scope.msgU_hx = null;
+localStorage.setItem("msgArr",JSON.stringify($scope.msgArr));//将消息存储到本地
+}
+/*环信回调函数*/
+$scope.conn.listen({
+/*连接成功回调*/
+onOpened:function(message){
+console.log("连接成功")
+// 如果config.js里面isAutoLogin设置为false，那么必须手动设置上线，否则无法收消息
+$scope.conn.setPresence();//手动上线
+},
+/*连接失败回调*/
+onClosed:function(message){
+console.log("连接失败");
+},
+/*接收文本消息的回调函数*/
+onTextMessage:function(message){
+if(message.type=='chat'&&message.to==$cookies.get("hx_username")){ //单聊
+console.log(message);
+/*判断对象中是否有这个元素*/
+if($scope.msgArr[message.from]){
+$scope.msgArr[message.from].msgData.push(message);
+localStorage.setItem("msgArr",JSON.stringify($scope.msgArr));//将消息存储到本地
+}else{
+/*根据环信用户名查找用户信息*/
+$http.post(
+url + "App/Index/get_user_info",$.param({
+hx_username: message.from // 环信用户名
+}),
+{headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}}
+).success(function (data) {
+console.log(data);
+if (data['status'] == 'ok') {
+$scope.hxuInfo = data['data'];
+$scope.msgArr[message.from] = {
+hx_username:message.from,
+user_id:$scope.hxuInfo.user_id,
+img:$scope.hxuInfo.img,
+username:$scope.hxuInfo.username,
+msgData:[message]
+};
+localStorage.setItem("msgArr",JSON.stringify($scope.msgArr));//将消息存到本地
+}else if (data['status'] == 'error'){
+console.log(data['error']);
+}
+});
+};
+console.log($scope.msgArr);
+if($scope.msgU_hx==message.from){
+$scope.onDate = new Date();
+$scope.onNewsTime = $filter('date')($scope.onDate, "yyyy-MM-dd hh:mm:ss");
+$scope.appendDom.append('<div class="newsListBox pt20"><div class="newsTime f12 col_b7 mb5">'+ $scope.onNewsTime + '</div><div class="clearfix"><div class="fl chat_userImg">< img src="'+ $scope.msgArr[message.from].img +'" alt=""></div><div class="fl newsTxtBox bor back_fff f12">'+ message.data +'</div></div></div>');
+}
+}
+$scope.chat_info.scrollTop =$scope.newsBottom.offsetTop; //消息显示在最底部
+},
+/*本机网络掉线*/
+onOffline: function () {
+//建议写一个断线重连的处理
+},
+/*失败回调*/
+onError : function(message){
+console.log(message)
+}
+})
+$scope.$on('newsFinished', function (ngRepeatFinishedEvent) {
+console.log('消息加载完毕');
+$scope.chat_info.scrollTop =$scope.newsBottom.offsetTop; //消息显示在最底部
+});
+/*单聊发送文本消息*/
+$scope.chat_info = document.getElementById("chat_info");//聊天框
+$scope.newsBox = angular.element("#newsBox");//聊天信息内容框
+$scope.newsBottom = document.getElementById("newsBottom");
+$scope.sendNewsObj = {};
+$scope.sendPrivateText = function (n) { // n消息内容
+var id = $scope.conn.getUniqueId();             // 生成本地消息id
+$scope.msg = new WebIM.message('txt', id);      // 创建文本消息
+$scope.sendDate = new Date();
+$scope.newsTime = $filter('date')($scope.sendDate, "yyyy-MM-dd hh:mm:ss");
+$scope.txtMsg = n;
+$scope.msg.set({
+msg: $scope.txtMsg,     // 消息内容
+to: $scope.msgU_hx,   // 接收消息对象（环信用户id/环信用户名）
+roomType: false,
+ext :{ //用户自扩展的消息内容（群聊用法相同）
+username: $scope.userInfo.username,
+newsTime: $scope.newsTime
+},
+success: function () {
+console.log('成功发送消息');
+$scope.sendNewsObj = {
+data:$scope.txtMsg,
+from:$cookies.get("hx_username"),
+to:$scope.msgU_hx,
+}
+$scope.msgArr[$scope.msgU_hx].msgData.push($scope.sendNewsObj);//将消息加入到数组中
+localStorage.setItem("msgArr",JSON.stringify($scope.msgArr));//将消息存储到本地
+$scope.appendDom.append('<div class="newsListBox pt20"><div class="newsTime f12 col_b7 mb5">'+ $scope.newsTime + '</div><div class="clearfix"><div class="fr chat_userImg">< img src="'+ $scope.userInfo.img +'" alt=""></div><div class="fr newsTxtBox bor back_fff f12">'+ $scope.txtMsg +'</div></div></div>');
+$scope.chat_info.scrollTop =$scope.newsBottom.offsetTop; //消息显示在最底部
+},
+error:function(){
+console.log("消息发送失败")
+}
+});
+$scope.nesTxt = null;
+$scope.msg.body.chatType = 'singleChat';
+$scope.conn.send($scope.msg.body);
+};
+$scope.newSend = function(n){
+if(n == null){
+return false;
+}
+$scope.sendPrivateText(n);
+}
+}])
+</script>

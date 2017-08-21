@@ -1,0 +1,286 @@
+<include file="Public:header" />
+<load href="__PUBLIC__/admin/js/uploadify.css" />
+<load href="__PUBLIC__/admin/js/swfobject.js" />
+
+<script type="text/javascript" src="__PUBLIC__/admin/js/jquery.uploadify.v2.1.4.min.js"></script>
+
+<script type="text/javascript">
+ $(function($) {
+	$("#file_upload2").uploadify({
+	 		'uploader'       : '__PUBLIC__/admin/js/uploadify.swf',
+	 		'script'         : '__PUBLIC__/admin/js/uploadify.php',
+	 		'cancelImg'      : '__PUBLIC__/admin/images/cancel.png',
+	 		'folder'         : '__PUBLIC__/admin/Uploads',
+	 		'queueID'        : 'fileQueue2',
+	 		'sizeLimit'      :	10 * 1000 * 1024,
+			'buttonImg'      : '__PUBLIC__/admin/images/llsc.jpg',
+			'width'          :  85,
+			'height'          :  28,
+	 		'fileExt'        : '*.jpg;*.gif;*.png;', //允许文件上传类型,和fileDesc一起使用.
+	 		'fileDesc'       : '*.jpg;*.gif;*.png;',  //选择文件对话框中的提示文本.
+	 		'auto'           : true,
+	 		'multi'          : false,
+	 		'onComplete':function(event,queueId,fileObj,response,data){
+	 			$('input[name="logo"]').val(response);
+	 			$('#pic2').attr('src', response);
+	 		}
+	 	});
+
+	 });
+ $(function($) {
+     $("#file_upload3").uploadify({
+         'uploader'       : '__PUBLIC__/admin/js/uploadify.swf',
+         'script'         : '__PUBLIC__/admin/js/uploadify.php',
+         'cancelImg'      : '__PUBLIC__/admin/images/cancel.png',
+         'folder'         : '__PUBLIC__/admin/Uploads',
+         'queueID'        : 'fileQueue3',
+         'sizeLimit'      :	10 * 1000 * 1024,
+         'buttonImg'      : '__PUBLIC__/admin/images/llsc.jpg',
+         'width'          :  85,
+         'height'          :  28,
+         'fileExt'        : '*.jpg;*.gif;*.png;', //允许文件上传类型,和fileDesc一起使用.
+         'fileDesc'       : '*.jpg;*.gif;*.png;',  //选择文件对话框中的提示文本.
+         'auto'           : true,
+         'multi'          : false,
+         'onComplete':function(event,queueId,fileObj,response,data){
+             $('input[name="logo3"]').val(response);
+             $('#pic3').attr('src', response);
+         }
+     });
+
+ });
+ $(function($) {
+     $("#file_upload4").uploadify({
+         'uploader'       : '__PUBLIC__/admin/js/uploadify.swf',
+         'script'         : '__PUBLIC__/admin/js/uploadify.php',
+         'cancelImg'      : '__PUBLIC__/admin/images/cancel.png',
+         'folder'         : '__PUBLIC__/admin/Uploads',
+         'queueID'        : 'fileQueue4',
+         'sizeLimit'      :	10 * 1000 * 1024,
+         'buttonImg'      : '__PUBLIC__/admin/images/llsc.jpg',
+         'width'          :  85,
+         'height'          :  28,
+         'fileExt'        : '*.jpg;*.gif;*.png;', //允许文件上传类型,和fileDesc一起使用.
+         'fileDesc'       : '*.jpg;*.gif;*.png;',  //选择文件对话框中的提示文本.
+         'auto'           : true,
+         'multi'          : false,
+         'onComplete':function(event,queueId,fileObj,response,data){
+             $('input[name="logo4"]').val(response);
+             $('#pic4').attr('src', response);
+         }
+     });
+
+ });
+</script>
+<SCRIPT language=JavaScript>
+	     function checkss(){
+	    	 var title    = $("#title").val();
+             var start_time    = $("#start").val();
+             var end_time    = $("#end").val();
+	    	 var sign_up_count   = $("#sign_up_count").val();
+             var big_count   = $("#big_count").val();
+	    	 if(title==''){
+	    		 alert('名称不能为空！');
+	        	 return false;
+	    	 }else if (start_time==''){
+	    	     alert('选择开始时间！');
+                 return false;
+             }else if (end_time=='') {
+                 alert('选择结束时间！');
+                 return false;
+             }else if (sign_up_count=='') {
+                 alert('填写上限人数！');
+                 return false;
+             }else if (big_count=='') {
+                 alert('填写最大上限人数！');
+                 return false;
+             }
+         }
+	</script>
+<div class="content">
+<!-----------------------------------------内容开始--------------------------------------------------->
+<div class="infoBox">
+<form name="form" action="{:U('doadd')}"  method="post" onsubmit="return checkss();">
+<table width="90%" border="0" cellpadding="0" cellspacing="0" id="basic">
+               <input type="hidden" value="{$a.activity_id}" name="id">
+                <tr>
+                  <td  width="10%" class="infoBoxTd"><div style="width:55px;">名称:</div></td>
+		  		  <td ><input type="text" id="title"  name="title" value="{$a.title}" style="width:250px;">&nbsp;&nbsp;&nbsp;
+                  </td>
+                </tr>
+                <tr>
+                    <td  width="10%" class="infoBoxTd"><div style="width:55px;">地区:</div></td>
+                    <td >
+                        <select name="area" id="area">
+                            <volist name="city" id="l">
+                                <option value="{$l.name}" <if condition=" $l.name eq $a.city ">selected<else/></if>>{$l.name}</option>
+                            </volist>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td  width="10%" class="infoBoxTd"><div style="width:55px;">描述:</div></td>
+                    <td ><input type="text" id="dis_time"  name="dis_time" value="{$a.dis_time}" style="width:250px;">&nbsp;&nbsp;&nbsp;
+                    </td>
+                </tr>
+                <tr>
+                  <td  width="2%"  style="text-align:right;color:#2d52a5"><div style="width:55px;">背景图1:</div></td>
+		  		  <td colspan="2">
+		  		  <div class="upimg-box"><div id="fileQueue2"></div>
+                  <input id="file_upload2" type="file" />
+                  <input name="logo" type="hidden" id="fileDoc" value="{$a.background_img1.img}" />
+                  &nbsp;&nbsp;<img  id="pic2" src="<if condition='$a.background_img1 eq "" '>__PUBLIC__/admin/images/nopic.gif<else/>{$a.background_img1.img}</if>" width="110"  height="60"/>
+                      &nbsp;&nbsp;&nbsp;<span style="color: red">(闪约首页)</span>
+                 </div>
+		  		  </td>
+                </tr>
+                <tr>
+                    <td  width="2%"  style="text-align:right;color:#2d52a5"><div style="width:55px;">背景图2:</div></td>
+                    <td colspan="2">
+                        <div class="upimg-box"><div id="fileQueue3"></div>
+                            <input id="file_upload3" type="file" />
+                            <input name="logo3" type="hidden" id="fileDoc3" value="{$a.background_img2.img}" />
+                            &nbsp;&nbsp;<img  id="pic3" src="<if condition='$a.background_img2 eq "" '>__PUBLIC__/admin/images/nopic.gif<else/>{$a.background_img2.img}</if>" width="110"  height="60"/>
+                            &nbsp;&nbsp;&nbsp;<span style="color: red">(活动列表)</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td  width="2%"  style="text-align:right;color:#2d52a5"><div style="width:55px;">背景图3:</div></td>
+                    <td colspan="2">
+                        <div class="upimg-box"><div id="fileQueue4"></div>
+                            <input id="file_upload4" type="file" />
+                            <input name="logo4" type="hidden" id="fileDoc4" value="{$a.background_img3.img}" />
+                            &nbsp;&nbsp;<img  id="pic4" src="<if condition='$a.background_img3 eq "" '>__PUBLIC__/admin/images/nopic.gif<else/>{$a.background_img3.img}</if>" width="110"  height="60"/>
+                            &nbsp;&nbsp;&nbsp;<span style="color: red">(活动主页)</span>
+                        </div>
+                    </td>
+                </tr>
+                 <if>
+                  <td  width="10%" class="infoBoxTd"><div style="width:55px;">开始时间:</div></td>
+		  		  <td colspan="2">
+                      <input type="text" class="laydate-icon" name="start_time" id="start" style="width:200px; margin-right:10px;" value="<if condition=" $a.start_time eq '' "><else/>{$a.start_time|date="Y-m-d H:i:s",###}</if>" readonly>
+                  </td>
+                </tr>
+                <tr>
+                    <td  width="10%" class="infoBoxTd"><div style="width:55px;">结束时间:</div></td>
+                    <td colspan="2">
+                        <input type="text" class="laydate-icon" id="end" name="end_time" style="width:200px; margin-right:10px;" value="<if condition=" $a.end_time eq '' "><else/>{$a.end_time|date="Y-m-d H:i:s",###}</if>" readonly>
+                    </td>
+                </tr>
+                <tr>
+                    <td  width="10%" class="infoBoxTd"><div style="width:55px;">报名上限:</div></td>
+                    <td colspan="2">
+                        <input type="text" id="sign_up_count"  name="sign_up_count" value="{$a.sign_up_count}" style="width:250px;">&nbsp;&nbsp;&nbsp;<span>注:报名上限决定是否可报名(男/女)</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td  width="10%" class="infoBoxTd"><div style="width:55px;">最大上限:</div></td>
+                    <td colspan="2">
+                        <input type="text" id="big_count"  name="big_count" value="{$a.big_count}" style="width:250px;">&nbsp;&nbsp;&nbsp;<span>注:最大上限决定是否允许进人(男/女)</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td  width="10%" class="infoBoxTd"><div style="width:55px;">话题<br />(<a href="#" id="AddMoreFileBox" style="color: red" class="btn btn-info">添加</a>):</div></td>
+                    <td colspan="2" id="InputsWrapper">
+                        <volist name="t" id="l" key="i">
+                            <span><input type="text" name="mytext[]" id="field_{$i}" value="{$l.title}" style="width:400px;"/><a href="#" class="removeclass">×</a>&nbsp;</span>
+                        </volist>
+                    </td>
+                </tr>
+
+    <script>
+        $(document).ready(function() {
+
+            var MaxInputs       = 100;
+            var InputsWrapper   = $("#InputsWrapper");
+            var AddButton       = $("#AddMoreFileBox");
+
+            var x = InputsWrapper.length;
+            var FieldCount=1;
+
+            $(AddButton).click(function (e)
+            {
+                if(x <= MaxInputs)
+                {
+                    FieldCount++;
+                    //add input box
+                    $(InputsWrapper).append('<span><input type="text" name="mytext[]" id="field_'+ FieldCount +'" value="" style="width:400px;"/><a href="#" class="removeclass">×</a>&nbsp;&nbsp;</span>');
+                    x++; //text box increment
+                }
+                return false;
+            });
+
+            $("body").on("click",".removeclass", function(e){
+                if( x > 0 ) {
+                    $(this).parent('span').remove(); //remove text box
+                    x--;
+                }
+                return false;
+            })
+
+        });
+    </script>
+
+
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td class="infoBoxTd">&nbsp;</td>
+<td align="left"><input type="submit" name="submit" value="保存" class="formInput01" /></td>
+</tr>
+</table>
+</form>
+</div>
+    <script>
+        layui.use('laydate', function(){
+            var laydate = layui.laydate;
+            var start = {
+                elem: '#start',
+                format: 'YYYY-MM-DD hh:mm:ss',
+                min: laydate.now(), //设定最小日期为当前日期
+                max: '2099-06-16 23:59:59', //最大日期
+                istime: true,
+                istoday: false,
+                choose: function(datas){
+                    $("#start").attr("value",datas);
+                    end.min = datas; //开始日选好后，重置结束日的最小日期
+                    end.start = datas //将结束日的初始值设定为开始日
+                }
+            };
+            var end = {
+                elem: '#end',
+                format: 'YYYY-MM-DD hh:mm:ss',
+                min: laydate.now(),
+                max: '2099-06-16 23:59:59',
+                istime: true,
+                istoday: false,
+                choose: function(datas){
+                    $("#end").attr("value",datas);
+                    start.max = datas; //结束日选好后，重置开始日的最大日期
+                }
+            };
+            document.getElementById('start').onclick = function(){
+                start.elem = this;
+                laydate(start);
+            }
+            document.getElementById('end').onclick = function(){
+                end.elem = this
+                laydate(end);
+            }
+        });
+    </script>
+<script>
+KindEditor.ready(function(K) {
+    k1 = K.create('#content', {});
+    k2 = K.create('#content2', {});
+    k3 = K.create('#content3', {});
+
+});
+///var ue = UE.getEditor('content');
+///var ue = UE.getEditor('content2');
+///var ue = UE.getEditor('content3');
+</script>
+<!-----------------------------------------内容结束--------------------------------------------------->
+</div>
+<include file="Public:footer" />

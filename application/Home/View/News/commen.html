@@ -1,0 +1,77 @@
+
+<div class="new_box">
+	<div class="new_fl">{$nid.t_title}年</div>
+	
+<div>
+<!--left-->
+<div class="new_l">
+<volist name="news" id="vo" mod="2" >
+<if condition=" $i%2 eq 1 ">
+<dl>
+<dt><img src="__PUBLIC__/home/images/new_yuan.png" /><a href="{:U('News/sel',array(id=>$vo[n_id],nid=>$nid[t_id]))}">{$vo.n_title|cut=35}</a>[{$vo.n_intime|date='Y-m-d',###}]</dt>
+<dd>
+<p>{$vo.n_content|cut=150}</p>
+<span><a href="{:U('News/sel',array(id=>$vo[n_id],nid=>$nid[t_id]))}">查看详细</a></span>
+</dd>
+</dl>
+<else/></if>
+</volist>
+</div>
+
+<!--right-->
+<div class="new_r">
+
+<volist name="news" id="vo" mod="2" >
+<if condition=" $i%2 eq 0 ">
+
+
+<dl>
+<dt><img src="__PUBLIC__/home/images/new_yuan.png" /><a href="{:U('News/sel',array(id=>$vo[n_id],nid=>$nid[t_id]))}">{$vo.n_title|cut=35}</a>[{$vo.n_intime|date='Y-m-d',###}]</dt>
+<dd>
+<p>{$vo.n_content|cut=150}</p>
+<span><a href="{:U('News/sel',array(id=>$vo[n_id],nid=>$nid[t_id]))}">查看详细</a></span>
+</dd>
+</dl>
+<else/></if>
+</volist>
+</div>
+<span id="div_wr"></span>	
+
+<div class="clear"></div>
+
+<div class="new_more" id="downmore_clike"><a href="javascript:void(0);">更多<br />新闻</a></div>
+
+<div class="clear"></div>
+<input type="hidden" name="nid" id="nid" value="{$nid[t_id]}">
+</div>
+</div>
+<script>
+    var n = 0;
+     $("#downmore_clike").click(function () {
+            n += 1;//第单击一次i的值加1
+            var pthis = $(this);
+            var  ids  = $("#nfs .hover").attr("data-id");
+           // alert(ids);
+            $.ajax({
+                url: "__URL__/getIndex",
+                data: { "n": n ,"id":ids},
+                type: "post",
+                dataType: "text",
+                success: function (data) {
+                  //alert(data);
+                   /* if (data.count < 5) {
+                        pthis.html("<div class='new_more' id='downmore_clike'>没有更多数据！</div>");
+                        pthis.unbind();
+                 
+                    }*/
+                    if (data=='') {
+                        pthis.html("<div class='new_more' id='downmore_clike'><a>没有数据了！</a></div>");
+                        pthis.unbind();
+                 
+                    }
+                  $("#div_wr").append(data);
+                }
+            })
+           
+        });
+</script>

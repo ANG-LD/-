@@ -1,0 +1,83 @@
+<include file="Public:header" />
+<load href="__PUBLIC__/admin/js/uploadify.css" />
+<load href="__PUBLIC__/admin/js/swfobject.js" />
+<script type="text/javascript" src="__PUBLIC__/admin/js/jquery.uploadify.v2.1.4.min.js"></script>
+
+<script type="text/javascript">
+ $(function($) {
+	$("#file_upload").uploadify({
+	 		'uploader'       : '__PUBLIC__/admin/js/uploadify.swf',
+	 		'script'         : '__PUBLIC__/admin/js/uploadify.php',
+	 		'cancelImg'      : '__PUBLIC__/admin/images/cancel.png',
+	 		'folder'         : '__PUBLIC__/admin/Uploads',
+	 		'queueID'        : 'fileQueue',
+	 		'sizeLimit'      :	10 * 1000 * 1024,
+			'buttonImg'      : '__PUBLIC__/admin/images/llsc.jpg',
+			'width'          :  85,
+			'height'          :  28,
+	 		'fileExt'        : '*.jpg;*.gif;*.png;', //允许文件上传类型,和fileDesc一起使用.
+	 		'fileDesc'       : '*.jpg;*.gif;*.png;',  //选择文件对话框中的提示文本.
+	 		'auto'           : true,
+	 		'multi'          : false,	
+	 		'onComplete':function(event,queueId,fileObj,response,data){
+	 			$('input[name="logo"]').val(response);
+	 			$('#pic').attr('src', response);
+	 		}
+	 	});
+
+	 });
+</script>
+<SCRIPT language=JavaScript>
+	     function checkss(){
+	    	 var title    = $("#username").val();
+	    	 var person   = $("#person").val();
+	    	 if(title==''){
+	    		 alert('名称不能为空！');
+	        	 return false;
+	    	 }
+	    	 
+	     }  
+	</script>
+<div class="content">
+<!-----------------------------------------内容开始--------------------------------------------------->
+<div class="infoBox">
+<form name="form" action="{:U('doadd_lebel')}"  method="post" onsubmit="return checkss();">
+<table width="90%" border="0" cellpadding="0" cellspacing="0" id="basic">
+               <input type="hidden" value="{$u.lebel_id}" name="id">
+                <tr>
+                    <td  width="10%" class="infoBoxTd"><div style="width:55px;">类别:</div></td>
+                    <td colspan="2">
+                        <input type="radio" name="type" value="1" <if condition=" $u.type eq '' or $u.type eq 1 ">checked</if>>&nbsp;直播&nbsp;&nbsp;
+                        <input type="radio" name="type" value="2" <if condition=" $u.type eq 2 ">checked</if>>&nbsp;资讯
+                    </td>
+                </tr>
+                <tr>
+                    <td  width="10%" class="infoBoxTd"><div style="width:55px;">名称:</div></td>
+                    <td colspan="2"><input type="text" id="name"  name="name" value="{$u.name}" style="width:280px;"></td>
+                </tr>
+
+
+              
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td class="infoBoxTd">&nbsp;</td>
+<td align="left"><input type="submit" name="submit" value="保存" class="formInput01" /></td>
+</tr>
+</table>
+</form>
+</div>
+<script>
+KindEditor.ready(function(K) {
+    k1 = K.create('#content', {});
+    k2 = K.create('#content2', {});
+    k3 = K.create('#content3', {});
+
+});
+///var ue = UE.getEditor('content');
+///var ue = UE.getEditor('content2');
+///var ue = UE.getEditor('content3');
+</script>
+<!-----------------------------------------内容结束--------------------------------------------------->
+</div>
+<include file="Public:footer" />

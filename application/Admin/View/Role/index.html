@@ -1,0 +1,83 @@
+<include file="Public:header" />
+<script>
+function checkform(){
+	
+	if($(".ck:checked").length==0){
+		alert("请选择要删除的记录！");
+		return false;
+	}
+	if(confirm("一旦删除不可修复，确定删除吗？")){
+		return true;
+	}
+	return false;
+}
+</script>
+<form action="__URL__/del" method="post" id="form" onsubmit="return checkform()">
+<div class="tools"> 
+<div class="add"><span><a href="{:U('toadd')}">添加</a></span></div>
+<div class="del"><span><a href="javascript:;" onclick="$('#form').submit()">删除</a></span></div>
+</div>
+<div class="content">
+<!-----------------------------------------内容开始--------------------------------------------------->
+<table width="100%" border="0" cellpadding="0" cellspacing="0" class="tabBox">
+<tr class="tabTitleMain">
+    <td width="10%" align="center"><input type="checkbox" name="checkbox11" id="checkbox11"  onclick="return checkAll(this,'chois[]')"  value="0"></td>
+    <td width="15%" align="center">角色名</td>
+    <td width="10%" align="center">创建时间</td>
+    <td width="10%" align="center">操作</td>
+</tr>
+
+
+<volist name='roles' id='l' key='i'>
+<tr class="tabTextMain" id="f_{$l.id}" onmouseout="this.style.background='#FFFFFF';" onmouseover="this.style.background='#fbf435';">
+  <td   align="center"><input class="ck deleteids" type="checkbox" name="chois[]" id="checkbox2" value="{$l.id}" /></td>
+  <td align="center" class="onerow">{$l.name}</td>
+  <td align="center" class="onerow">{$l.create_time}</td>
+  <td align="center" class="onerow">
+                  <a href="__URL__/toupdate/id/{$l.id}">修改</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+                  <a href="__URL__/del/chois/{$l.id}" onclick="return confirm('一旦删除不可修复，确定删除吗？')" >删除</a>
+               
+               </td>
+</tr>
+</volist>
+
+
+</table> 
+<!-----------------------------------------内容结束--------------------------------------------------->
+</div>
+</form>
+<script type="text/javascript">
+function checkAll(e,chois)
+{
+	var aa=document.getElementsByName(chois);
+	for(var i=0;i<aa.length;i++)
+	{  
+		aa[i].checked=e.checked;
+	}
+}
+function tips(itemName)
+{
+    var f=false;
+    var aa=document.getElementsByName(itemName);
+for(var i=0;i<aa.length;i++)
+{
+ if(aa[i].checked==true)
+   {
+   f=true;
+   }
+}
+if(f==false)
+{
+alert("请选择要删除的选项");
+return false;
+}
+else
+{
+  return  confirm("一旦删除不可修复，确定删除吗？");
+}
+return true;
+}
+</script>
+    
+
+<include file="Public:footer" />

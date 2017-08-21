@@ -1,0 +1,103 @@
+<layout name="Layout/index" />
+{:W('public/breadcrumbs',['微信公众平台配置'])}
+</if>
+<div class="page-content">
+	<div class="row">
+		<div class="col-xs-12">
+			<form class="form-horizontal ajax-form" role="form" dit-action="{:U('Weixin/index')}" dit-redirect="{:U('Weixin/index')}">
+				<div class="space-10"></div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label" for="wx_title">名称:</label>
+					<div class="col-sm-9">
+						<input type="text" id="wx_title" name="wx_name" placeholder="公众号名称" class="col-xs-10 col-sm-5" value="{$re['wx_name']}">
+						<span class="help-inline col-xs-12 col-sm-7">
+							<span class="middle"></span>
+						</span>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label class="col-sm-3 control-label" for="wx_id">微信号:</label>
+					<div class="col-sm-9">
+						<input type="text" id="wx_id" name="wx_account" placeholder="微信号" class="col-xs-10 col-sm-5" value="{$re['wx_account']}">
+						<span class="help-inline col-xs-12 col-sm-7">
+							<span class="middle"></span>
+						</span>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label class="col-sm-3 control-label" for="wx_type">类型:</label>
+					<div class="col-sm-9">
+						<select name="wx_type" id="wx_type" class="col-xs-10 col-sm-5">
+							<option value="1" <if condition="$re['wx_type'] eq 1">selected</if>>未认证订阅号</option>
+							<option value="2" <if condition="$re['wx_type'] eq 2">selected</if>>未认证企业号</option>
+							<option value="3" <if condition="$re['wx_type'] eq 3">selected</if>>未认证服务号</option>
+							<option value="4" <if condition="$re['wx_type'] eq 4">selected</if>>订阅号</option>
+							<option value="5" <if condition="$re['wx_type'] eq 5">selected</if>>企业号</option>
+							<option value="6" <if condition="$re['wx_type'] eq 6">selected</if>>服务号</option>
+						</select>
+					</div>
+				</div>
+				
+				<!--<div class="form-group">-->
+					<!--<label class="col-sm-3 control-label" for="wx_qrcode">二维码:</label>-->
+					<!--<div class="col-sm-9">-->
+						<!--<input type="text" id="wx_qrcode" name="wx_qrcode" placeholder="平台二维码" class="col-xs-10 col-sm-5" value="{$re['wx_qrcode']}">-->
+						<!--<span class="help-inline col-xs-12 col-sm-7">-->
+							<!--<span class="middle"></span>-->
+						<!--</span>-->
+					<!--</div>-->
+				<!--</div>-->
+				
+				<div class="form-group">
+					<label class="col-sm-3 control-label" for="wx_app_id">应用ID:</label>
+					<div class="col-sm-9">
+						<input type="text" id="wx_app_id" name="appid" placeholder="AppID" class="col-xs-10 col-sm-5" value="{$re['appid']}">
+						<span class="help-inline col-xs-12 col-sm-7">
+							<span class="middle"></span>
+						</span>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label class="col-sm-3 control-label" for="wx_app_secret">应用秘钥:</label>
+					<div class="col-sm-9">
+						<input type="text" id="wx_app_secret" name="appsecret" placeholder="AppSecret"
+							   class="col-xs-10 col-sm-5" value="{$re['appsecret']}">
+						<span class="help-inline col-xs-12 col-sm-7">
+							<span class="middle"></span>
+						</span>
+					</div>
+				</div>
+				<div class="clearfix form-actions">
+					<div class="col-md-offset-3 col-md-9">
+						<button class="btn btn-info" type="submit">
+							<i class="icon-ok bigger-110"></i>更新配置
+						</button>
+					</div>
+					<p class="form-tip"></p>
+				</div>
+			</form>
+			<!-- ./ end form -->
+		</div>
+		<!-- ./ end col-xs-12 -->
+	</div>
+	<!-- ./ end row -->
+</div>
+<script>
+$(document).ready(function(){
+	$('form.ajax-form').submit(function(){
+		var obj = $(this);
+		var url = obj.attr('dit-action');
+		$.post(url,obj.serialize(),function(data){
+			if(data.code == '200'){
+				window.location.href = obj.attr('dit-redirect');
+			} else {
+				obj.find('form-tip').html(data.msg);
+			}
+		},'json');
+		return false;
+	});
+});
+</script>

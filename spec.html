@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Title</title>
+<link rel="stylesheet" href="https://stackedit.io/res-min/themes/base.css" />
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+<body><div class="container"><h1 id="业务服务器接入协议"><center> 业务服务器接入协议</center></h1>
+
+<p>接入端口 ：5060 <br>
+接入IP  ：112.124.108.16（测试用的地址）</p>
+
+<h3 id="1-数据封包">1. 数据封包：</h3>
+
+<p>数据以小端模式写入</p>
+
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>值</th>
+  <th>字节数</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+  <td>HEAD</td>
+  <td>BB AA</td>
+  <td>2BYTE</td>
+  <td>数据包头（固定为AA BB）</td>
+</tr>
+<tr>
+  <td>SNO</td>
+  <td>xx xx</td>
+  <td>2BYTE</td>
+  <td>数据包流水号（每发送一个包，就自增，用来标识数据包）</td>
+</tr>
+<tr>
+  <td>LEN</td>
+  <td>xx xx</td>
+  <td>2BYTE</td>
+  <td>数据包长度(LEN字段后面的所有数据字节长度)</td>
+</tr>
+<tr>
+  <td>TYPE</td>
+  <td>xx</td>
+  <td>1BYTE</td>
+  <td>数据包类型（登入（0x01）、下发数据(0x03)、获取状态信息(0x04)，其它保留）</td>
+</tr>
+<tr>
+  <td>DATA</td>
+  <td>不定长</td>
+  <td>nBYTE</td>
+  <td>承载的数据（LEN字段－１）</td>
+</tr>
+</tbody></table>
+
+
+<p>如：</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs mathematica">AA BB <span class="hljs-number">24</span> <span class="hljs-number">9</span>F <span class="hljs-number">14</span> <span class="hljs-number">00</span> <span class="hljs-number">04</span> <span class="hljs-number">7</span>B <span class="hljs-number">22</span> <span class="hljs-number">67</span> <span class="hljs-number">65</span> <span class="hljs-number">74</span> <span class="hljs-number">22</span> <span class="hljs-number">3</span>A <span class="hljs-number">22</span> <span class="hljs-number">6</span>F <span class="hljs-number">6</span><span class="hljs-keyword">E</span> <span class="hljs-number">6</span><span class="hljs-keyword">C</span> <span class="hljs-number">69</span> <span class="hljs-number">6</span><span class="hljs-keyword">E</span> <span class="hljs-number">65</span> <span class="hljs-number">49</span> <span class="hljs-number">64</span> <span class="hljs-number">73</span> <span class="hljs-number">22</span> <span class="hljs-number">7</span><span class="hljs-keyword">D</span></code></pre>
+
+<table>
+<thead>
+<tr>
+  <th>字段</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+  <td>AA BB</td>
+  <td>包头标记</td>
+</tr>
+<tr>
+  <td>24 9F</td>
+  <td>SNO  = 0x9F24</td>
+</tr>
+<tr>
+  <td>14 00</td>
+  <td>长度 = 0x0014</td>
+</tr>
+<tr>
+  <td>04</td>
+  <td>包类型</td>
+</tr>
+<tr>
+  <td>7B 22 67 65 74 22 3A 22 6F 6E 6C 69 6E 65 49 64 73 22 7D</td>
+  <td>{“online”:”onlineIds”}</td>
+</tr>
+</tbody></table>
+
+
+
+
+<h3 id="2心跳包">2.心跳包：</h3>
+
+<p>心跳包整包只有两个字节 55 88, 登入服务器后每隔30秒发送一次，维持长连接</p>
+
+
+
+<h3 id="3-协议说明">3. 协议说明：</h3>
+
+
+
+<h4 id="31-业务服务器登入type-0x01"><strong>3.1 业务服务器登入(type == 0x01)：</strong></h4>
+
+<blockquote>
+  <p>3.1.1 业务服务器发送获取接入key：</p>
+</blockquote>
+
+
+
+<pre class="prettyprint"><code class=" hljs json">       {"<span class="hljs-attribute">get</span>":<span class="hljs-value"><span class="hljs-string">"rid"</span></span>}</code></pre>
+
+<blockquote>
+  <p>推送服务器回复：</p>
+</blockquote>
+
+
+
+<pre class="prettyprint"><code class=" hljs json">      {"<span class="hljs-attribute">rid</span>":<span class="hljs-value">xxxx</span>} </code></pre>
+
+<pre><code> "xxxx"为接入KEY，是一个随机数，每次请求都不一样
+ 如：
+</code></pre>
+
+
+
+<pre class="prettyprint"><code class=" hljs json">      {"<span class="hljs-attribute">rid</span>":<span class="hljs-value"><span class="hljs-number">1234</span></span>} </code></pre>
+
+<blockquote>
+  <p>3.1.2 业务服务器登入：</p>
+</blockquote>
+
+
+
+<pre class="prettyprint"><code class=" hljs json"> {"<span class="hljs-attribute">type</span>":<span class="hljs-value"><span class="hljs-string">"server"</span></span>,"<span class="hljs-attribute">token</span>":<span class="hljs-value"><span class="hljs-string">"MD5(superkey:rid)"</span></span>,"<span class="hljs-attribute">did</span>":<span class="hljs-value"><span class="hljs-string">"xxxxxxxxxx"</span></span>}</code></pre>
+
+<table>
+<thead>
+<tr>
+  <th>键</th>
+  <th>值</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+  <td>type</td>
+  <td>“server”</td>
+  <td>表示是服务器</td>
+</tr>
+<tr>
+  <td>token</td>
+  <td>“MD5(superkey:rid)”</td>
+  <td>接入认证，KEY+”:”+rid取MD5码生成的字符串。</td>
+</tr>
+<tr>
+  <td>did</td>
+  <td>服务器</td>
+  <td>服务器设备ID，ID是10位的字符串，如：SERVER00001</td>
+</tr>
+</tbody></table>
+
+
+<blockquote>
+  <p>推送服务器回复：</p>
+</blockquote>
+
+
+
+<pre class="prettyprint"><code class=" hljs json"> {"<span class="hljs-attribute">login</span>":<span class="hljs-value"><span class="hljs-string">"pass/reject"</span></span>}</code></pre>
+
+
+
+<pre class="prettyprint"><code class=" hljs lua"><span class="hljs-string">"pass"</span>   <span class="hljs-comment">--- 通过</span>
+<span class="hljs-string">"reject"</span> <span class="hljs-comment">--- 拒绝</span></code></pre>
+
+<p>注： 服务器ID与设备ID不能有重复，一个ID号唯一表示一个节点</p>
+
+
+
+<h4 id="32-业务服务器发送给推送服务器的数据type-0x03"><strong>3.2 业务服务器发送给推送服务器的数据(type == 0x03)：</strong></h4>
+
+<table>
+<thead>
+<tr>
+  <th>键</th>
+  <th>值</th>
+  <th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+  <td>did</td>
+  <td>10位ID号</td>
+  <td>表示要控制的设备ID号</td>
+</tr>
+<tr>
+  <td>add</td>
+  <td>LED灯地址</td>
+  <td>该设备的LED灯地址号,65535地址是广播地址</td>
+</tr>
+<tr>
+  <td>set</td>
+  <td>1/0</td>
+  <td>1 — 开LED灯，0 — 关LED灯</td>
+</tr>
+</tbody></table>
+
+
+<p>如：</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs bash">   { <span class="hljs-string">"did"</span>: <span class="hljs-string">"1000000000"</span>, <span class="hljs-string">"add"</span>: <span class="hljs-number">2000</span> ,<span class="hljs-string">"set"</span>: <span class="hljs-number">0</span> }  
+   关闭设备号为<span class="hljs-string">"1000000000"</span>,序号为<span class="hljs-number">2000</span>的LED灯
+
+   { <span class="hljs-string">"did"</span>: <span class="hljs-string">"1000000000"</span>, <span class="hljs-string">"add"</span>: <span class="hljs-number">2000</span> ,<span class="hljs-string">"set"</span>: <span class="hljs-number">1</span> }  
+   打开设备号为<span class="hljs-string">"1000000000"</span>,序号为<span class="hljs-number">2000</span>的LED灯
+</code></pre>
+
+<blockquote>
+  <p>设备回复：</p>
+</blockquote>
+
+
+
+<pre class="prettyprint"><code class=" hljs json">   {"<span class="hljs-attribute">did</span>": <span class="hljs-value"><span class="hljs-string">"1000000000"</span></span>,"<span class="hljs-attribute">cmd</span>":<span class="hljs-value"><span class="hljs-string">"ok"</span></span>}
+   {"<span class="hljs-attribute">did</span>": <span class="hljs-value"><span class="hljs-string">"1000000000"</span></span>,"<span class="hljs-attribute">cmd</span>":<span class="hljs-value"><span class="hljs-string">"err"</span></span>,"<span class="hljs-attribute">errcode</span>": <span class="hljs-value">timeout/offline</span>}
+</code></pre>
+
+<p>设置成功返回：OK <br>
+  设置错误返回errcode: timeout — 超时 offline — 离线</p>
+
+<p><em>* 注：此命令用点亮多个LED灯的命令代替*</em></p>
+
+<blockquote>
+  <p>LED灯全亮和全灭：</p>
+</blockquote>
+
+<pre class="prettyprint"><code class=" hljs bash">   { <span class="hljs-string">"did"</span>: <span class="hljs-string">"1000000000"</span>, <span class="hljs-string">"add"</span>: <span class="hljs-number">65535</span>,<span class="hljs-string">"set"</span>: <span class="hljs-number">0</span> }  
+   关闭设备号为<span class="hljs-string">"1000000000"</span>所有的LED灯
+
+   { <span class="hljs-string">"did"</span>: <span class="hljs-string">"1000000000"</span>, <span class="hljs-string">"add"</span>: <span class="hljs-number">65535</span> ,<span class="hljs-string">"set"</span>: <span class="hljs-number">1</span> }  
+   打开设备号为<span class="hljs-string">"1000000000"</span>所有的LED灯</code></pre>
+
+<blockquote>
+  <p>点亮多个LED灯：</p>
+</blockquote>
+
+
+
+<pre class="prettyprint"><code class=" hljs bash">   { <span class="hljs-string">"did"</span>: <span class="hljs-string">"1000000000"</span>, <span class="hljs-string">"addrs"</span>: <span class="hljs-string">"1,2,6,8,12,58"</span>, <span class="hljs-string">"set"</span>: <span class="hljs-number">0</span> }  
+   关闭设备号为<span class="hljs-string">"1000000000"</span> 序号为：<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">6</span>,<span class="hljs-number">8</span>,<span class="hljs-number">12</span>,<span class="hljs-number">58</span>号的LED灯
+
+   { <span class="hljs-string">"did"</span>: <span class="hljs-string">"1000000000"</span>, <span class="hljs-string">"addrs"</span>: <span class="hljs-string">"1,2,6,8,12,58"</span>, <span class="hljs-string">"set"</span>: <span class="hljs-number">1</span> }  
+   打开设备号为<span class="hljs-string">"1000000000"</span> 序号为：<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">6</span>,<span class="hljs-number">8</span>,<span class="hljs-number">12</span>,<span class="hljs-number">58</span>号的LED灯</code></pre>
+
+<p>注：灯的编号从0开始。</p>
+
+<h4 id="33-控制指令通道type-0x04"><strong>3.3 控制指令通道(type == 0x04)：</strong></h4>
+
+<p>A.获取在线列表</p>
+
+<p>业务服务器发送：</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs json">   { "<span class="hljs-attribute">get</span>": <span class="hljs-value"><span class="hljs-string">"onlineIds"</span> </span>}</code></pre>
+
+<p>推送服务器回复：  </p>
+
+
+
+<pre class="prettyprint"><code class=" hljs json">   {"<span class="hljs-attribute">online</span>":<span class="hljs-value"><span class="hljs-string">"ids1,ids2,ids3,..."</span></span>}  </code></pre>
+
+<p>“ids1,ids2,ids3,…” 是以逗号分隔开的设备ID号的字符串 <br>
+如：</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs json"> {"<span class="hljs-attribute">online</span>":<span class="hljs-value"><span class="hljs-string">"0000000001,0000000002,0000000003,0000000004,0000000005,0000000006,"</span></span>}</code></pre>
+
+<p>B.清除设备服务器上的缓存队列：</p>
+
+<p>业务服务器发送：</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs json">   { "<span class="hljs-attribute">clrq</span>": <span class="hljs-value"><span class="hljs-string">"ids1,ids2,ids3,..."</span> </span>}</code></pre>
+
+<p>推送服务器回复：  </p>
+
+
+
+<pre class="prettyprint"><code class=" hljs json">   {"<span class="hljs-attribute">cmd</span>":<span class="hljs-value"><span class="hljs-string">"ok"</span></span>}     </code></pre>
+
+<p>“ids1,ids2,ids3,…” 是以逗号分隔开的设备ID号的字符串</p>
+
+<p>清除所有的设备缓存队列</p>
+
+<p>业务服务器发送：</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs json">   { "<span class="hljs-attribute">clrq</span>": <span class="hljs-value"><span class="hljs-string">"all"</span> </span>}</code></pre>
+
+<p>推送服务器回复：  </p>
+
+
+
+<pre class="prettyprint"><code class=" hljs json">   {"<span class="hljs-attribute">cmd</span>":<span class="hljs-value"><span class="hljs-string">"ok"</span></span>}     </code></pre>
+
+<p>清除所有的设备的缓存信息</p></div></body>
+</html>

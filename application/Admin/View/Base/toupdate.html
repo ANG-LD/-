@@ -1,0 +1,264 @@
+<include file="Public:header" />
+{:W("Easyui")}
+
+<load href="__PUBLIC__/admin/js/uploadify.css" />
+<load href="__PUBLIC__/admin/js/swfobject.js" />
+<script type="text/javascript" src="__PUBLIC__/admin/js/jquery.uploadify.v2.1.4.min.js"></script>
+
+<script type="text/javascript">
+ $(function($) {
+	$("#file_upload").uploadify({
+	 		'uploader'       : '__PUBLIC__/admin/js/uploadify.swf',
+	 		'script'         : '__PUBLIC__/admin/js/uploadify.php',
+	 		'cancelImg'      : '__PUBLIC__/admin/images/cancel.png',
+	 		'folder'         : '__PUBLIC__/admin/Uploads',
+	 		'queueID'        : 'fileQueue',
+	 		'sizeLimit'      :	10 * 1000 * 1024,
+			'buttonImg'      : '__PUBLIC__/admin/images/llsc.jpg',
+			'width'          :  85,
+			'height'          :  28,
+	 		'fileExt'        : '*.jpg;*.gif;*.png;', //允许文件上传类型,和fileDesc一起使用.
+	 		'fileDesc'       : '*.jpg;*.gif;*.png;',  //选择文件对话框中的提示文本.
+	 		'auto'           : true,
+	 		'multi'          : false,	
+	 		'onComplete':function(event,queueId,fileObj,response,data){
+	 			$('input[name="logo1"]').val(response);
+	 			$('#pic1').attr('src', response);
+	 		}
+	 	});
+
+	 });
+    $(function($) {
+		$("#file_upload2").uploadify({
+		 		'uploader'       : '__PUBLIC__/admin/js/uploadify.swf',
+		 		'script'         : '__PUBLIC__/admin/js/uploadify.php',
+		 		'cancelImg'      : '__PUBLIC__/admin/images/cancel.png',
+		 		'folder'         : '__PUBLIC__/admin/Uploads',
+		 		'queueID'        : 'fileQueue2',
+		 		'sizeLimit'      :	10 * 1000 * 1024,
+				'buttonImg'      : '__PUBLIC__/admin/images/llsc.jpg',
+				'width'          :  85,
+				'height'          :  28,
+		 		'fileExt'        : '*.jpg;*.gif;*.png;', //允许文件上传类型,和fileDesc一起使用.
+		 		'fileDesc'       : '*.jpg;*.gif;*.png;',  //选择文件对话框中的提示文本.
+		 		'auto'           : true,
+		 		'multi'          : false,	
+		 		'onComplete':function(event,queueId,fileObj,response,data){
+		 			$('input[name="logo2"]').val(response);
+		 			$('#pic2').attr('src', response);
+		 		}
+		 	});
+
+		 });
+
+ function checkss(){
+	 var digits = $("#digits").val();
+	 if(digits<6 || digits>9){
+		 layer.tips('填写6-9之间的数字', '#digits');
+		 $("#digits").focus();
+		 return false;
+	 }
+
+ }
+    
+</script>
+<div class="content">
+	<!-----------------------------------------内容开始--------------------------------------------------->
+	<div class="infoBox">
+		<form name="form" action="__URL__/doupdate" method="post" enctype="multipart/form-data" onsubmit="return checkss();">
+			<input type="hidden" name="id" value="{$base.id}">
+			<table width="100%" border="0" cellpadding="0" cellspacing="0"
+				id="basic">
+				<tr bgcolor="white">
+					<td width="18%" class="infoBoxTd" bgcolor="white">网站名称:</td>
+					<td colspan="2"> <input  id="title" name="title" size="60" value="{$base.title}"></td>
+				</tr>
+				<!--<tr bgcolor="white">-->
+					<!--<td width="18%" class="infoBoxTd" bgcolor="white" style="line-height:5;">网站logo:</td>-->
+					<!--<td colspan="2">-->
+                    <!--<div class="upimg-box"><div id="fileQueue"></div>-->
+                       <!--<input id="file_upload" type="file" />-->
+                       <!--<input name="logo1" type="hidden" id="fileDoc" value="{$base.logo1}" />-->
+                       <!--&nbsp;&nbsp;<img  id="pic1" src="<if condition='$base.logo1 eq "" '>__PUBLIC__/admin/images/nopic.gif<else/>{$base.logo1}</if>" width="110"  height="60"/>-->
+                       <!--</div>-->
+  <!---->
+                    <!--</td>-->
+				<!--</tr>-->
+
+				<!--<tr bgcolor="white">-->
+					<!--<td width="18%" class="infoBoxTd" bgcolor="white">微信appid:</td>-->
+					<!--<td colspan="2"> <input  id="appid" name="appid" size="60" value="{$base.appid}"></td>-->
+				<!--</tr>-->
+				<!--<tr bgcolor="white">-->
+					<!--<td width="18%" class="infoBoxTd" bgcolor="white">微信appsecret:</td>-->
+                    <!--<td colspan="2"> <input  id="appsecret" name="appsecret" size="60" value="{$base.appsecret}"></td>-->
+				<!--</tr>-->
+				<tr bgcolor="white">
+					<td width="18%" class="infoBoxTd" bgcolor="white">ping++~apiid：</td>
+					<td colspan="2"><input type="text" id="apiid" name="apiid" size="60" value="{$base.apiid}"></td>
+				</tr>
+				<tr bgcolor="white">
+					<td width="18%" class="infoBoxTd" bgcolor="white">ping++~appsecret：</td>
+					<td colspan="2"><input type="text" id="secretkey" name="secretkey" size="60" value="{$base.secretkey}"></td>
+				</tr>
+				<tr bgcolor="white">
+					<td width="18%" class="infoBoxTd" bgcolor="white">极光appkey：</td>
+					<td colspan="2"><input type="text" id="jg_appkey" name="jg_appkey" size="60" value="{$base.jg_appkey}"></td>
+				</tr>
+				<tr bgcolor="white">
+					<td width="18%" class="infoBoxTd" bgcolor="white">极光secret：</td>
+					<td colspan="2"><input type="text" id="jg_secret" name="jg_secret" size="60" value="{$base.jg_secret}"></td>
+				</tr>
+				<tr bgcolor="white">
+					<td width="18%" class="infoBoxTd" bgcolor="white">环信client_id：</td>
+					<td colspan="2"><input type="text" id="hx_client_id" name="hx_client_id" size="60" value="{$base.hx_client_id}"></td>
+				</tr>
+				<tr bgcolor="white">
+					<td width="18%" class="infoBoxTd" bgcolor="white">环信secret：</td>
+					<td colspan="2"><input type="text" id="hx_secret" name="hx_secret" size="60" value="{$base.hx_secret}"></td>
+				</tr>
+				<tr bgcolor="white">
+					<td width="18%" class="infoBoxTd" bgcolor="white">环信appkey_1：</td>
+					<td colspan="2"><input type="text" id="hx_appkey_1" name="hx_appkey_1" size="60" value="{$base.hx_appkey_1}"></td>
+				</tr>
+				<tr bgcolor="white">
+					<td width="18%" class="infoBoxTd" bgcolor="white">环信appkey_2：</td>
+					<td colspan="2"><input type="text" id="hx_appkey_2" name="hx_appkey_2" size="60" value="{$base.hx_appkey_2}"></td>
+				</tr>
+				<tr bgcolor="white">
+					<td width="18%" class="infoBoxTd" bgcolor="white">百度地图api：</td>
+					<td colspan="2"><input type="text" id="baidu_apikey" name="baidu_apikey" size="60" value="{$base.baidu_apikey}"></td>
+				</tr>
+				<tr bgcolor="white">
+					<td width="18%" class="infoBoxTd" bgcolor="white">七牛appkey：</td>
+					<td colspan="2"><input type="text" id="ak" name="ak" size="60" value="{$base.ak}"></td>
+				</tr>
+				<tr bgcolor="white">
+					<td width="18%" class="infoBoxTd" bgcolor="white">七牛secret：</td>
+					<td colspan="2"><input type="text" id="sk" name="sk" size="60" value="{$base.sk}"></td>
+				</tr>
+				<tr bgcolor="white">
+					<td width="18%" class="infoBoxTd" bgcolor="white">七牛hubName：</td>
+					<td colspan="2"><input type="text" id="hubName" name="hubName" size="60" value="{$base.hubname}"></td>
+				</tr>
+				<tr bgcolor="white">
+					<td width="18%" class="infoBoxTd" bgcolor="white">七牛推流地址：</td>
+					<td colspan="2"><input type="text" id="publishurl" name="publishurl" size="60" value="{$base.publishurl}"></td>
+				</tr>
+				<tr bgcolor="white">
+					<td width="18%" class="infoBoxTd" bgcolor="white">七牛播放地址：</td>
+					<td colspan="2"><input type="text" id="playurl" name="playurl" size="60" value="{$base.playurl}"></td>
+				</tr>
+				<!--<tr bgcolor="white">-->
+					<!--<td width="18%" class="infoBoxTd" bgcolor="white">助通账号：</td>-->
+					<!--<td colspan="2"><input type="text" id="zhutong_username" name="zhutong_username" size="60" value="{$base.zhutong_username}"></td>-->
+				<!--</tr>-->
+				<!--<tr bgcolor="white">-->
+					<!--<td width="18%" class="infoBoxTd" bgcolor="white">助通密码：</td>-->
+					<!--<td colspan="2"><input type="text" id="zhutong_password" name="zhutong_password" size="60" value="{$base.zhutong_password}"></td>-->
+				<!--</tr>-->
+				<tr bgcolor="white">
+					<td width="18%" class="infoBoxTd" bgcolor="white">腾讯云appid：</td>
+					<td colspan="2"><input type="text" id="tengxun_appid" name="tengxun_appid" size="60" value="{$base.tengxun_appid}"></td>
+				</tr>
+				<tr bgcolor="white">
+					<td width="18%" class="infoBoxTd" bgcolor="white">腾讯云appkey：</td>
+					<td colspan="2"><input type="text" id="tengxun_appkey" name="tengxun_appkey" size="60" value="{$base.tengxun_appkey}"></td>
+				</tr>
+				<!--<tr bgcolor="white">-->
+					<!--<td width="18%" class="infoBoxTd" bgcolor="white">短信有效期：</td>-->
+					<!--<td colspan="2"><input type="text" id="code_volidity" name="code_volidity" size="40" value="{$base.code_volidity}"><span>&nbsp;分钟</span></td>-->
+				<!--</tr>-->
+				<tr bgcolor="white">
+					<td width="18%" class="infoBoxTd" bgcolor="white">弹幕价格：</td>
+					<td colspan="2"><input type="text" id="screen_price" name="screen_price" size="30" value="{$base.screen_price}">&nbsp;金币 &nbsp;&nbsp;&nbsp; 返经验:<input type="text" id="experience" name="experience" size="25" value="{$base.experience}"></td>
+				</tr>
+				<tr bgcolor="white">
+					<td width="18%" class="infoBoxTd" bgcolor="white">提现最低限制：</td>
+					<td colspan="2"><input type="text" id="lowest_limit" name="lowest_limit" size="60" value="{$base.lowest_limit}">&nbsp;注:用户少于此值,不能提现(度票)</td>
+				</tr>
+				<tr bgcolor="white">
+					<td width="18%" class="infoBoxTd" bgcolor="white">提现比例：</td>
+					<td colspan="2"><input type="text" id="convert_scale3" name="convert_scale3" size="25" value="{$base.convert_scale3}">&nbsp;:&nbsp;<input type="text" id="convert_scale4" name="convert_scale4" size="25" value="{$base.convert_scale4}"> 注:度票提现</td>
+				</tr>
+				<tr bgcolor="white">
+					<td width="18%" class="infoBoxTd" bgcolor="white">兑换比例：</td>
+					<td colspan="2"><input type="text" id="convert_scale1" name="convert_scale1" size="25" value="{$base.convert_scale1}">&nbsp;:&nbsp;<input type="text" id="convert_scale2" name="convert_scale2" size="25" value="{$base.convert_scale2}"> 注:度票兑换钻石</td>
+				</tr>
+				<tr bgcolor="white">
+					<td width="18%" class="infoBoxTd" bgcolor="white">直播间提示：</td>
+					<td colspan="2">
+						<textarea id="prompt" name="prompt" style="width: 60%;height:50px">{$base.prompt}</textarea>
+					</td>
+				</tr>
+				<tr bgcolor="white">
+					<td width="18%" class="infoBoxTd" bgcolor="white">ID生成位数：</td>
+					<td colspan="2"><input type="text" id="digits" name="digits" size="60" value="{$base.digits}">&nbsp;注:填写6-9之间
+					</td>
+				</tr>
+				<tr bgcolor="white">
+				<td width="18%" class="infoBoxTd" bgcolor="white">直播间人数限制：</td>
+				<td colspan="2"><input type="text" id="live_most_num" name="live_most_num" size="60" value="{$base.live_most_num}">&nbsp;注:直播间总人数,如果大于此值,则停止添加机器人
+				</td>
+			   </tr>
+				<tr bgcolor="white">
+					<td width="18%" class="infoBoxTd" bgcolor="white">每分钟添加机器人数量：</td>
+					<td colspan="2"><input type="text" id="one_minutes_num" name="one_minutes_num" size="60" value="{$base.one_minutes_num}">&nbsp;注:直播间每分钟添加机器人数量
+					</td>
+				</tr>
+				<tr bgcolor="white">
+					<td width="18%" class="infoBoxTd" bgcolor="white">支付宝appid：</td>
+					<td colspan="2"><input type="text" id="alipay_appid" name="alipay_appid" size="60" value="{$base.alipay_appid}"></td>
+				</tr>
+				<tr bgcolor="white">
+					<td width="18%" class="infoBoxTd" bgcolor="white">支付宝公钥：</td>
+					<td colspan="2">
+						<textarea id="alipay_publickey" name="alipay_publickey" style="width: 60%;height:100px">{$base.alipay_publickey}</textarea>
+					</td>
+				</tr>
+				<tr bgcolor="white">
+					<td width="18%" class="infoBoxTd" bgcolor="white">支付宝私钥：</td>
+					<td colspan="2">
+						<textarea id="alipay_privatekey" name="alipay_privatekey" style="width: 60%;height:100px">{$base.alipay_privatekey}</textarea>
+					</td>
+				</tr>
+				<tr bgcolor="white">
+					<td width="18%" class="infoBoxTd" bgcolor="white">IOS版本号：</td>
+					<td colspan="2"><input type="text" id="ios_version" name="ios_version" size="60" value="{$base.ios_version}"></td>
+				</tr>
+				<tr bgcolor="white">
+					<td width="18%" class="infoBoxTd" bgcolor="white">Android版本号：</td>
+					<td colspan="2"><input type="text" id="android_version" name="android_version" size="60" value="{$base.android_version}"></td>
+				</tr>
+
+				
+			</table>
+			<table width="100%" border="0" cellspacing="0" cellpadding="0">
+				<tr>
+					<td class="infoBoxTd">&nbsp;</td>
+					<td align="left"><input type="submit" name="submit" value="保存"
+						class="formInput01" /></td>
+				</tr>
+			</table>
+		</form>
+		
+		<script type="text/javascript">
+				$(function() {
+					$(".zhifustatus[value={$base.zhifustatus}]").attr("checked","checked");
+				})
+				function check1(e){
+					if($("#yongjin").val()>100){
+						alert("佣金抽取不能超过100！");
+						return false;
+					}
+				}
+				function check2(e){
+					if($("#sunshibai").val()>100){
+						alert("外汇损失率不能超过100！");
+						return false;
+					}
+				}
+			</script>
+	</div>
+</div>
+<include file="Public:footer" />

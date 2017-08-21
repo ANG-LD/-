@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>后台管理系统</title>
+<link rel="stylesheet" href="__ROOT__/assets/css/bootstrap.min.css"/>
+<link rel="stylesheet" href="__ROOT__/assets/css/font-awesome.min.css"/>
+<link rel="stylesheet" href="__ROOT__/assets/css/ace.min.css" />
+<link rel="stylesheet" href="__ROOT__/assets/css/ace-skins.min.css" />
+<script src="__ROOT__/assets/js/jquery-1.10.2.min.js"></script>
+	<!--<script src="/assets/js/jquery-2.0.3.min.js"></script>-->
+</head>
+<body style="background-color:#438eb9;">
+	<div class="navbar navbar-default" id="navbar">
+		<div class="navbar-container" id="navbar-container">
+			<div class="navbar-header pull-left">
+				<a href="#" class="navbar-brand"><small> <img src="__ROOT__/public/admin/images/logo.png" style="width:20px;height:21px"> 微秀后台管理系统</small></a>
+			</div>
+			<!-- /.navbar-header -->
+		</div>
+	</div>
+	<div class="space-2"></div>
+	<div class="container-fluid" style="background: #438eb9;height:100%;padding-top:50px;">
+		<div class="col-xs-4"></div>
+		<div class="col-xs-4 middle">
+			<div class="space-10"></div>
+			<form class="form-system-login" style="background: #fff;padding: 10px;" dit-action="{:U('Public/login')}" dit-redirect="{:U('Index/index')}">
+				<div>
+					<label for="uname">用户名:</label>
+					<div class="input-group">
+						<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+						<input class="form-control input-mask-phone" type="text" id="uname" name="uname">
+					</div>
+				</div>
+				<div class="space-4"></div>
+				<div>
+					<label for="password">密码:</label>
+					<div class="input-group">
+						<span class="input-group-addon"><i class="icon-key"></i></span>
+						<input class="form-control input-mask-product" type="password" id="password" name="password">
+					</div>
+				</div>
+				
+				<div class="tip-error hide">
+					<div class="space-10"></div>
+					<span class="red">用户名或密码错误</span>
+				</div>
+				
+				<hr>
+				<div>
+					<input class="btn btn-primary" type="submit" style="width:100%;" value="登陆">
+					<div class="space-10"></div>
+					
+				</div>
+			</form>
+		</div>
+		<div class="col-xs-4"></div>
+	</div>
+	<!-- /.main-container -->
+	<script>
+	$(document).ready(function(){
+		$('#uname').blur(function(){
+			$(".tip-error").addClass('hide');	
+		});
+		
+		$('#password').blur(function(){
+			$(".tip-error").addClass('hide');
+		});
+		
+		$(".form-system-login").submit(function(){
+			var uname = $("#uname");
+			var pwd	= $("#password");
+			if(uname.val() == ''){
+				$(".tip-error").find("span").html("用户名不能为空");
+				$(".tip-error").removeClass('hide');
+				return false;				
+			}
+			
+			if(pwd.val() == ''){
+				$(".tip-error").find("span").html("用户名不能为空");
+				$(".tip-error").removeClass('hide');
+				return false;
+			}
+			
+			var obj = $(this);
+			var url = obj.attr('dit-action');
+			var redirect = obj.attr('dit-redirect');
+			$.post(url,obj.serialize(),function(data){
+				if(data.code == '200'){
+					window.location.href = redirect;
+				} else {
+					$(".tip-error").find("span").html(data.msg);
+					$(".tip-error").removeClass('hide');
+				}
+			},'json');
+			return false;
+		});
+	});
+	</script>
+</body>
+</html>

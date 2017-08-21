@@ -1,0 +1,245 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0, maximum-scale=1,user-scalable=yes" />
+<meta name=”format-detection” content=”telephone=no” />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible"content="IE=9; IE=8; IE=7; IE=EDGE" />
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/home/weixin/css/style.css" />
+<script type="text/javascript" src="__PUBLIC__/home/weixin/js/png.js" ></script>
+
+	
+	<script type="text/javascript" src="__PUBLIC__/home/weixin/pubuliu/js/jquery-1.7.2.min.js"></script>
+	<script type="text/javascript" src="__PUBLIC__/home/weixin/pubuliu/js/jquery.masonry.min.js"></script>
+
+<title>{$title}</title>
+</head>
+
+<body>
+<style>
+.loading-box {
+	text-align: center;
+}
+.loading {
+	display: inline-block;
+	padding: 15px 15px 15px 55px;
+	font-size: 16px;
+	color: #FFF;
+	border-radius: 5px;
+	background: url(__PUBLIC__/home/weixin/pubuliu/images/loading.gif) no-repeat 15px center #565656;
+}
+.loadings {
+	display: inline-block;
+	padding: 15px 15px 15px 15px;
+	font-size: 16px;
+	color: #FFF;
+	border-radius: 5px;
+	background: #565656;
+}
+/* 返回顶部样式 */
+#gotoTop{
+	display:none;
+	position:fixed;
+	top:75%;
+	left:50%;
+	cursor:pointer;
+	margin-top:-50px;
+	margin-left:520px;
+	width: 64px;
+	height:64px;
+	line-height: 100;
+	overflow: hidden;
+	background: url(../images/gTopa.png) no-repeat;
+}
+#gotoTop{
+	_position:absolute;
+	_top:expression_r(documentElement.scrollTop + documentElement.clientHeight * 3/4 + "px");
+}
+/* 瀑布流 */
+.footer .ft-main {
+
+	margin-left: auto;
+
+	margin-right: auto;
+
+	padding: 15px 0;
+
+}
+
+</style>
+<script type="text/javascript">
+	$(function(){
+		
+		function gotoTop(min_height){
+
+		    //预定义返回顶部的html代码，它的css样式默认为不显示
+
+		    var gotoTop_html = '<div id="gotoTop">返回顶部</div>';
+
+		    //将返回顶部的html代码插入页面上id为page的元素的末尾
+
+		    $("body").append(gotoTop_html);
+
+		    $("#gotoTop").click(//定义返回顶部点击向上滚动的动画
+
+		        function(){ $('html,body').animate({scrollTop:0},700);
+
+		    }).hover(//为返回顶部增加鼠标进入的反馈效果，用添加删除css类实现
+
+		        function(){ $(this).addClass("hover");},
+
+		        function(){ $(this).removeClass("hover");
+
+		    });
+
+
+
+		    //获取页面的最小高度，无传入值则默认为600像素
+
+		    min_height ? min_height = min_height : min_height = 600;
+
+		    //为窗口的scroll事件绑定处理函数
+
+		    $(window).scroll(function(){
+
+		        //获取窗口的滚动条的垂直位置
+
+		        var s = $(window).scrollTop();
+
+		        //当窗口的滚动条的垂直位置大于页面的最小高度时，让返回顶部元素渐现，否则渐隐
+
+		        if( s > min_height){
+
+		            $("#gotoTop").fadeIn(100);
+
+		        }else{
+
+		            $("#gotoTop").fadeOut(200);
+		        };
+
+		    });
+
+		};
+		gotoTop();	
+		
+		
+	    //执行瀑布流
+	    var $container = $('#containerss');
+		$container.imagesLoaded(function(){
+		  $container.masonry({
+		    itemSelector : '.item',
+		    isAnimated: true
+		  });
+		});
+		var loading = $("#loading").data("on", false);
+		$(window).scroll(function(){
+			var nextrow=$("#nextrow").val();	//下次加载从nextrow条开始	
+			var tyid=$("#tyid").val();	//下次加载从nextrow条开始	
+			if(loading.data("on")) return;
+			if($(document).scrollTop() > 
+				$(document).height()-$(window).height()-$('.footer').height()){
+				//加载更多数据
+				loading.data("on", true).fadeIn();
+				$.get(
+					"{:U('Weixin/getxia2')}", 
+					{"id" : $container.find(".item:last").attr("a_id"),
+						"nextrow":nextrow,tyid:tyid
+					},
+					function(data){
+						
+						if(data==1){
+							$("#loading").html('<span class="loadings">已全部加载完成</span>');
+						}else{
+							$("#nextrow").val(parseInt(nextrow)+10);	//每次加载10条
+							var html = "",item;
+							if($.isArray(data)){
+								for(i in data){
+									item = data[i];
+									html += '<li  class="item" id="'+item.a_id+'"><img src="'+item.a_img+'" />';
+									html += '<span>' + item.a_title + '</span></li>';									
+								}
+								var $newElems = $(html).css({ opacity: 0 }).appendTo($container);;
+								$newElems.imagesLoaded(function(){
+									$newElems.animate({ opacity: 1 });
+									$container.masonry( 'appended', $newElems, true ); 
+						        });
+						        loading.data("on", false);
+							}
+							loading.fadeOut();
+						}
+					}
+				,'json'
+				);
+			}
+		});
+	});
+	</script>
+<script>
+function check_zhi(){
+	document.getElementById("sou1_NO1").style.display = "block";
+	}
+	function out_zhi(){
+	document.getElementById("sou1_NO1").style.display = "none";
+	}
+</script>
+<!--header-->
+<div class="header">
+<dl class="head">
+<dt><img src="__PUBLIC__/home/weixin/images/logo.png" /></dt>
+<dd onclick="check_zhi()">
+<span><img src="__PUBLIC__/home/weixin/images/menu.png"></span>
+<ul class="soul_NO1" style="display:none; z-index: 99999;" id="sou1_NO1" onmouseover="check_zhi()" onmouseout="out_zhi()">
+<li><a href="{:U('Weixin/anli')}">全部案例</a></li>
+<li><a href="{:U('Weixin/anli2',array('typeid'=>2))}">APP开发</a></li>
+<li><a href="{:U('Weixin/anli2',array('typeid'=>4))}">微信端</a></li>
+<li><a href="{:U('Weixin/anli2',array('typeid'=>1))}">网站开发</a></li>
+<li><a href="{:U('Weixin/about')}">关于我们</a></li>
+<li><a href="{:U('Weixin/about')}">联系我们</a></li>
+</ul>
+</span>
+</dd>
+</dl>
+</div>
+<!--header-->
+<input type="hidden" value="10" id="nextrow" />
+<input type="hidden" value="{$tp}" id="tyid" />
+<!--banner-->
+<div class="anli_ban">
+<img src="__PUBLIC__/home/weixin/images/anli_ban.jpg" style="width:100%;" />
+</div>
+<!--案例列表-->
+<div class="w1200_mian" >
+<ul class="anli_list" id="containerss"  >
+
+<volist name="anli" id="l">
+
+
+
+<li class="item" id="{$l.a_id}"><img src="{$l.a_img}" /><span>{$l.a_title}</span></li>
+
+
+</volist>
+
+</ul>
+<div id="loading" class="loading-box" style="display:none;">
+		<span class="loading">加载中，请稍后...</span>
+	</div>
+</div>
+
+
+<!--footer-->
+<div class="footer">
+	<div class="ft-main cf">
+		
+	</div>
+</div>
+<ul class="foot_nav">
+<li><a href="{:U('Weixin/anli')}" >全部</a></li>
+<li><a href="{:U('Weixin/anli2',array('typeid'=>1))}" <if condition=" $tp eq 1 ">class="hover"<else/></if>>PC</a></li>
+<li><a href="{:U('Weixin/anli2',array('typeid'=>2))}" <if condition=" $tp eq 2 ">class="hover"<else/></if>>APP</a></li>
+<li><a href="{:U('Weixin/anli2',array('typeid'=>3))}" <if condition=" $tp eq 3 ">class="hover"<else/></if>>手机版</a></li>
+<li><a href="{:U('Weixin/anli2',array('typeid'=>4))}" <if condition=" $tp eq 4 ">class="hover"<else/></if>>微信版</a></li>
+</ul>
+
+</body>
+</html>

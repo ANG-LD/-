@@ -1,0 +1,109 @@
+{:W('public/breadcrumbs',[
+[
+['href'=>U('Finance/teach_returns'),'text'=>'退款列表'],
+['href'=>'javascript:;;','text'=>'指点详情']
+]
+])}
+<div class="page-container">
+  <div id="big"></div>
+  <div id="big2"></div>
+  <div class="cl pd-5 bg-1 bk-gray">学员</div>
+<div class="cl pd-20" style=" background-color:#5bacb6">
+  <img class="avatar size-XL l" src="{$re['img']}">
+  <dl style="margin-left:80px; color:#fff">
+    <dt><u><a style="color:#fff" href="{:U('User/view',['uid'=>$re['user_id']])}"><span class="f-18">{$re['username']}</span></a></u>
+      <span class="pl-10 f-12">账号：{$re['phone']}</span></dt>
+    <dd class="pt-10 f-12" style="margin-left:0">{$re['autograph']|default='这家伙很懒，什么也没有留下'}</dd>
+  </dl>
+</div>
+  <div class="cl pd-5 bg-1 bk-gray mt-20">导师</div>
+  <div class="cl pd-20" style=" background-color:#5bacb6">
+    <img class="avatar size-XL l" src="{$re['timg']}">
+    <dl style="margin-left:80px; color:#fff">
+      <dt><u><a style="color:#fff" href="{:U('User/view',['uid'=>$re['tuser_id']])}"><span class="f-18">{$re['tusername']}</span></a></u>
+        <span class="pl-10 f-12">账号：{$re['tphone']}</span></dt>
+      <dd class="pt-10 f-12" style="margin-left:0">{$re['tautograph']|default='这家伙很懒，什么也没有留下'}</dd>
+    </dl>
+  </div>
+<div class="pd-20">
+  <table class="table">
+    <tbody>
+    <tr>
+      <th class="text-r" width="80">退款原因：</th>
+      <td><div class="formControls col-xs-8 col-sm-9">
+        <textarea name="reason" cols="" rows="" class="textarea"  placeholder="说点什么...最少输入10个字符" datatype="*10-100" dragonfly="true" nullmsg="备注不能为空！" onKeyUp="textarealength(this,200)" readonly>{$re.reason}</textarea>
+      </div></td>
+    </tr>
+    <if condition="!empty($re['img'])">
+    <tr>
+      <th class="text-r" width="80">退款图片：</th>
+      <td>
+        <volist name="re['img']" id="vo" key="k">
+        <div class="droparea spot preview" id="image{$k}" data="{$k}" style="background-image: url('{$vo}');background-size: 220px 160px;" >
+          <div id=""></div>
+          <input type="hidden"  id="image_{$k}" data-img="{$vo}" data-weigui="/Uploads/weigui.png" value="{$vo}" />
+        </div>
+      </volist>
+      </td>
+    </tr>
+    </if>
+      <tr>
+        <th class="text-r" width="80">订单号：</th>
+        <td>{$re.order_no}</td>
+      </tr>
+      <tr>
+        <th class="text-r">订单金额：</th>
+        <td>{$re.amount}</td>
+      </tr>
+      <tr>
+        <th class="text-r">订单状态：</th>
+        <td><php>
+          $re['state'] == '1' && print "待支付";
+          $re['state'] == '2' && print "已支付";
+          $re['state'] == '3' && print "已退款";
+        </php></td>
+      </tr>
+      <tr>
+        <th class="text-r">指点状态：</th>
+        <td><php>
+          if($re['state'] !=1){
+          $re['teach_status'] == '1' ? print "正在指点"  : print "指点结束";
+          }
+        </php></td>
+      </tr>
+      <tr>
+        <th class="text-r">指点时间：</th>
+        <td>{$re.intime}</td>
+      </tr>
+      <tr>
+        <th class="text-r">结束时间：</th>
+        <td>{$re.end_time}</td>
+      </tr>
+    <tr>
+      <th class="text-r">退款状态：</th>
+      <td>{$re['state'] == 3 ? '已退款' : '未退款'}</td>
+    </tr>
+    <if condition="!empty($re['return_time'])">
+    <tr>
+      <th class="text-r">退款时间：</th>
+      <td>{$re['return_time']}</td>
+    </tr>
+    </if>
+    </tbody>
+  </table>
+</div>
+</div>
+<script type="text/javascript">
+    $(".preview").mouseover(function (e) {
+        $("#big").css({top: e.pageY, right: e.pageX});//鼠标定位一个点
+        var data = $(this).attr('data');
+        var img = $('#image_'+data).val();
+        if (img.length !== 0) {
+            $("#big").html('<img src="' + img + '" width=380 height=300>');
+            $("#big").show();        //show：显示
+        }
+    });
+    $(".preview").mouseout(function () {
+        $("#big").hide();
+    });
+</script>

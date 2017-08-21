@@ -1,0 +1,193 @@
+<php>$text='帖子详情'</php>
+{:W('public/breadcrumbs',[
+[
+['href'=>U('Topical/posts_list'),'text'=>'论贴列表'],
+['href'=>'','text'=>$text]
+]
+])}
+<style>
+    .ibutton { padding: 3px 15px; *padding: 0 15px; *height: 24px;  font-size: 12px; text-align: center; text-shadow: #CF510B 0 1px 0; border:1px solid #ec5c0d; border-radius: 2px; background: #FC750A; background-image: -webkit-linear-gradient(top, #fc8746, #ec5d0e); color:#FFF; cursor: pointer; display: inline-block; }
+    .ibutton2 { padding: 3px 15px; *padding: 0 15px; *height: 24px;  font-size: 12px; text-align: center; text-shadow: #CF510B 0 1px 0; border:1px solid #ec5c0d; border-radius: 2px; background: #FC750A; background-image: -webkit-linear-gradient(top, #fc8746, #ec5d0e); color:#FFF; cursor: pointer; display: inline-block; }
+    .blue_btn { padding: 3px 3px; *padding: 0 3px; *height: 24px;  font-size: 12px; text-align: center; border:1px solid #4898d5; border-radius: 2px; background-color: #2e8ded; color:#fff;cursor: pointer; display: inline-block; }
+    .mt-20{margin-top:20px;}
+</style>
+
+<script type="text/javascript" src="__ROOT__/public/upload/jquery.uploadify.v2.1.4.min.js"></script>
+<style>
+    #big{
+        position:absolute;
+        left:490px;
+        top:0px;
+        z-index:999;
+        display:none;
+    }
+</style>
+<div class="page-content">
+    <div id="big"></div>
+    <div id="big2"></div>
+    <div class="row">
+        <div class="col-xs-12"><br/>
+            <div>
+		        <span style="padding-top:20px;font-weight:bold;">
+					<php>echo $text</php>
+				</span>
+            </div>
+            <hr/>
+            <form   method="post">
+                <table width="100%" border="0" class="all">
+                    <tr><td width="5%">&emsp;</td><td width="65%">&emsp;</td></tr>
+                    <tr>
+                        <td width="10%">帖子缩略图</td>
+                        <td colspan="2">
+                            <volist name="re['thumb']" id="vo" key="k">
+                                <div class="droparea spot preview" id="t_image{$k}" data="{$k}" style="background-image: url('{$vo['img']}');background-size: 220px 160px;" >
+                                    <div class="instructions"><span onclick="recovery1({$k})">一键还原</span><span onclick="tihuan1({$k})" style="margin-left: 50px">一键替换</span></div>
+                                    <div id=""></div>
+                                    <input type="hidden" name="t_imgs[]" id="t_image_{$k}" data-img="{$vo['img']}" data-weigui="/Uploads/weigui.png" value="{$vo['img']}" />
+                                    <input type="hidden" name="t_width[]" id="t_width_{$k}" data-img="{$vo['width']}" data-weigui="480" value="{$vo['width']}" />
+                                    <input type="hidden" name="t_height[]" id="t_height_{$k}" data-img="{$vo['height']}" data-weigui="360" value="{$vo['height']}" />
+                                </div>
+                            </volist>
+                        </td>
+                    </tr>
+                    <tr><td width="5%">&emsp;</td><td width="65%">&emsp;</td></tr>
+                    <tr>
+                        <td width="10%">帖子原图</td>
+                        <td colspan="2">
+                            <volist name="re['img']" id="vo" key="k">
+                            <div class="droparea spot preview" id="image{$k}" data="{$k}" style="background-image: url('{$vo['img']}');background-size: 220px 160px;" >
+                                <div class="instructions"><span onclick="recovery({$k})">一键还原</span><span onclick="tihuan({$k})" style="margin-left: 50px">一键替换</span></div>
+                                <div id=""></div>
+                                <input type="hidden" name="imgs[]" id="image_{$k}" data-img="{$vo['img']}" data-weigui="/Uploads/weigui.png" value="{$vo['img']}" />
+                                <input type="hidden" name="width[]" id="width_{$k}" data-img="{$vo['width']}" data-weigui="480" value="{$vo['width']}" />
+                                <input type="hidden" name="height[]" id="height_{$k}" data-img="{$vo['height']}" data-weigui="360" value="{$vo['height']}" />
+                            </div>
+                            </volist>
+                        </td>
+                    </tr>
+                    <tr><td width="5%">&emsp;</td><td width="65%">&emsp;</td></tr>
+                    <tr>
+                        <td width="10%">帖子内容</td>
+                        <td width="65%">
+                            <textarea name="content"  style="width:400px;height:80px;" placeholder="请帖子内容">{$re['content']}</textarea>
+                        </td>
+                    </tr>
+                    <tr><td width="5%">&emsp;</td><td width="65%">&emsp;</td></tr>
+                </table>
+                <input type="hidden" name="id" value="{$re['post_id']}" />
+                <button class="ibutton submit" type="button">&emsp;保&emsp;存&emsp;
+                </button>
+                <span class="beizhu_btn blue_btn" onclick="del({$re.post_id})" style="margin-left: 50px;"> 删除帖子 </span>
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+
+    $(function() {
+        var content;
+        KindEditor.ready(function (K) {
+            content = K.create('#content', {
+                allowFileManager: true,
+                uploadJson: 'system.php/tools/upload?dirname=product'
+            });
+        });
+
+        KindEditor.ready(function (K) {
+            K.create();
+            var editor = K.editor({
+                allowFileManager: true,
+                uploadJson: 'system.php/tools/upload?dirname=product'
+                //sdl:false
+            });
+            K('#uparea1').click(function () {
+                editor.loadPlugin('image', function () {
+                    editor.plugin.imageDialog({
+                        imageUrl: K('#image_1').val(),
+                        clickFn: function (url, title, width, height, border, align) {
+                            console.log(url);
+                            $('#image1').css('background-image', 'url(' + url + ')').css('background-size', '220px 160px');
+                            K('#image_1').val(url);
+                            // K('#getImgUrl').val(url);
+                            editor.hideDialog();
+                        }
+                    });
+                });
+            });
+
+            $(".submit").click(function () {
+                commonAjaxSubmit();
+                return false;
+            });
+
+            $(".preview").mouseover(function (e) {
+                $("#big").css({top: e.pageY, right: e.pageX});//鼠标定位一个点
+                var data = $(this).attr('data');
+                var img = $('#image_'+data).val();
+                if (img.length !== 0) {
+                    $("#big").html('<img src="' + img + '" width=380 height=300>');
+                    $("#big").show();        //show：显示
+                }
+            });
+            $(".preview").mouseout(function () {
+                $("#big").hide();
+            });
+        });
+    });
+
+    function recovery(v){
+        var img = $('#image_'+v).attr("data-img");
+        $('#image'+v).css('background-image', 'url(' + img + ')').css('background-size', '220px 160px');
+        var width = $('#width_'+v).attr('data-img');
+        var height = $('#height_'+v).attr('data-img');
+        $('#image_'+v).val(img);
+        $('#width_'+v).val(width);
+        $('#height_'+v).val(height);
+    }
+    function recovery1(v){
+        var img = $('#t_image_'+v).attr("data-img");
+        console.log(img);
+        $('#t_image'+v).css('background-image', 'url(' + img + ')').css('background-size', '220px 160px');
+        var width = $('#t_width_'+v).attr('data-img');
+        var height = $('#t_height_'+v).attr('data-img');
+        $('#t_image_'+v).val(img);
+        $('#t_width_'+v).val(width);
+        $('#t_height_'+v).val(height);
+    }
+
+    function  tihuan(v){
+        var img = $('#image_'+v).attr("data-weigui");
+        $('#image'+v).css('background-image', 'url(' + img + ')').css('background-size', '220px 160px');
+        var width = $('#width_'+v).attr('data-weigui');
+        var height = $('#height_'+v).attr('data-weigui');
+        $('#image_'+v).val(img);
+        $('#width_'+v).val(width);
+        $('#height_'+v).val(height);
+    }
+
+    function  tihuan1(v){
+        console.log(v);
+        var img = $('#t_image_'+v).attr("data-weigui");
+        console.log(img);
+        $('#t_image'+v).css('background-image', 'url(' + img + ')').css('background-size', '220px 160px');
+        var width = $('#t_width_'+v).attr('data-weigui');
+        var height = $('#t_height_'+v).attr('data-weigui');
+        $('#t_image_'+v).val(img);
+        $('#t_width_'+v).val(width);
+        $('#t_height_'+v).val(height);
+    }
+
+    function del(kid){
+        var url = "{:U('Topical/del_post')}";
+        $.post(url,{ids:kid},function(data){
+            if(data.status == 'ok'){
+                alert("删除成功");
+                window.location.href = data.url;
+            }else{
+                alert(data.info);
+            }
+        },'json');
+    }
+
+
+</script>

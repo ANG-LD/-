@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible"content="IE=9; IE=8; IE=7; IE=EDGE" />
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/home/css/style.css" />
+<script type="text/javascript" src="__PUBLIC__/home/js/png.js" ></script>
+<script type="text/javascript" src="__PUBLIC__/home/js/jquery.js" ></script>
+<title>{$base.name}-新闻中心</title>
+</head>
+
+<body>
+<!--header-->
+<include file="Public:head" />
+<!--banner-->
+<div class="news_ban">
+明创新闻中心
+</div>
+<!--01-->
+<div class="app_huibg">
+<div class="app_tit"><img src="__PUBLIC__/home/images/news_tit.png" /></div>
+<!--left-->
+<script type="text/javascript">
+$(window).scroll(function(){
+		if($(this).scrollTop() > 400){
+			$(".fh_box").show();
+		}
+		if($(this).scrollTop() < 400){
+			$(".fh_box").hide();
+		}
+})
+function nian(id){
+	   $.post("{:U('commen')}",{id:id},function(v){
+			$("#ss").html(v);	  
+	   });
+   }
+   function seled(id){
+	   $("#nfs .hover").removeClass();
+ 	    document.getElementById("colo_"+id).className="hover"; 
+   }
+</script>
+
+<ol class="dsj_sjz fh_box" style="display:none;">
+
+<volist name="nian" id="l" offset="0" length='1'>
+
+<h id="nfs"><li name="ids" data-id="{$l.t_id}" class="hover" id="colo_{$l.t_id}"  >
+<a href="javascript:;" onclick="nian({$l.t_id}),seled({$l.t_id});">{$l.t_title}</a>
+<span></span><strong></strong></li></h>
+
+</volist>
+
+<volist name="nian" id="l" offset="1" length='10000000'>
+
+<h id="nfs"><li name="ids" data-id="{$l.t_id}"  id="colo_{$l.t_id}"  >
+<a href="javascript:;" onclick="nian({$l.t_id}),seled({$l.t_id});">{$l.t_title}</a>
+<span></span><strong></strong></li></h>
+
+</volist>
+
+<li><span></span><font></font></li>
+</ol>
+<div id="ss">
+<div class="new_box">
+	<div class="new_fl">{$nid.t_title}年</div>
+	
+<div>
+<!--left-->
+<div class="new_l">
+<volist name="news" id="vo" mod="2" >
+<if condition=" $i%2 eq 1 ">
+<dl>
+<dt><img src="__PUBLIC__/home/images/new_yuan.png" /><a href="{:U('News/sel',array(id=>$vo[n_id],nid=>$nid[t_id]))}">{$vo.n_title|cut=35}</a>[{$vo.n_intime|date='Y-m-d',###}]</dt>
+<dd>
+<p>{$vo.n_content|cut=150}</p>
+<span><a href="{:U('News/sel',array(id=>$vo[n_id],nid=>$nid[t_id]))}">查看详细</a></span>
+</dd>
+</dl>
+<else/></if>
+</volist>
+</div>
+
+<!--right-->
+<div class="new_r">
+
+<volist name="news" id="vo" mod="2" >
+<if condition=" $i%2 eq 0 ">
+
+
+<dl>
+<dt><img src="__PUBLIC__/home/images/new_yuan.png" /><a href="{:U('News/sel',array(id=>$vo[n_id],nid=>$nid[t_id]))}">{$vo.n_title|cut=35}</a>[{$vo.n_intime|date='Y-m-d',###}]</dt>
+<dd>
+<p>{$vo.n_content|cut=150}</p>
+<span><a href="{:U('News/sel',array(id=>$vo[n_id],nid=>$nid[t_id]))}">查看详细</a></span>
+</dd>
+</dl>
+<else/></if>
+</volist>
+</div>
+</div>
+<span id="div_wr"></span>	
+
+<div class="clear"></div>
+
+
+
+<div class="clear"></div>
+
+<div class="new_more" id="downmore_clike"><a href="javascript:void(0);">更多<br />新闻</a></div>
+</div>
+
+
+
+</div>
+
+<input type="hidden" name="nid" id="nid" value="{$nid[t_id]}">
+
+<script>
+    var n = 0;
+     $("#downmore_clike").click(function () {
+            n += 1;//第单击一次i的值加1
+            var pthis = $(this);
+            var  ids  = $("#nfs .hover").attr("data-id");
+            var  nid  = $("#nid").val();
+           // alert(nid);
+            $.ajax({
+                url: "__URL__/getIndex",
+                data: { "n": n ,"id":ids,"nid":nid},
+                type: "post",
+                dataType: "text",
+                success: function (data) {
+                   // alert(data);
+                   /* if (data.count < 5) {
+                        pthis.html("<div class='new_more' id='downmore_clike'>没有更多数据！</div>");
+                        pthis.unbind();
+                 
+                    }*/
+                    if (data=='') {
+                        pthis.html("<div class='new_more' id='downmore_clike'><a>没有数据了！</a></div>");
+                        pthis.unbind();
+                 
+                    }
+                  $("#div_wr").append(data);
+                }
+            })
+           
+        });
+</script>
+</div>
+<!--footer-->
+<include file="Public:footer" />
+</body>
+</html>

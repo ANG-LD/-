@@ -1,0 +1,120 @@
+<include file="Public:header" />
+<script type="text/javascript">
+function edit(id){
+	location.href="__URL__/edit/id/"+id;
+}
+//进入到下级
+function xj(id){
+	location.href="__URL__/index2/id/"+id;
+}
+function getnums(){
+    var num = $("#nus").val();
+    window.location.href="__URL__/convert_scale?nums="+num;
+}
+
+</script>
+
+<form action="javascript:;" method="post">
+<div class="tools"> 
+<div class="add"><span><a href="__URL__/toadd_convert_scale">添加</a></span></div>
+<div class="del"><span><span><a href="javascript:;">
+<input name="dele" type="submit" value="删除" onclick="del();" class="wr"   style="border:none; background-color:#F2F7FD; color:#2D52A5;margin-top:3px;" /></a></span></div>
+
+    <span style="float:left;padding-top:8px;">每页显示
+        <select id="nus" onchange="getnums();">
+          <volist name="nums" id="l">
+             <option value="{$l}" <if condition=" $l eq $nus ">selected<else/></if>>{$l}</option>
+              </volist>
+        </select>条
+    </span>
+
+</div>
+<div class="content">
+
+<!-----------------------------------------内容开始--------------------------------------------------->
+<table width="100%" border="0" cellpadding="0" cellspacing="0" class="tabBox">
+<tr class="tabTitleMain">
+    <td width="5%" align="center">
+    <input type="checkbox" name="checkbox11" id="checkbox11"  onclick="return checkAll(this,'chois[]')"  value="0">全选</td>
+    <td width="15%" align="center">度票</td>
+    <td width="15%" align="center">钻石</td>
+    <td width="15%" align="center">时间</td>
+    <td width="10%" align="center">操作</td>
+</tr>
+
+
+<volist name='list' id='l' key='i'>
+<tr class="tabTextMain" id="f_{$l.id}" onmouseout="this.style.background='#FFFFFF';" onmouseover="this.style.background='#fbf435';">
+  <td align="center"><input type="checkbox" class="deleteids" value="{$l.convert_scale_id}" name="chois[]"/>{$i}</td>
+    <td align="center" class="onerow">{$l.k}</td>
+    <td align="center" class="onerow">{$l.meters}</td>
+    <td align="center" class="onerow">{$l.intime|date="Y-m-d H:i",###}</td>
+
+  <td align="center">
+                  <a href="{:U('toadd_convert_scale',array('id'=>$l['convert_scale_id']))}">编辑</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+                  <a href="javascript:;"  onclick="del({$l.convert_scale_id});">删除</a>
+               
+               </td>
+</tr>
+</volist>
+</table> 
+</form>
+<div class="pages">{$show}</div>
+<!-----------------------------------------内容结束--------------------------------------------------->
+</div>
+
+<script type="text/javascript">
+function checkAll(e,chois)
+{
+	var aa=document.getElementsByName(chois);
+	for(var i=0;i<aa.length;i++)
+	{  
+		aa[i].checked=e.checked;
+	}
+}
+//function tips(itemName){
+//    var f=false;
+//    var aa=document.getElementsByName(itemName);
+//	for(var i=0;i<aa.length;i++){
+// 		if(aa[i].checked==true){
+//  	 		f=true;
+// 		}
+//	}
+//	if(f==false){
+//		alert("请选择要删除的选项");
+//		return false;
+//	}else{
+//  return  confirm("一旦删除不可修复，确定删除吗？");
+//}
+//return true;
+//}
+
+function del(kid){
+    kid = kid ? kid : getChecked();
+    kid = kid.toString();
+    if(kid == ''){
+        alert("请选择要删除的选项");
+        return false;
+    }
+    if(!confirm('确定删除？'))
+        return false;
+    $.post("{:U('del_convert_scale')}", {ids:kid}, function(v){
+        if( v == 1 ){
+            alert('删除成功！');
+            location.reload("{:U('convert_scale')}");
+        }else{
+            alert('删除失败！');
+        }
+    });
+}
+function getChecked() {
+    var gids = new Array();
+    $.each($('input:checked'), function(i, n){
+        gids.push( $(n).val() );
+    });
+    return gids;
+}
+</script>
+    
+
+<include file="Public:footer" />

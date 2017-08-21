@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+    <meta charset="UTF-8">
+    <title>幽秘直播</title>
+    <link rel="stylesheet" href="/public/css/reset.css"/>
+    <link rel="stylesheet" href="/public/css/share.css"/>
+    <link href="//cdn.bootcss.com/video.js/5.19.2/video-js.min.css" rel="stylesheet">
+    <script src="/public/js/pulice.js"></script>
+</head>
+<body>
+<!--<script src="/public/player/player/sewise.player.min.js"></script>-->
+<!--<script src="/public/player/player/sewise.player.min.js"></script>-->
+<script type="text/javascript" src="/public/admin/js/jquery-1.7.min.js"></script>
+<style>
+    .video-js{width:100%;height:100%;}
+</style>
+<!--<div id="Player"></div>-->
+<!--<script>
+    SewisePlayer.setup({
+        server: 'vod',
+        type: 'm3u8',
+        autostart: 'true',    /*是否自动播放*/
+        poster: "{$re.play_img}",    /*此处可填写封面地址*/
+        videourl: "{$re.url}",    /*此处填写购买获取到的m3u8地址 必填*/
+        skin: 'vodOrange',
+        title: '{$re.title}',
+        claritybutton: 'disable',
+        lang: 'zh_CN'
+    },'Player');
+</script>-->
+<div id="videoBox" style="width: 100%;height: 100%;"></div>
+<!--<video width="100%" height="100%" id="example_video_1" class="video-js vjs-default-skin vjs-big-play-centered"  webkit-playsinline="webkit-playsinline" playsinline="true" controls preload="none" data-setup='{"techOrder": ["flash","html5"]}'>
+    <source src="{$re.play_address}" type="rtmp/flv">
+    <source src="{$re.play_flv}" type="rtmp/flv">
+    <source src="{$re.url}" type="application/x-mpegURL">
+</video>-->
+<!--<video width="100%" height="557" src="{$re.url}" poster="{$re.play_img}" controls="false"></video>-->
+<!--<video id="Player" controls>-->
+<!--<source src="http://fkdc1.tstmobile.com/Public/admin/Uploads/video/fae14fd067e65fd6abd2ee24042c93ff.MP4"  type="video/mp4">-->
+<!--<source src="http://fkdc1.tstmobile.com/Public/admin/Uploads/video/fae14fd067e65fd6abd2ee24042c93ff.MP4"  type="video/ogg">-->
+<!--您的浏览器不支持 HTML5 video 标签。-->
+<!--</video>-->
+<!--内容 -->
+<!--<div class="download" style="background:#ce1939;color:#fff;position: absolute;right:0.8rem;top:1.4rem;">-->
+    <!--<a href="{$url}" style="background:#ce1939;padding-right: .8rem;line-height: 2.2rem;font-size:1.2rem">打开幽秘 关注主播</a>-->
+<!--</div>-->
+<!--<div class="messages">-->
+    <!--<div class="message">-->
+        <!--<img class="anchor_img" src="{$re['img']}" alt=""/>-->
+        <!--<div class="anchor_message">-->
+            <!--<p class="anchor_names">-->
+                <!--<span class="anchor_name">{$re['username']}</span>-->
+                <!--<span class="follow"></span>-->
+            <!--</p>-->
+            <!--<p class="anchor_remarks">{$re['title']}</p>-->
+        <!--</div>-->
+    <!--</div>-->
+    <!--<p class="room_num" style="margin-left: 1.2rem;">ID: {$re['id']}</p>-->
+<!--</div>-->
+<!--<div class="bottombtn" style="bottom: 0;height:4rem;background: #000;overflow: hidden;">-->
+    <!--<div style="float:left;margin-left:.8rem;overflow: hidden;">-->
+        <!--<img src="{$re['img']}" alt="" style="width:3rem;height:3rem;margin-top:.5rem;border-radius:50%;margin-right:.8rem;float:left;display: block;">-->
+        <!--<div style="float:left;">-->
+            <!--<p style="line-height:1.5rem;color:#fff;margin-top:.6rem;">{$re['username']}</p>-->
+            <!--<p style="line-height:1.5rem;color:#ccc;font-size:1rem;">邀请你来我的直播间</p>-->
+        <!--</div>-->
+    <!--</div>-->
+    <!--<div class="download" style="background:#ce1939;color:#fff;float: right;margin-top:0.9rem;">-->
+        <!--<a href="{$url}" style="background:#ce1939;padding-right: .8rem;line-height: 2.2rem;font-size:1.2rem">进入直播间</a>-->
+    <!--</div>-->
+<!--</div>-->
+<div class="tck-back tck2" hidden="">
+    <span class="tips"></span>
+</div>
+<script src="http://cdn.bootcss.com/jquery/2.2.1/jquery.js"></script>
+<!--<script src="//cdn.bootcss.com/video.js/5.19.2/video.min.js"></script>-->
+<script src='http://downloads.easemob.com/downloads/cdn/websdk-1.4.5.min.js'></script>
+<!--videojs-->
+<!--<script src="http://cdn.bootcss.com/video.js/5.19.2/video.min.js"></script>-->
+<script>
+//    videojs.options.flash.swf = "/public/videojs/video-js.swf";
+</script>
+<script>
+
+</script>
+</body>
+</html>
+<script>
+    function tips2(arr){
+        $(".tck2 .tips").html("");
+        $(".tck2 .tips").append(arr);
+        $(".tck2").fadeIn();
+        setTimeout("$('.tck2').fadeOut();",2000);
+    }
+    function myload(){
+        var videoBox = document.getElementById("videoBox");
+        videoBox.innerHTML = '<video width="100%" height="100%" id="example_video_1"  style="object-fit:cover;"  preload="auto" controls="true" webkit-playsinline="true" x-webkit-airplay="true" playsinline="ture" x5-video-player-type="h5" x5-video-player-fullscreen="true" webkit-playsinline="webkit-playsinline" playsinline="true" controls preload="none"' +
+            ">"+
+//            '<source src="rtmp://yomiplay.tstmobile.com/vxiu1/php-sdk-test1496886362" type="rtmp/flv">'+
+//            '<source src="http://yomiplay.tstmobile.com/vxiu1/php-sdk-test1496886362.flv" type="rtmp/flv">'+
+            '<source src="http://yomiplay.tstmobile.com/vxiu1/php-sdk-test1496886362.m3u8" type="application/x-mpegURL">'+
+            '</video>';
+//        if("{$_GET['type']}" == 1 && "{$re['state']}" == 2){
+//            tips2("主播已下线，看主播要趁早。");
+//        }
+//        var player = videojs(document.getElementById('example_video_1'),{
+//            techOrder: ['html5',"flash"],
+//            autoplay: false,
+//            preload: "auto",
+//            poster:"{$re.play_img}",
+////        sources:[{
+////            src: "{$re.url}",
+////            type: 'rtmp/flv'
+////        }],
+//        },function(){
+//            var myPlayer = this;
+//            myPlayer.on('ended',function(){
+//                videojs.log('播放结束了！');
+//            })
+//        })
+        alert(1)
+    }
+    window.onload = myload;
+
+</script>

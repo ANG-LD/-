@@ -1,0 +1,346 @@
+{:W('public/breadcrumbs',[
+[
+['href'=>U('Hotel/city'),'text'=>'城市管理'],
+]
+])}
+</if>
+<style type="text/css">
+    .modal-sm{width:600px;}
+    #big{
+        position:absolute;
+        left:490px;
+        top:0px;
+        z-index:999;
+        display:none;
+    }
+</style>
+<script type="text/javascript" src="__ROOT__/public/admin/js/jquery-1.7.min.js"></script>
+<script type="text/javascript" src="__ROOT__/public/admin/layer/layer.js"></script>
+<script src="/assets/js/jquery.form.js"></script>
+<div class="page-content">
+    <div class="row">
+        <div class="col-xs-12">
+            <form class="search" action="__SELF__" method="get">
+                <input name="m" value="{:MODULE_NAME}" hidden>
+                <input name="c" value="{:CONTROLLER_NAME}" hidden>
+                <input name="a" value="{:ACTION_NAME}" hidden>
+                <input type="text" name="city" value="{$_GET['city']}"  placeholder="搜索城市名称" size="40" style="margin-right: 20px;">
+                <input type="submit"  class="btn" value="搜索">
+                
+                <span style="float:right;padding-right:30px;padding-top:10px">
+		           <a href="#"  data-toggle="modal" data-target="#popup" data-action="{:U('User/add_user')}" style="text-decoration:none;color:#000000">
+                       <span style="padding:10px 10px 10px 10px;background-color:#DDDDDD;">添加城市</span>
+                   </a>
+		        </span>
+            </form>
+
+            <!--分类弹出框-->
+            <div class="modal fade" id="popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div id="big"></div>
+                <div id="big2"></div>
+                <div class="modal-dialog modal-sm" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button"  class="close" data-dismiss="modal" aria-label="Close">
+                                <span  aria-hidden="true">&times;</span>
+                            </button>
+                            <h4 class="modal-title" style="text-align: center" id="myModalLabel">添加城市</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form class="data-form">
+                                <table class="table table-hover table-striped " border="0">
+                                    <tr>
+                                        <td style="text-align:right;width:33%;">城市名称</td>
+                                        <td style="text-align:left">
+                                            <input type="text" name="city" id="city" value="" style="width: 217px;" />
+                                            <span class="important">*</span>城市名称不能为空
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:right;width:33%;">城市图片（宽高比为 4 : 3 ）</td>
+                                        <td style="text-align:left">
+                                            <div class="droparea spot" id="image1" style="background-image: url('{$m['img']}');background-size: 220px 160px;" >
+                                                <div class="instructions" onclick="del_image('1')">删除</div>
+                                                <div id="uparea1"></div>
+                                                <input type="hidden" name="img" id="image_1" value="{$m['img']}" />
+                                            </div>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:right;width:33%;">城市排序</td>
+                                        <td style="text-align:left">
+                                            <input type="text" id="sort" name="sort" value="{$re['sort']}" style="width: 217px;" />
+                                            <span class="important">*</span>请填写整型的数字
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td style="text-align:left">
+                                            <input type="hidden" name="id" id="data" value="" />
+                                            <input type="button" value="保存" class="btn btn-system submit" />
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                </table>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <table width="100%" class="tab" style="margin-top:10px;">
+                <thead>
+                <tr><td colspan="5" align="left">
+                <span style="float:left;padding-right:30px;padding-top:8px;padding-bottom:18px">
+	              <a href="javascript:void(0);" style="text-decoration:none;color:#000000">
+                      <span onclick="del();" style="padding:10px 10px 10px 10px;background-color:#DDDDDD;">删除</span></a>
+	            </span>
+                <span style="float:left;padding-top:8px;">每页显示
+				<select id="nus" onchange="getnums();">
+                    <volist name="nums" id="l">
+                        <option value="{$l}" <if condition=" $l eq $nus ">selected<else/></if>>{$l}</option>
+                    </volist>
+                </select>
+				条</span>
+                </td></td>
+                </tr>
+                <tr>
+                    <td style="width:80px;"><a href="javascript:;" id="selall">全选</a></td>
+                    <td width="600px">城市昵称</td>
+                    <td>城市图片</td>
+                    <td>创建时间</td>
+                    <td width="190">操作</td>
+                </tr>
+                </thead>
+                <volist name="list" id="vo">
+                    <tr align="center" onmouseout="this.style.background='#FFFFFF';" onmouseover="this.style.background='#FFFFBB';">
+                        <td align="center"><input type="checkbox" name="ids" id="ids"  value="{$vo.member_id}"/>
+                            城市
+                        </td>
+                        <td>
+                             <span class="dClick fl-list{$vo['id']}">
+                                <i class="glyphicon glyphicon-triangle-right"></i>
+                             </span>
+                            <input type="text" value="{$vo['city']}" class="city{$vo.id}" size="30" disabled />
+                        </td>
+                        <td width="400px"><img src="{$vo.img}" class="img{$vo.id}" style="width:80px; height:60px;"></td>
+                        <td>{$vo.intime}</td>
+                        <td>
+                            [ <a href="#" data-toggle="modal"  onclick="edit_city({$vo.id},{$vo.sort})" data-target="#popup">编辑</a> ]
+                            [ <a href="javascript:;"  onclick="del({$vo.id});">删除</a> ]
+
+                        </td>
+                    </tr>
+                    <volist name="vo.centre" id="k">
+                        <tr style="display: none;" align="center" class="fl-list{$vo['id']}">
+                            <td>商圈</td>
+                            <td>
+                                <form class="object-form{$k.id}">
+                                    <!--<img style="margin-left:105px;width:50px;height:30px;" />-->
+                                    <span class="glyphicon glyphicon-random" style="margin-left:105px;width:50px;height:30px;"></span>
+                                    <input type="text" name="centre" value="{$k['centre']}" placeholder="修改商圈" />
+                                    <input type="hidden" name="id" value="{$k['id']}" />
+                                    <input type="button" value="修改" style="background:#3A8FFF;padding: 4px 4px 4px 4px" class="btn-system object" date="{$k.id}" />
+                                </form>
+                            </td>
+                            <td></td>
+                            <td>{$k['intime']}</td>
+                            <td>
+                                <a href="javascript:void(0)" onclick="del_centre(this)"
+                                   data-action="{:U('Hotel/del_centre',['id'=>$k['id']])}">[ 删除 ]</a>
+                            </td>
+                        </tr>
+                    </volist>
+                    <tr style="display: none" align="center" class="fl-list{$vo['id']}">
+                        <td>商圈</td>
+                        <form  class="ajax-form{$vo.id}">
+                            <td>
+                                <!--<img style="margin-left:105px;width:50px;height:30px;" />-->
+                                <span><i class="glyphicon glyphicon-ok" style="margin-left:105px;width:50px;height:30px;"></i></span>
+                                <input type="hidden" name="city_id" value="{$vo['id']}" />
+                                <input type="text" name="centre" placeholder="添加新商圈" />
+                                <input type="button" value="添加" style="background:#666;padding: 4px 4px 4px 4px" class="btn-system" date="{$vo.id}" />
+                            </td>
+                        </form>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </volist>
+                <!--<tr><td colspan="7" align="right">{$page}</td></td></tr>-->
+            </table>
+            {$page}
+        </div>
+    </div>
+</div>
+<!--<script src="__ROOT__/public/admin/js/common.js"></script>-->
+<script type="text/javascript">
+    $(function() {
+        var  content ;
+        KindEditor.ready(function(K) {
+            content = K.create('#content',{
+                allowFileManager : true,
+                uploadJson:'system.php/tools/upload_tx?dirname=city'
+            });
+        });
+
+        KindEditor.ready(function(K) {
+            K.create();
+            var editor = K.editor({
+                allowFileManager : true,
+                uploadJson:'system.php/tools/upload_tx?dirname=city'
+                //sdl:false
+            });
+            K('#uparea1').click(function() {
+                editor.loadPlugin('image', function() {
+                    editor.plugin.imageDialog({
+                        imageUrl : K('#image_1').val(),
+                        clickFn : function(url, title, width, height, border, align) {
+                            console.log(url);
+                            $('#image1').css('background-image','url('+url+')').css('background-size','220px 160px');
+                            K('#image_1').val(url);
+                            // K('#getImgUrl').val(url);
+                            editor.hideDialog();
+                        }
+                    });
+                });
+            });
+
+        });
+
+        $("#uparea1").mouseover(function(e){
+            $("#big").css({top:e.pageY,right:e.pageX});//鼠标定位一个点
+            var img = $('#image_1').val();
+            if(img.length !== 0) {
+                $("#big").html('<img src="' + $('#image_1').val() + '" width=380 height=300>');
+                $("#big").show();        //show：显示
+            }
+        });
+        $("#uparea1").mouseout(function(){
+            $("#big").hide();
+        });
+        $(".pic3").mouseover(function(e){
+            $("#big2").css({top:e.pageY,right:e.pageX});//鼠标定位一个点
+            $("#big2").html('<img src="'+this.src+'" width=380 height=300>');
+            $("#big2").show();        //show：显示
+        });
+        $(".pic3").mouseout(function(){
+            $("#big2").hide();
+        });
+
+        $(".submit").click(function(){
+           var url = "{:U('Hotel/edit_city')}";
+            commonAjaxSubmit(url,'.data-form');
+            return false;
+        });
+
+        $("#selall").toggle(function() {
+            $("input[name='ids']").each(function() {
+                $(this).attr("checked", true);
+            });
+        },function(){
+            $("input[name='ids']").each(function() {
+                $(this).attr("checked", false);
+            });
+        });
+
+        $(".dClick").click(function(){
+            var num=$(this).attr("class").substring(14);
+            console.log(num);
+            for(var i=1;i<$(".fl-list"+num).length;i++){
+                if($(".fl-list"+num)[i].style.display=="none"){
+                    $(".fl-list"+num)[i].style.display="";
+                    $(this).children("i").attr("class","glyphicon glyphicon-triangle-bottom");
+                }else{
+                    $(".fl-list"+num)[i].style.display="none";
+                    $(this).children("i").attr("class","glyphicon glyphicon-triangle-right");
+                }
+            }
+        })
+
+        $('.btn-system').click(function(){
+            var date = $(this).attr('date');
+            var url = "{:U('Hotel/edit_city_centre')}";
+            commonAjaxSubmit(url,'.ajax-form'+date);
+            return false;
+
+        });
+
+        $('.object').click(function(){
+            var date = $(this).attr('date');
+            var url = "{:U('Hotel/edit_city_centre')}";
+            commonAjaxSubmit(url,'.object-form'+date);
+            return false;
+
+        });
+
+
+    });
+
+    function  del_centre(n){
+        if(!confirm('确定要删除该记录？'))
+            return false;
+        var url = $(n).attr('data-action');
+        $.get(url,function(data){
+            if(data.status == 'ok'){
+                $(n).parent("td").parent("tr").hide();
+            }else{
+                alert("删除记录失败");
+            }
+        },'json');
+        return false;
+    };
+
+    function del(kid){
+
+        kid = kid ? kid : getChecked();
+        kid = kid.toString();
+        if(kid == ''){
+            layer.msg('你没有选择任何选项！', {offset: 95,shift: 6});
+            return false;
+        }
+        if(!confirm('确定要删除该记录？'))
+            return false;
+        $.post("{:U('del_city')}", {ids:kid}, function(data){
+            if( data['status'] == 'ok' ){
+                alert(data.info);
+                window.location.href = data.url;
+            }else{
+                alert(data.info);
+            }
+        },'json');
+        return false;
+    }
+    function getChecked() {
+        var gids = new Array();
+        $.each($('input:checked'), function(i, n){
+            gids.push( $(n).val() );
+        });
+        return gids;
+    }
+
+    function edit_city(id,sort){
+        var id = id;
+        var sort = sort;
+        var city = $('.city'+id).val();
+        var img = $('.img'+id).prop('src');
+        $('#data').val(id);
+        $('#sort').val(sort);
+        $('#image1').css('background-image','url('+img+')').css('background-size','220px 160px');
+        $('#image_1').val(img);
+        $('#city').val(city);
+
+    }
+
+
+    //$('.check_auth').click(function(){
+    //    var url = $(this).attr('data-action');
+    //    console.log(url+'&chek=1');
+    //    $.get(url+'&chek=1',function(data){
+    //
+    //    })
+    //})
+</script>

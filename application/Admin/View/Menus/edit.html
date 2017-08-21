@@ -1,0 +1,65 @@
+<include file="Public:header" />
+<script type="text/javascript">
+$(function(){
+	if('{$vo.status}'=='1'){
+		$("#yes").attr('checked',true);
+	}else{
+		$("#no").attr('checked',true);
+	}
+})
+function check()
+{
+	var user=document.getElementById("user");
+	var pwd=document.getElementById("pwd");
+	if (user.value=="" || user.value==null )
+	{
+		alert("用户名不能为空！");
+		user.focus();
+		return (false);
+  	}
+	if (pwd.value.length<6)
+	{
+		alert("密码长度最少为6个字符！");
+		pwd.focus();
+		return (false);
+  	}
+
+return true;
+}
+</script>
+
+<div class="content">
+<!-----------------------------------------内容开始--------------------------------------------------->
+<div class="infoBox">
+<form name="form" action="__URL__/update" method="post"  onsubmit="return check()">
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0" id="basic">
+<tr>
+	<td width="18%" class="infoBoxTd">菜单名称：</td>
+	<td colspan="2"><input type="text" name="title" value="{$vo.title}" id='title'></td>
+</tr>
+<tr>
+	<td width="18%" class="infoBoxTd">状态：</td>
+	<td colspan="2">
+		<input type="radio" name="status" value="1" id="yes" />启用
+		<input type="radio" name="status" value="0" id="no" />禁用
+
+	</td>
+</tr>
+<tr>
+	<td width="18%" class="infoBoxTd">排序：</td>
+	<td colspan="2"><input type="text" name="px" value="{$vo.px}" id='px'></td>
+</tr>
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td class="infoBoxTd">&nbsp;</td>
+<input type="hidden" value="{$vo.id}" name="id" />
+<td align="left"><input type="submit" name="submit" value="保存" class="formInput01" /></td>
+</tr>
+</table>
+</form>
+</div>
+<!-----------------------------------------内容结束--------------------------------------------------->
+</div>
+<include file="Public:footer" />

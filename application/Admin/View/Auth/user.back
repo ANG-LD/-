@@ -1,0 +1,63 @@
+{:W('public/breadcrumbs',[
+	[
+		['href'=>U('Auth/index'),'text'=>'权限管理'],
+		['href'=>'','text'=>'用户列表']
+	]
+])}
+</if>
+<div class="page-content">
+	<div class="row">
+		<div class="col-xs-12">
+			<table class="table table-striped table-bordered table-hover">
+				<thead>
+					<tr>
+						<th class="center">ID</th>
+						<th>用户名</th>
+						<th>用户分组</th>
+						<th>状态</th>
+						<th>操作 / <a href="{:U('Auth/editUser')}" title="添加节点"><i class="glyphicon glyphicon-plus"></i></a></th>
+					</tr>
+				</thead>
+				<tbody>
+					<foreach item="v" name="list">
+						<tr>
+							<td>{$v.id}</td>
+							<td>{$v.uname}</td>
+							<td>
+								<a class="update-auth-group" data-toggle="modal" data-target="#authGroupModal" dit-params="{$v['id']}" href="#">{$v.title}</a>
+							</td>
+							<td>{$v['status']?'开启':'关闭'}</td>
+							<td>
+								<a href="{:U('Auth/editUser',['id'=>$v['id'],'gid'=>$v['gid']])}" title="修改用户信息">[修改]</a>
+								<if condition="$v.id neq 1">
+									<a class="user-del" dit-action="{:U('Auth/delUser',['id'=>$v['id']])}" title="删除用户">[删除]</a>
+								</if>
+							</td>
+						</tr>
+					</foreach>
+				</tbody>
+			</table>
+			<div class="space-20"></div>
+			{$page}
+		</div>
+		<!-- ./ end col-xs-12 -->
+	</div>
+	<!-- ./ end row -->
+	{:W('Unit/authGroupModal')}
+</div>
+<script>
+$(document).ready(function(){
+	$('.user-del').click(function(){
+		if(!confirm("确认删除该用户么？")) return false;
+		var url = $(this).attr("dit-action");
+		$.get(url,function(data){
+			if(data.code == '200'){
+				window.location.href = window.location.href;
+			} else {
+				alert(data.msg);
+			}
+		},"json");
+		return false;
+	});
+});
+</script>

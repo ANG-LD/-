@@ -1,0 +1,10 @@
+<style>
+    .authen li{list-style: none;line-height: 40px;}
+</style>
+<ul class="authen">
+    <li>支付宝昵称 : {$l.nick_name}</li>
+    <li>支付宝地址 : {$l.province}{$l.city}</li>
+    <li>支付宝性别 : <if condition=" $l.gender eq  m">男<elseif condition=" $l.gender eq f "/>女<else/>未知</if></li>
+    <li>是否是学生 : <if condition=" $l.is_student_certified eq T ">是<elseif condition=" $l.is_student_certified eq F "/>不是<else/>未知</if></li>
+    <li> <span style="float: left">支付宝头像 : </span><span style="float: left">&nbsp;&nbsp;&nbsp;<img src="{$l.avatar}" style="width: 150px;height: 150px"></span></li>
+</ul>

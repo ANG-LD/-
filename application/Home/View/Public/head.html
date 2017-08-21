@@ -1,0 +1,18 @@
+<!--header-->
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/common/mypage.css" />
+<div class="header">
+<dl class="head">
+<dt><a href="/"><img src="{$base.logo1}" /></a></dt>
+<dd>
+<ul>
+<li><a href="{:U('Index/index')}" <if condition=" $mark eq index ">class="hover"<else/></if>>首 页</a></li>
+<li><a href="{:U('Anli/index')}" <if condition=" $mark eq anli ">class="hover"<else/></if>>客户案例</a></li>
+<li><a href="{:U('Apps/index')}" <if condition=" $mark eq app ">class="hover"<else/></if>>APP开发</a></li>
+<li><a href="{:U('Kik/index')}" <if condition=" $mark eq kik ">class="hover"<else/></if>>微信端</a></li>
+<li><a href="{:U('Web/index')}" <if condition=" $mark eq web ">class="hover"<else/></if>>网站开发</a></li>
+<li><a href="{:U('About/index')}" <if condition=" $mark eq about ">class="hover"<else/></if>>关于我们</a></li>
+<li><a href="{:U('News/index',array(id=>$nid[t_id]))}" <if condition=" $mark eq news ">class="hover"<else/></if>>新闻中心</a></li>
+</ul>
+</dd>
+</dl>
+</div>

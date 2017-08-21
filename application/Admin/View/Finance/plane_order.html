@@ -1,0 +1,205 @@
+{:W('public/breadcrumbs',[
+[
+['href'=>U('Finance/plane'),'text'=>'机票订单'],
+]
+])}
+</if>
+<!--<script type="text/javascript" src="__ROOT__/public/admin/js/jquery-1.7.min.js"></script>-->
+<script type="text/javascript" src="__ROOT__/public/admin/layer/layer.js"></script>
+<div class="page-content">
+    <div class="row">
+        <div class="col-xs-12">
+            <form class="search" action="__SELF__" method="get">
+                <input name="m" value="{:MODULE_NAME}" hidden>
+                <input name="c" value="{:CONTROLLER_NAME}" hidden>
+                <input name="a" value="{:ACTION_NAME}" hidden>
+                <input type="text" name="order_no" value="{$_GET['order_no']}" id="order_no" placeholder="搜索订单号" size="30" style="margin-right: 20px;">
+                <input type="text" name="name" value="{$_GET['name']}" id="name" placeholder="搜索联系人姓名、手机号" size="30" style="margin-right: 20px;">
+                <input type="text" name="start_time" value="{$_GET['start_time']}" id="start_time" placeholder="开始时间" size="30" style="margin-right: 20px;">
+                <input type="text" name="end_time" value="{$_GET['end_time']}" id="end_time" placeholder="结束时间" size="30" style="margin-right: 20px;">
+                <input type="submit"  class="btn" value="搜索">
+
+                <span style="float:right;padding-right:30px;padding-top:10px">
+		           <a href="javascript:;" style="text-decoration:none;color:#000000"><span style="padding:10px 10px 10px 10px;background-color:#DDDDDD;" onclick="xiazai()">导出excl</span></a>
+		        </span>
+            </form>
+
+            <table width="100%" class="tab" style="margin-top:10px;">
+                <thead>
+                <tr><td colspan="14" align="left">
+                <span style="float:left;padding-right:30px;padding-top:8px;padding-bottom:18px">
+	              <a href="javascript:void(0);" style="text-decoration:none;color:#000000">
+                      <span onclick="del();" style="padding:10px 10px 10px 10px;background-color:#DDDDDD;">删除</span></a>
+	            </span>
+                <span style="float:left;padding-top:8px;">每页显示
+				<select id="nus" onchange="getnums();">
+                    <volist name="nums" id="l">
+                        <option value="{$l}" <if condition=" $l eq $nus ">selected<else/></if>>{$l}</option>
+                    </volist>
+                </select>
+				条</span>
+                </td></td>
+                </tr>
+                <tr>
+                    <td><a href="javascript:;" id="selall">全选</a></td>
+                    <td>订单号</td>
+                    <td>订单联系人</td>
+                    <td>联系人电话</td>
+                    <td>订单总金额</td>
+                    <td>实付金额</td>
+                    <td>成本价</td>
+                    <td>改签价</td>
+                    <td>退票价</td>
+                    <td>乘机人数</td>
+                    <td>订单类型</td>
+                    <td>订单状态</td>
+                    <td>下单时间</td>
+                    <!--<td width="210">操作</td>-->
+                </tr>
+                </thead>
+                <volist name="list" id="vo">
+                    <tr align="center" onmouseout="this.style.background='#FFFFFF';" onmouseover="this.style.background='#FFFFBB';">
+                        <td align="center"><input type="checkbox" name="ids" id="ids"  value="{$vo.order_id}"/>
+                            <php>
+                                if($_GET['num'])$num=$_GET['num'];else $num ='10';
+                                if($_GET['p'] > 0){
+                                echo $key+1+($_GET['p']-1)*$num;
+                                }else{
+                                echo $key+1;
+                                }
+                            </php>
+                        </td>
+                        <td>{$vo.order_no}</td>
+                        <td>{$vo.name}</td>
+                        <td>{$vo.phone}</td>
+                        <td>{$vo['amount']}</td>
+                        <td>{$vo['paid']}</td>
+                        <td>{$vo['cost']}</td>
+                        <td>{$vo['change_price']}</td>
+                        <td>{$vo['cancel_price']}</td>
+                        <td>{$vo['num']}</td>
+                        <td>
+                            <php>
+                                $vo['is_special'] == '1' && print '正常下单';
+                                $vo['is_special'] == '2' && print '申请下单';
+                                $vo['is_special'] == '3' && print '特价机票';
+                            </php>
+                        </td>
+                        <td>
+                            <php>
+                                $vo['status'] == '1' && print "待确认";
+                                $vo['status'] == '2' && print "待支付";
+                                $vo['status'] == '3' && print "待出票";
+                                $vo['status'] == '4' && print "已出票";
+                                $vo['status'] == '5' && print "改签申请";
+                                $vo['status'] == '6' && print "改签待支付";
+                                $vo['status'] == '7' && print "改签完成";
+                                $vo['status'] == '8' && print "退票申请";
+                                $vo['status'] == '9' && print "退票完成";
+                                $vo['status'] == '10' && print "已完成";
+                                $vo['status'] == '11' && print "改签中";
+                            </php>
+                        </td>
+                        <td>{$vo.intime}</td>
+                        <!--<td>-->
+                            <!--[ <a href='javascript:;' class="check_lock" data="{$vo.order_id}" data-action="{:U('Porder/order_view',array('id'=>$vo['order_id'], 'str'=>CONTROLLER_NAME.'/'.ACTION_NAME))}">订单详情</a> ]-->
+                            <!--[ <a href="javascript:;"  onclick="del({$vo.order_id});">删除</a> ]-->
+                            <!--[ <a href="javascript:;"  onclick="lock({$vo.order_id});">{$vo['is_lock'] == '2' ? '解绑订单' : '锁定订单'}</a> ]<br/>-->
+                            <!--<span <if condition="$vo['is_lock'] eq 1"> class='hide'</if>>锁定人：{$vo.locker}</span>-->
+                        <!--</td>-->
+                    </tr>
+                </volist>
+                <!--<tr><td colspan="7" align="right">{$page}</td></td></tr>-->
+            </table>
+            {$page}
+
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function() {
+        $("#selall").click(function() {
+            $(this).toggleClass("xuan");
+            if($(this).is(".xuan")){
+                $("input[name='ids']").each(function(){
+                    $(this).prop("checked", true);
+                })
+            }else{
+                $("input[name='ids']").each(function(){
+                    $(this).prop("checked", false);
+                })
+            }
+        });
+
+    });
+
+    function del(kid){
+        kid = kid ? kid : getChecked();
+        kid = kid.toString();
+        console.log(kid);
+        if(kid == ''){
+            layer.msg('你没有选择任何选项！', {offset: 95,shift: 6});
+            return false;
+        }
+        if(!confirm('确定要删除该记录？'))
+            return false;
+        $.post("{:U('Porder/del_order')}", {ids:kid}, function(data){
+            if( data['status'] == 'ok' ){
+                alert(data.info);
+                window.location.href = data.url;
+            }else{
+                alert(data.info);
+            }
+        },'json');
+        return false;
+    }
+    function getChecked() {
+        var gids = new Array();
+        $.each($('input:checked'), function(i, n){
+            gids.push( $(n).val() );
+        });
+        return gids;
+    }
+
+    function xiazai(){
+        var download = 'download';
+        window.location.href="__SELF__&act="+download;
+    }
+    function getnums(){
+        var num = $("#nus").val();
+        window.location.href="__SELF__&num="+num;
+    }
+
+    $("#start_time").datetimepicker({
+        format: 'yyyy-mm-dd',
+        weekStart: 1,
+        autoclose: true,
+        todayBtn: 'linked',
+        language: 'zh-CN',
+        minView: 2
+    }).on('changeDate', function(ev) {
+        $("#end_time").datetimepicker('setStartDate', $(this).val());
+    });
+
+    $("#end_time").datetimepicker({
+        format: 'yyyy-mm-dd',
+        weekStart: 1,
+        autoclose: true,
+        todayBtn: 'linked',
+        language: 'zh-CN',
+        minView: 2
+    });
+
+    function lock(v){
+        console.log(1);
+        $.post("{:U('Porder/lock_order')}",{id:v},function(data){
+            console.log(data);
+            if(data['status'] == 'ok'){
+                alert(data.info);
+                window.location.href = window.location.href;
+            }else{
+                alert(data.info);
+            }
+        },'json');
+    }
+</script>

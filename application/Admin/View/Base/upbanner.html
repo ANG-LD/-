@@ -1,0 +1,164 @@
+<include file="Public:header" />
+<load href="__PUBLIC__/admin/js/uploadify.css" />
+<load href="__PUBLIC__/admin/js/swfobject.js" />
+<script type="text/javascript" src="__PUBLIC__/admin/js/jquery.uploadify.v2.1.4.min.js"></script>
+
+<script type="text/javascript">
+ $(function($) {
+	$("#file_upload2").uploadify({
+	 		'uploader'       : '__PUBLIC__/admin/js/uploadify.swf',
+	 		'script'         : '__PUBLIC__/admin/js/uploadify.php',
+	 		'cancelImg'      : '__PUBLIC__/admin/images/cancel.png',
+	 		'folder'         : '__PUBLIC__/admin/Uploads',
+	 		'queueID'        : 'fileQueue2',
+	 		'sizeLimit'      :	10 * 1000 * 1024,
+			'buttonImg'      : '__PUBLIC__/admin/images/llsc.jpg',
+			'width'          :  85,
+			'height'          :  28,
+	 		'fileExt'        : '*.jpg;*.gif;*.png;', //允许文件上传类型,和fileDesc一起使用.
+	 		'fileDesc'       : '*.jpg;*.gif;*.png;',  //选择文件对话框中的提示文本.
+	 		'auto'           : true,
+	 		'multi'          : false,	
+	 		'onComplete':function(event,queueId,fileObj,response,data){
+	 			$('input[name="logo"]').val(response);
+	 			$('#pic2').attr('src', response);
+	 		}
+	 	});
+
+	 });
+</script>
+<SCRIPT language=JavaScript>
+	     function checkss(){
+	    	 var title    = $("#username").val();
+	    	 var person   = $("#person").val();
+	    	 if(title==''){
+	    		 alert('名称不能为空！');
+	        	 return false;
+	    	 }
+	    	 
+	     }
+         window.onload=function(){
+             var radio = document.getElementsByName("type");
+             for (i=0; i<radio.length; i++) {
+                 if (radio[i].checked) {
+                     key = radio[i].value;
+                 }
+             }
+             if(key==1){
+                 document.getElementById("yincang1").className="yincang1";
+                 document.getElementById("yincang2").className="yincang2";
+                 document.getElementById("yincang3").className="";
+             }else if(key==2){
+                 document.getElementById("yincang1").className="";
+                 document.getElementById("yincang2").className="yincang2";
+                 document.getElementById("yincang3").className="yincang3";
+             }else if(key==3){
+                 document.getElementById("yincang1").className="yincang1";
+                 document.getElementById("yincang2").className="";
+                 document.getElementById("yincang3").className="yincang3";
+             }
+         }
+         function sellei(key) {
+             if(key==1){
+                 document.getElementById("yincang1").className="yincang1";
+                 document.getElementById("yincang2").className="yincang2";
+                 document.getElementById("yincang3").className="";
+             }else if(key==2){
+                 document.getElementById("yincang1").className="";
+                 document.getElementById("yincang2").className="yincang2";
+                 document.getElementById("yincang3").className="yincang3";
+             }else if(key==3){
+                 document.getElementById("yincang1").className="yincang1";
+                 document.getElementById("yincang2").className="";
+                 document.getElementById("yincang3").className="yincang3";
+             }
+         }
+	</script>
+<style>
+    .yincang1,.yincang2,.yincang3{display: none}
+</style>
+<div class="content">
+<!-----------------------------------------内容开始--------------------------------------------------->
+<div class="infoBox">
+<form name="form" action="{:U('doupbanner')}"  method="post" onsubmit="return checkss();">
+<table width="90%" border="0" cellpadding="0" cellspacing="0" id="basic">
+    <input type="hidden" value="{$hots.b_id}" name="id">
+    <!--<tr>-->
+        <!--<td  width="15%" class="infoBoxTd"><div style="width:55px;">类型:</div></td>-->
+        <!--<td colspan="2">-->
+            <!--<input type="radio" name="type" value="1" onchange="sellei(1);" <if condition=" $hots.b_type eq 1 ">checked</if>>&nbsp;外链&nbsp;&nbsp;-->
+            <!--<input type="radio" name="type" value="2" onchange="sellei(2);" <if condition=" $hots.b_type eq 2 ">checked</if>>&nbsp;直播&nbsp;&nbsp;-->
+            <!--<input type="radio" name="type" value="3" onchange="sellei(3);" <if condition=" $hots.b_type eq 3 ">checked</if>>&nbsp;用户&nbsp;&nbsp;-->
+        <!--</td>-->
+    <!--</tr>-->
+    <!--<tr id="yincang1" class="yincang1">-->
+        <!--<td  width="15%" class="infoBoxTd"><div style="width:57px;">直播间ID:</div></td>-->
+        <!--<td colspan="2">-->
+            <!--<input type="text" id="live_id" name="live_id" size="40" value="{$hots.live_id}">-->
+        <!--</td>-->
+    <!--</tr>-->
+    <!--<tr id="yincang2" class="yincang2">-->
+        <!--<td  width="15%" class="infoBoxTd"><div style="width:57px;">用户ID:</div></td>-->
+        <!--<td colspan="2">-->
+            <!--<input type="text" id="uid" name="uid" size="40" value="{$hots.id}">-->
+        <!--</td>-->
+    <!--</tr>-->
+    <!--<tr id="yincang3" class="yincang3">-->
+        <!--<td  width="15%" class="infoBoxTd"><div style="width:57px;">URL:</div></td>-->
+        <!--<td colspan="2">-->
+            <!--<input type="text" id="url" name="url" size="40" value="{$hots.url}">-->
+        <!--</td>-->
+    <!--</tr>-->
+    <tr>
+        <td  width="2%"  style="text-align:right;color:#2d52a5"><div style="width:55px;">banner:</div></td>
+        <td colspan="2">
+            <div class="upimg-box"><div id="fileQueue2"></div>
+                <input id="file_upload2" type="file" />
+                <input name="logo" type="hidden" id="fileDoc" value="{$hots.b_img}" />
+                &nbsp;&nbsp;<img  id="pic2" src="<if condition='$hots.b_img eq "" '>__PUBLIC__/admin/images/nopic.gif<else/>{$hots.b_img}</if>" width="110"  height="60"/>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td  width="15%" class="infoBoxTd"><div style="width:57px;">标题:</div></td>
+        <td colspan="2">
+            <input type="text" id="title" name="title" size="40" value="{$hots.title}">
+        </td>
+    </tr>
+    <tr>
+        <td  width="15%" class="infoBoxTd"><div style="width:57px;">排序:</div></td>
+        <td colspan="2">
+            <input type="text" id="remark" name="remark" size="40" value="{$hots.remark}">
+        </td>
+    </tr>
+    <tr>
+        <td  width="15%" class="infoBoxTd"><div style="width:57px;">内容:</div></td>
+        <td colspan="2">
+            <textarea name="content" id="content" style="width: 90%;height: 450px">{$hots.content}</textarea>
+        </td>
+    </tr>
+                
+              
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td class="infoBoxTd">&nbsp;</td>
+<td align="left"><input type="submit" name="submit" value="保存" class="formInput01" /></td>
+</tr>
+</table>
+</form>
+</div>
+<script>
+KindEditor.ready(function(K) {
+    k1 = K.create('#content', {});
+    k2 = K.create('#content2', {});
+    k3 = K.create('#content3', {});
+
+});
+///var ue = UE.getEditor('content');
+///var ue = UE.getEditor('content2');
+///var ue = UE.getEditor('content3');
+</script>
+<!-----------------------------------------内容结束--------------------------------------------------->
+</div>
+<include file="Public:footer" />

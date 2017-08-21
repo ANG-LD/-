@@ -1,0 +1,476 @@
+<include file="Public:header" />
+<load href="__PUBLIC__/admin/js/uploadify.css" />
+<load href="__PUBLIC__/admin/js/swfobject.js" />
+<script type="text/javascript" src="__PUBLIC__/admin/js/jquery.uploadify.v2.1.4.min.js"></script>
+
+<script type="text/javascript">
+    $(function($) {
+        $("#file_upload2").uploadify({
+            'uploader'       : '__PUBLIC__/admin/js/uploadify.swf',
+            'script'         : '__PUBLIC__/admin/js/uploadify.php',
+            'cancelImg'      : '__PUBLIC__/admin/images/cancel.png',
+            'folder'         : '__PUBLIC__/admin/Uploads/touxiang',
+            'queueID'        : 'fileQueue2',
+            'sizeLimit'      :	10 * 1000 * 1024,
+            'buttonImg'      : '__PUBLIC__/admin/images/llsc.jpg',
+            'width'          :  85,
+            'height'          :  28,
+            'fileExt'        : '*.jpg;*.gif;*.png;', //允许文件上传类型,和fileDesc一起使用.
+            'fileDesc'       : '*.jpg;*.gif;*.png;',  //选择文件对话框中的提示文本.
+            'auto'           : true,
+            'multi'          : false,
+            'onComplete':function(event,queueId,fileObj,response,data){
+                $('input[name="logo"]').val(response);
+                $('#pic2').attr('src', response);
+            }
+        });
+
+    });
+</script>
+<SCRIPT language=JavaScript>
+    function checkss(){
+        var id = $("#id").val();
+        var phone    = $("#phone").val();
+        if(phone==''){
+            $(".yzphone").html('填写账号！');
+            $("#phone").focus();
+            return false;
+        }else {
+            $(".yzphone").html('');
+            var result=false;
+            $.ajax({async:false//要设置为同步的，要不CheckUserName的返回值永远为false
+                ,url:'{:U("yzmobile")}',data:{id:id,mobile:phone}
+                ,success:function(data){
+                    if(data == 1){
+                        $(".yzphone").html('账号已注册');
+                        $("#phone").focus();
+                        result = false;
+                    } else {
+                        result = true;
+                    }
+                }});
+            return result;
+        }
+
+    }
+
+    function area_linke1(value){
+        $.post("{:U('get_area')}", {value:value,type:1}, function(v){
+
+            $("#shi").html(v);
+
+        });
+    }
+    function area_linke2(value){
+        $.post("{:U('get_area')}", {value:value,type:2}, function(v){
+
+            $("#qu").html(v);
+
+        });
+    }
+</script>
+<div class="content">
+    <!-----------------------------------------内容开始--------------------------------------------------->
+    <div class="infoBox">
+        <form name="form" action="{:U('doadd')}"  method="post" onsubmit="return checkss();">
+            <div style="width:100%;margin-top: 30px;">
+                <div style="width:100%;height:160px;float:left">
+                    <div style="float:left;height:150px;width:113px"><img src="{$view.img}" style="width:113px;height:111px;margin-bottom:10px"><span style="padding-left:15px">{$mem.nickname}</span>&nbsp;&nbsp;<span><if condition="$mem.sex eq 1">女<elseif condition="$mem.sex eq 2"/>男<else/></if></span></div>
+                    <div style="float:left;padding-left:50px">
+                        <ul style="line-height:30px">
+                            <li>昵称：{$view.username}</li>
+                            <li>性别：{$view['sex'] == 1 ? '男' : ($view['sex'] == 2 ? '女' : '未知')}</li>
+                            <li>账号：{$view.phone}</li>
+                            <li>地址：{$view.province}{$view.city}{$view.area}&nbsp;{$view.address}</li>
+                        </ul>
+                    </div>
+                    <div style="float:left;padding-left:50px">
+                        <ul style="line-height:30px">
+                            <li>账户余额：{$view['money']|default=0} 钻石</li>
+                            <li>收益：{$view.get_money|default=0} 火力</li>
+                            <li>总消费：{$view['xiaofei']|default=0} 钻石</li>
+                            <li>已提现总额：{$view.withdraw_count|default=0} </li>
+                        </ul>
+                    </div>
+                    <div style="float:left;padding-left:50px">
+                        <ul style="line-height:30px">
+                            <li>等级：{$view['grade']}</li>
+                            <li>师傅ID:<if condition=" $view.master_ID eq '' ">未绑定<else/>{$view['master_ID']}</if></li>
+                            <li>是否认证:<if condition=" $view.is_authen eq 1 ">未认证<else/><a href="javascript:;" onclick="sel_authen_info({$view.user_id})">已认证</a></if></li>
+                            <li></li>
+                        </ul>
+                    </div>
+
+
+                </div>
+
+            </div>
+            <div class="tab">
+                <div class="tab_menu">
+                    <ul>
+                        <!--<li class="selected">时事</li>-->
+                        <!--<li>体育</li>-->
+                        <!--<li>娱乐</li>-->
+                        <a href="{:U('details',array('id'=>$view['user_id'],'state'=>1))}"><li <if condition=" $state eq 1 ">class="selected"<else/></if>>充值记录</li></a>
+                        <a href="{:U('details',array('id'=>$view['user_id'],'state'=>3))}"><li <if condition=" $state eq 3 ">class="selected"<else/></if>>提现记录</li></a>
+                        <a href="{:U('details',array('id'=>$view['user_id'],'state'=>4))}"><li <if condition=" $state eq 4 ">class="selected"<else/></if>>收益记录</li></a>
+                        <a href="{:U('details',array('id'=>$view['user_id'],'state'=>5))}"><li <if condition=" $state eq 5 ">class="selected"<else/></if>>消费记录</li></a>
+                        <a href="{:U('details',array('id'=>$view['user_id'],'state'=>6))}"><li <if condition=" $state eq 6 ">class="selected"<else/></if>>关注列表</li></a>
+                        <a href="{:U('details',array('id'=>$view['user_id'],'state'=>7))}"><li <if condition=" $state eq 7 ">class="selected"<else/></if>>粉丝列表</li></a>
+                        <a href="{:U('details',array('id'=>$view['user_id'],'state'=>8))}"><li <if condition=" $state eq 8 ">class="selected"<else/></if>>直播列表</li></a>
+                        <a href="{:U('details',array('id'=>$view['user_id'],'state'=>9))}"><li <if condition=" $state eq 9 ">class="selected"<else/></if>>录播列表</li></a>
+                        <a href="{:U('details',array('id'=>$view['user_id'],'state'=>10))}"><li <if condition=" $state eq 10 ">class="selected"<else/></if>>被推荐人列表</li></a>
+                        <a href="{:U('details',array('id'=>$view['user_id'],'state'=>11))}"><li <if condition=" $state eq 11 ">class="selected"<else/></if>>赠送度票记录</li></a>
+                    </ul>
+                </div>
+                <div class="tab_box">
+                    <div <if condition=" $state neq 1 ">class="hide"</if>>
+                    <table width="100%" border="0" cellpadding="0" cellspacing="0" class="">
+                        <tr class="tabTitleMain">
+                            <td width="15%" align="center">充值编号</td>
+                            <td width="10%" align="center">金额</td>
+                            <td width="10%" align="center">钻石</td>
+                            <td width="12%" align="center">时间</td>
+                            <td width="10%" align="center">支付类型</td>
+                        </tr>
+
+
+                        <volist name='re' id='l' key='i'>
+                            <tr class="tabTextMain" id="f_{$l.id}" onmouseout="this.style.background='#FFFFFF';" onmouseover="this.style.background='#fbf435';">
+                                <td align="center" class="onerow">{$l.pay_number}</td>
+                                <td align="center" class="onerow">{$l.amount}</td>
+                                <td align="center" class="onerow">{$l.meters}</td>
+                                <td align="center" class="onerow">{$l.intime|date="Y-m-d H:i",###}</td>
+                                <td align="center" class="onerow">{$l.pay_type}</td>
+
+                            </tr>
+                        </volist>
+                    </table>
+                    <div class="pages">{$show}</div>
+                </div>
+                <!--<div <if condition=" $state neq 2 ">class="hide"</if>>-->
+                <!--<table width="100%" border="0" cellpadding="0" cellspacing="0" class="">-->
+                    <!--<tr class="tabTitleMain">-->
+                        <!--<td width="15%" align="center">兑换的火力</td>-->
+                        <!--<td width="10%" align="center">兑换平米数</td>-->
+                        <!--<td width="12%" align="center">时间</td>-->
+                    <!--</tr>-->
+
+
+                    <!--<volist name='con' id='l' key='i'>-->
+                        <!--<tr class="tabTextMain" id="f_{$l.id}" onmouseout="this.style.background='#FFFFFF';" onmouseover="this.style.background='#fbf435';">-->
+                            <!--<td align="center" class="onerow">{$l.k}</td>-->
+                            <!--<td align="center" class="onerow">{$l.meters}</td>-->
+                            <!--<td align="center" class="onerow">{$l.intime|date="Y-m-d H:i",###}</td>-->
+
+                        <!--</tr>-->
+                    <!--</volist>-->
+                <!--</table>-->
+                <!--<div class="pages">{$show}</div>-->
+            <!--</div>-->
+            <div <if condition=" $state neq 3 ">class="hide"</if>>
+            <table width="100%" border="0" cellpadding="0" cellspacing="0" class="">
+                <tr class="tabTitleMain">
+                    <td width="15%" align="center">提现火力</td>
+                    <td width="10%" align="center">金额</td>
+                    <td width="10%" align="center">账户</td>
+                    <td width="10%" align="center">类型</td>
+                    <td width="10%" align="center">状态</td>
+                    <td width="12%" align="center">申请时间</td>
+                </tr>
+
+
+                <volist name='w' id='l' key='i'>
+                    <tr class="tabTextMain" id="f_{$l.id}" onmouseout="this.style.background='#FFFFFF';" onmouseover="this.style.background='#fbf435';">
+                        <td align="center" class="onerow">{$l.k}</td>
+                        <td align="center" class="onerow">{$l.money}</td>
+                        <td align="center" class="onerow">{$l.withdraw_way}</td>
+                        <td align="center" class="onerow">{$l.withdraw_type}</td>
+                        <td align="center" class="onerow"><if condition=" $l.status eq 1 ">等待审核<elseif condition=" $l.status eq 2 "/>驳回<else/>已返现</if></td>
+                        <td align="center" class="onerow">{$l.intime|date="Y-m-d H:i",###}</td>
+
+                    </tr>
+                </volist>
+            </table>
+            <div class="pages">{$show}</div>
+    </div>
+    <div <if condition=" $state neq 4 ">class="hide"</if>>
+    <table width="100%" border="0" cellpadding="0" cellspacing="0" class="">
+        <tr class="tabTitleMain">
+            <td width="15%" align="center">直播标题</td>
+            <td width="10%" align="center">用户</td>
+            <td width="10%" align="center">礼物</td>
+            <td width="10%" align="center">价格</td>
+            <td width="12%" align="center">时间</td>
+        </tr>
+
+
+        <volist name='g' id='l' key='i'>
+            <tr class="tabTextMain" id="f_{$l.id}" onmouseout="this.style.background='#FFFFFF';" onmouseover="this.style.background='#fbf435';">
+                <td align="center" class="onerow">{$l.title}</td>
+                <td align="center" class="onerow">{$l.username}</td>
+                <td align="center" class="onerow">{$l.name}</td>
+                <td align="center" class="onerow">{$l.jewel}</td>
+                <td align="center" class="onerow">{$l.intime|date="Y-m-d H:i",###}</td>
+
+            </tr>
+        </volist>
+    </table>
+    <div class="pages">{$show}</div>
+</div>
+<div <if condition=" $state neq 5 ">class="hide"</if>>
+<table width="100%" border="0" cellpadding="0" cellspacing="0" class="">
+    <tr class="tabTitleMain">
+        <td width="15%" align="center">直播标题</td>
+        <td width="10%" align="center">主播</td>
+        <td width="10%" align="center">礼物</td>
+        <td width="10%" align="center">价格</td>
+        <td width="12%" align="center">时间</td>
+    </tr>
+
+
+    <volist name='give' id='l' key='i'>
+        <tr class="tabTextMain" id="f_{$l.id}" onmouseout="this.style.background='#FFFFFF';" onmouseover="this.style.background='#fbf435';">
+            <td align="center" class="onerow">{$l.title}</td>
+            <td align="center" class="onerow">{$l.username}</td>
+            <td align="center" class="onerow">{$l.name}</td>
+            <td align="center" class="onerow">{$l.jewel}</td>
+            <td align="center" class="onerow">{$l.intime|date="Y-m-d H:i",###}</td>
+
+        </tr>
+    </volist>
+</table>
+<div class="pages">{$show}</div>
+</div>
+<div <if condition=" $state neq 6 ">class="hide"</if>>
+<table width="100%" border="0" cellpadding="0" cellspacing="0" class="">
+    <tr class="tabTitleMain">
+        <td width="15%" align="center">被关注用户</td>
+        <td width="12%" align="center">关注时间</td>
+    </tr>
+
+
+    <volist name='f' id='l' key='i'>
+        <tr class="tabTextMain" id="f_{$l.id}" onmouseout="this.style.background='#FFFFFF';" onmouseover="this.style.background='#fbf435';">
+            <td align="center" class="onerow">{$l.username}(ID:{$l.id})</td>
+            <td align="center" class="onerow">{$l.intime|date="Y-m-d H:i",###}</td>
+
+        </tr>
+    </volist>
+</table>
+<div class="pages">{$show}</div>
+</div>
+<div <if condition=" $state neq 7 ">class="hide"</if>>
+<table width="100%" border="0" cellpadding="0" cellspacing="0" class="">
+    <tr class="tabTitleMain">
+        <td width="15%" align="center">关注用户</td>
+        <td width="12%" align="center">关注时间</td>
+    </tr>
+
+
+    <volist name='fo' id='l' key='i'>
+        <tr class="tabTextMain" id="f_{$l.id}" onmouseout="this.style.background='#FFFFFF';" onmouseover="this.style.background='#fbf435';">
+            <td align="center" class="onerow">{$l.username}(ID:{$l.id})</td>
+            <td align="center" class="onerow">{$l.intime|date="Y-m-d H:i",###}</td>
+
+        </tr>
+    </volist>
+</table>
+<div class="pages">{$show}</div>
+</div>
+<div <if condition=" $state neq 8 ">class="hide"</if>>
+<table width="100%" border="0" cellpadding="0" cellspacing="0" class="">
+    <tr class="tabTitleMain">
+        <td width="8%" align="center">标题</td>
+        <td width="8%" align="center">封面</td>
+        <td width="10%" align="center">开始时间</td>
+        <td width="10%" align="center">结束时间</td>
+        <td width="7%" align="center">总人数</td>
+        <td width="7%" align="center">观看人数</td>
+        <td width="7%" align="center">点亮数</td>
+        <td width="7%" align="center">收礼</td>
+        <td width="10%" align="center">操作</td>
+    </tr>
+
+
+    <volist name='live' id='l' key='i'>
+        <tr class="tabTextMain" id="f_{$l.id}" onmouseout="this.style.background='#FFFFFF';" onmouseover="this.style.background='#fbf435';">
+            <td align="center" class="onerow">{$l.title}</td>
+            <td align="center" class="onerow"><img src="{$l.play_img}" style="width: 50px;height: 50px;border-radius:50%"></td>
+            <td align="center" class="onerow">{$l.start_time|date="Y-m-d H:i:s",###}</td>
+            <td align="center" class="onerow"><if condition=" $l.end_time eq 0 "><else/>{$l.end_time|date="Y-m-d H:i:s",###}</if></td>
+            <td align="center" class="onerow">{$l.nums}</td>
+            <td align="center" class="onerow">{$l.watch_nums}</td>
+            <td align="center" class="onerow">{$l.light_up_count}</td>
+            <td align="center" class="onerow">{$l.gift_count}</td>
+            <td align="center">
+                <if condition=" $l.live_status eq 1 "><a href="javascript:;" onclick="offline({$l.live_id});" style="color: #0a83cd">强制下线</a><else/>已结束</if>
+            </td>
+
+        </tr>
+    </volist>
+</table>
+<div class="pages">{$show}</div>
+</div>
+<div <if condition=" $state neq 9 ">class="hide"</if>>
+<table width="100%" border="0" cellpadding="0" cellspacing="0" class="">
+    <tr class="tabTitleMain">
+        <td width="8%" align="center">封面</td>
+        <td width="30%" align="center">地址</td>
+        <td width="10%" align="center">时间</td>
+        <td width="15%" align="center">操作</td>
+    </tr>
+
+
+    <volist name='live_store' id='l' key='i'>
+        <tr class="tabTextMain" id="f_{$l.id}" onmouseout="this.style.background='#FFFFFF';" onmouseover="this.style.background='#fbf435';">
+            <td align="center" class="onerow"><img src="{$l.play_img}" style="width: 50px;height: 50px;border-radius:50%"></td>
+            <td align="center" class="onerow">{$l.url}</td>
+            <td align="center" class="onerow">{$l.intime|date="Y-m-d H:i:s",###}</td>
+            <td align="center">
+                <a href="javascript:;" onclick="sel({$l.live_store_id});" style="color: #0a83cd">查看</a>
+                |&nbsp;&nbsp;
+                <a href="javascript:;"  onclick="del({$l.live_store_id});" style="color: #0a83cd">删除</a>
+
+            </td>
+        </tr>
+    </volist>
+</table>
+<div class="pages">{$show}</div>
+</div>
+<div <if condition=" $state neq 10 ">class="hide"</if>>
+<table width="100%" border="0" cellpadding="0" cellspacing="0" class="">
+    <tr class="tabTitleMain">
+        <td width="15%" align="center">账号</td>
+        <td width="10%" align="center">ID</td>
+        <td width="10%" align="center">推荐时间</td>
+
+    </tr>
+
+
+    <volist name='master' id='l' key='i'>
+        <tr class="tabTextMain" id="f_{$l.id}" onmouseout="this.style.background='#FFFFFF';" onmouseover="this.style.background='#fbf435';">
+            <td align="center" class="onerow">{$l.phone}({$l.username})</td>
+            <td align="center" class="onerow">{$l.id}</td>
+            <td align="center" class="onerow">{$l.intime|date="Y-m-d H:i",###}</td>
+
+        </tr>
+    </volist>
+</table>
+<div class="pages">{$show}</div>
+</div>
+<div <if condition=" $state neq 11 ">class="hide"</if>>
+<table width="100%" border="0" cellpadding="0" cellspacing="0" class="">
+    <tr class="tabTitleMain">
+        <td width="15%" align="center">赠送账号</td>
+        <td width="10%" align="center">ID</td>
+        <td width="15%" align="center">说明</td>
+        <td width="10%" align="center">时间</td>
+
+    </tr>
+
+
+    <volist name='recharge' id='l' key='i'>
+        <tr class="tabTextMain" id="f_{$l.id}" onmouseout="this.style.background='#FFFFFF';" onmouseover="this.style.background='#fbf435';">
+            <td align="center" class="onerow">{$l.phone}({$l.username})</td>
+            <td align="center" class="onerow">{$l.id}</td>
+            <td align="center" class="onerow">{$l.dis}</td>
+            <td align="center" class="onerow">{$l.intime|date="Y-m-d H:i",###}</td>
+
+        </tr>
+    </volist>
+</table>
+<div class="pages">{$show}</div>
+</div>
+</div>
+</div>
+
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+        <td class="infoBoxTd">&nbsp;</td>
+        <td align="left"><input type="" name="button" onclick="javascript:window.location.href='<if condition=" $view.type eq 1 ">{:U('index')}<else/>{:U('live_user')}</if>'" value="返回" class="formInput01" /></td>
+    </tr>
+</table>
+</form>
+<style>
+    .tab { width:100%;}
+    .tab_menu { clear:both;}
+    .tab_menu li { width:8%;float:left; text-align:center; cursor:pointer; list-style:none;  margin-right:4px; background:#F1F1F1; border:1px solid #898989; border-bottom:none;padding:1px 6px;}
+    .tab_menu li.hover { background:#DFDFDF;}
+    .tab_menu li.selected { color:#FFF; background:#6D84B4;}
+    .tab_menu li.selected  a{ color:#fff}
+    .tab_box { clear:both; border:1px solid #898989;}
+    .hide{display:none}
+    .tab_menu li a#current{}
+</style>
+<script type="text/javascript" >
+    //<![CDATA[
+    $(function(){
+        var $div_li =$("div.tab_menu ul li");
+        $div_li.click(function(){
+            $(this).addClass("selected")            //当前<li>元素高亮
+                    .siblings().removeClass("selected");  //去掉其它同辈<li>元素的高亮
+            var index =  $div_li.index(this);  // 获取当前点击的<li>元素 在 全部li元素中的索引。
+            $("div.tab_box > div")   	//选取子节点。不选取子节点的话，会引起错误。如果里面还有div
+                    .eq(index).show()   //显示 <li>元素对应的<div>元素
+                    .siblings().hide(); //隐藏其它几个同辈的<div>元素
+        })
+    })
+    //]]>
+</script>
+</div>
+<script>
+    function sel(id) {
+        layer.open({
+            type: 2,
+            title: false,
+            area: ['1020px', '587px'],
+            shade: 0.1,
+            closeBtn: 1,
+            shadeClose: false,
+            content: "__URL__/play?id="+id,
+        });
+    }
+    function sel_authen_info(user_id) {
+        layer.open({
+            type: 2,
+            title: '认证信息',
+            area: ['600px', '50%'],
+            shade: 0.1,
+            closeBtn: 1,
+            shadeClose: false,
+            content: "__URL__/sel_authen_info?id="+user_id,
+        });
+    }
+    function del(kid){
+        kid = kid ? kid : getChecked();
+        kid = kid.toString();
+        if(kid == ''){
+            alert("请选择要删除的选项");
+            return false;
+        }
+        if(!confirm('确定删除？'))
+            return false;
+        $.post("{:U('Live/del')}", {ids:kid}, function(v){
+            if( v == 1 ){
+                alert('删除成功！');
+                location.reload("{:U('details',array('id'=>$view['user_id'],'state'=>9))}");
+            }else{
+                alert('删除失败！');
+            }
+        });
+    }
+    KindEditor.ready(function(K) {
+        k1 = K.create('#content', {});
+        k2 = K.create('#content2', {});
+        k3 = K.create('#content3', {});
+
+    });
+    ///var ue = UE.getEditor('content');
+    ///var ue = UE.getEditor('content2');
+    ///var ue = UE.getEditor('content3');
+</script>
+<!-----------------------------------------内容结束--------------------------------------------------->
+</div>
+<include file="Public:footer" />

@@ -1,0 +1,117 @@
+<layout name="Layout/index" />
+{:W('public/breadcrumbs',['微信公众平台配置'])}
+</if>
+<div class="page-content">
+	<div class="row">
+		<div class="col-xs-6">
+			<div class="alert alert-block alert-success">关注事件</div>
+			<form class="form-horizontal ajax-form" role="form" dit-action="{:U('Mess/addMess')}" dit-redirect="{:U('Mess/index')}">
+				<div class="space-10"></div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label" for="title">答复类型:</label>
+					<div class="col-sm-9">
+						<select id="title" name="title" class="col-xs-10 col-sm-5">
+							<option>站内信息</option>
+							<option>微信素材</option>
+							<option>文本</option>
+							<option>视频</option>
+							<option>图片</option>
+						</select>
+						<span class="help-inline col-xs-12 col-sm-7">
+							<span class="middle"></span>
+						</span>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<div class="col-sm-offset-3 col-sm-9">
+						<button class="btn btn-default col-xs-10 col-sm-5">选择站内信息</button>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<div class="col-sm-offset-3 col-sm-9">
+						<div class="col-xs-12">
+							<img src="" />
+						</div>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label class="col-sm-3 control-label" for="title">文本内容:</label>
+					<div class="col-sm-9">
+						<textarea class="form-control" rows="3"></textarea>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<div class="col-sm-offset-3 col-sm-9">
+						<button class="btn btn-default col-xs-10 col-sm-5">选择事件</button>
+					</div>
+				</div>
+				
+				<div class="clearfix form-actions">
+					<div class="col-md-offset-3 col-md-9">
+						<input type="hidden" name="id" value="{$_GET['id']}" />
+						<button class="btn btn-info" type="submit">
+							<i class="icon-ok bigger-110"></i>更新关注事件
+						</button>
+					</div>
+					<p class="form-tip"></p>
+				</div>
+			</form>
+			<!-- ./ end form -->
+		</div>
+		<!-- ./ end col-6 -->
+		<div class="col-xs-6">
+			<!-- 取消关注事件 -->
+			<div class="alert alert-block alert-success">取消关注事件</div>
+		</div>
+	</div>
+	<!-- ./ end row -->
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="alert alert-block alert-success">
+				<i class="icon-ok green"></i>关键字列表 
+			</div>
+			<table class="table table-striped table-bordered table-hover">
+				<thead>
+					<tr>
+						<th class="center">ID</th>
+						<th>头像</th>
+						<th>昵称</th>
+						<th>性别</th>
+						<th>关注时间</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+<script>
+$(document).ready(function(){
+	$('form.ajax-form').submit(function(){
+		var obj = $(this);
+		var url = obj.attr('dit-action');
+		$.post(url,obj.serialize(),function(data){
+			if(data.code == '200'){
+				window.location.href = obj.attr('dit-redirect');
+			} else {
+				obj.find('form-tip').html(data.msg);
+			}
+		},'json');
+		return false;
+	});
+});
+</script>

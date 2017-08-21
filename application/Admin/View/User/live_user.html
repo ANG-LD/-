@@ -1,0 +1,256 @@
+<include file="Public:header" />
+<script type="text/javascript">
+    function edit(id){
+        location.href="__URL__/edit/id/"+id;
+    }
+    //进入到下级
+    function xj(id){
+        location.href="__URL__/index2/id/"+id;
+    }
+    function getnums(){
+        var num = $("#nus").val();
+        var start = $("#start").val();
+        var end = $("#end").val();
+        var username = $("#username").val();
+        var banned = $("#banned").val();
+        var titles = $("#titles").val();
+        window.location.href="__URL__/live_user?nums="+num+"&start="+start+"&end="+end+"&username="+username+"&banned="+banned+"&titles="+titles;
+    }
+    function sendname() {
+        var num = $("#nus").val();
+        var start = $("#start").val();
+        var end = $("#end").val();
+        var username = $("#username").val();
+        window.location.href="__URL__/live_user?nums="+num+"&start="+start+"&end="+end+"&username="+username;
+    }
+</script>
+
+<form action="javascript:;" method="post">
+    <div class="tools">
+        <div class="add"><span><a href="__URL__/toadd_live_user">添加</a></span></div>
+        <div class="del"><span><span><a href="javascript:;">
+<input name="dele" type="submit" value="删除" onclick="del();" class="wr"   style="border:none; background-color:#F2F7FD; color:#2D52A5;margin-top:3px;" /></a></span></div>
+
+        <span style="float:left;padding-top:8px;">每页显示
+        <select id="nus" onchange="getnums();">
+          <volist name="nums" id="l">
+             <option value="{$l}" <if condition=" $l eq $nus ">selected<else/></if>>{$l}</option>
+              </volist>
+        </select> 条
+    </span>
+
+        <span style="float:right;padding-right:25px;padding-top:5px;">
+        禁播:<select name="banned" id="banned" onchange="getnums()">
+                <option value="">全部</option>
+                <option value="1" <if condition=" $banned eq 1 ">selected</if>>未禁播</option>
+            <option value="2" <if condition=" $banned eq 2 ">selected</if>>已禁播</option>
+            </select>
+        封号:<select name="titles" id="titles" onchange="getnums()">
+                <option value="">全部</option>
+                <option value="1" <if condition=" $titles eq 1 ">selected</if>>未封号</option>
+            <option value="2" <if condition=" $titles eq 2 ">selected</if>>已封号</option>
+            </select>
+   &nbsp;&nbsp;注册日期： <input type="text" class="laydate-icon" name="start_time" id="start" size="12" value="{$start}" readonly> - <input type="text" class="laydate-icon" name="end_time" id="end" size="12" value="{$end}" readonly>
+        关键词: <input type="text" name="username" id="username" value="{$username}" placeholder="输入账号、昵称、ID" size="25">
+&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" name="button" value="搜索" id="button" onclick="getnums()">
+</span>
+
+    </div>
+
+    <div class="content">
+
+        <!-----------------------------------------内容开始--------------------------------------------------->
+        <table width="100%" border="0" cellpadding="0" cellspacing="0" class="tabBox">
+            <tr class="tabTitleMain">
+                <td width="8%" align="center">
+                    <input type="checkbox" name="checkbox11" id="checkbox11"  onclick="return checkAll(this,'chois[]')"  value="0">全选</td>
+                <td width="15%" align="center">头像</td>
+                <td width="10%" align="center">账号</td>
+                <td width="10%" align="center">名称</td>
+                <td width="10%" align="center">ID</td>
+                <td width="10%" align="center">性别</td>
+                <td width="12%" align="center">时间</td>
+                <td width="20%" align="center">操作</td>
+            </tr>
+
+
+            <volist name='list' id='l' key='i'>
+                <tr class="tabTextMain" id="f_{$l.id}" onmouseout="this.style.background='#FFFFFF';" onmouseover="this.style.background='#fbf435';">
+                    <td align="center"><input type="checkbox" class="deleteids" value="{$l.user_id}" name="chois[]"/>{$i}</td>
+
+                    <td align="center" class="onerow"><img src="{$l.img}" style="width: 50px;height: 50px;border-radius:50%"></td>
+                    <td align="center" class="onerow">{$l.phone}</td>
+                    <td align="center" class="onerow">{$l.username}</td>
+                    <td align="center" class="onerow">{$l.id}</td>
+                    <td align="center" class="onerow"><if condition=" $l.sex eq 1 ">男<else/>女</if></td>
+                    <td align="center" class="onerow">{$l.intime|date="Y-m-d H:i",###}</td>
+
+                    <td align="center">
+                        <a href="{:U('toadd_live_user',array('id'=>$l['user_id']))}">编辑</a>
+                        | <a href="{:U('details',array('id'=>$l['user_id']))}">详情</a>
+                        | <a href="javascript:;"  onclick="del({$l.user_id});">删除</a><br/>
+                        <a href="{:U('recharge',array('id'=>$l['user_id']))}">充值</a>
+                        | <if condition=" $l.is_titles eq 1 "><a href="{:U('titles',array('id'=>$l['user_id']))}" >封号</a>
+                        <else/><a href="javescript:;" id="fenghao{$l.user_id}" onclick="quxiao_titles({$l.user_id})" onmouseover="show_titles({$l.user_id},{$l.is_titles})"  onmouseout="out()">取消封号</a></if>
+                        | <if condition=" $l.is_banned eq 1 "><a href="{:U('banned',array('id'=>$l['user_id']))}" >禁播</a>
+                        <else/><a href="javescript:;" id="jinbo{$l.user_id}" onclick="quxiao({$l.user_id})" onmouseover="show({$l.user_id},{$l.is_banned})"  onmouseout="out()">取消禁播</a></if>
+                    </td>
+                </tr>
+                <input type="hidden" value="{$l.banned_end_time}" name="banned_end_time" id="banned_end_time{$l.user_id}">
+                <input type="hidden" value="{$l.banned_dis}" name="banned_dis" id="banned_dis{$l.user_id}">
+                <input type="hidden" value="{$l.titles_end_time}" name="titles_end_time" id="titles_end_time{$l.user_id}">
+                <input type="hidden" value="{$l.titles_dis}" name="titles_dis" id="titles_dis{$l.user_id}">
+            </volist>
+        </table>
+</form>
+<div class="pages">{$show}</div>
+<!-----------------------------------------内容结束--------------------------------------------------->
+</div>
+
+<script type="text/javascript">
+    function checkAll(e,chois)
+    {
+        var aa=document.getElementsByName(chois);
+        for(var i=0;i<aa.length;i++)
+        {
+            aa[i].checked=e.checked;
+        }
+    }
+    //function tips(itemName){
+    //    var f=false;
+    //    var aa=document.getElementsByName(itemName);
+    //	for(var i=0;i<aa.length;i++){
+    // 		if(aa[i].checked==true){
+    //  	 		f=true;
+    // 		}
+    //	}
+    //	if(f==false){
+    //		alert("请选择要删除的选项");
+    //		return false;
+    //	}else{
+    //  return  confirm("一旦删除不可修复，确定删除吗？");
+    //}
+    //return true;
+    //}
+    function show(uid,is_banned) {
+        if(is_banned==3){
+            var date = "永久封禁";
+        }else {
+            var date = $("#banned_end_time"+uid).val();
+        }
+        var banned_dis = $("#banned_dis"+uid).val();
+        layer.tips('禁播到期时间:'+date+'<br/>'+'禁播原因:'+banned_dis, '#jinbo'+uid, {
+            tips: [1, '#3595CC'],
+            area: ['250px', ''],
+            time: 60000
+
+        });
+    }
+    function quxiao(uid) {
+        if(!confirm('确定取消禁播？'))
+            return false;
+        $.post("{:U('quxiao')}", {ids:uid}, function(v){
+            if( v == 1 ){
+                alert('成功！');
+                location.reload("{:U('index')}");
+            }else{
+                alert('失败！');
+            }
+        });
+    }
+    function show_titles(uid,is_titles) {
+        if(is_titles==3){
+            var date = "永久封号";
+        }else {
+            var date = $("#titles_end_time"+uid).val();
+        }
+        var banned_dis = $("#titles_dis"+uid).val();
+        layer.tips('封号到期时间:'+date+'<br/>'+'封号原因:'+banned_dis, '#fenghao'+uid, {
+            tips: [1, '#3595CC'],
+            area: ['250px', ''],
+            time: 60000
+
+        });
+    }
+    function quxiao_titles(uid) {
+        if(!confirm('确定取消封号？'))
+            return false;
+        $.post("{:U('quxiao_titles')}", {ids:uid}, function(v){
+            if( v == 1 ){
+                alert('成功！');
+                location.reload("{:U('index')}");
+            }else{
+                alert('失败！');
+            }
+        });
+    }
+    function out() {
+        layer.closeAll();
+    }
+    function del(kid){
+        kid = kid ? kid : getChecked();
+        kid = kid.toString();
+        if(kid == ''){
+            alert("请选择要删除的选项");
+            return false;
+        }
+        if(!confirm('确定删除？'))
+            return false;
+        $.post("{:U('del')}", {ids:kid}, function(v){
+            if( v == 1 ){
+                alert('删除成功！');
+                location.reload("{:U('live_user')}");
+            }else{
+                alert('删除失败！');
+            }
+        });
+    }
+    function getChecked() {
+        var gids = new Array();
+        $.each($('input:checked'), function(i, n){
+            gids.push( $(n).val() );
+        });
+        return gids;
+    }
+</script>
+<script>
+    layui.use('laydate', function(){
+        var laydate = layui.laydate;
+        var start = {
+            elem: '#start',
+            format: 'YYYY-MM-DD',
+            //min: laydate.now(), //设定最小日期为当前日期
+            max: '2099-06-16', //最大日期
+            istime: false,
+            istoday: false,
+            choose: function(datas){
+                $("#start").attr("value",datas);
+                end.min = datas; //开始日选好后，重置结束日的最小日期
+                end.start = datas //将结束日的初始值设定为开始日
+            }
+        };
+        var end = {
+            elem: '#end',
+            format: 'YYYY-MM-DD',
+            //min: laydate.now(),
+            max: '2099-06-16',
+            istime: false,
+            istoday: false,
+            choose: function(datas){
+                $("#end").attr("value",datas);
+                start.max = datas; //结束日选好后，重置开始日的最大日期
+            }
+        };
+        document.getElementById('start').onclick = function(){
+            start.elem = this;
+            laydate(start);
+        }
+        document.getElementById('end').onclick = function(){
+            end.elem = this
+            laydate(end);
+        }
+    });
+</script>
+
+
+<include file="Public:footer" />

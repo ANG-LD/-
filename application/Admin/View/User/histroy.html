@@ -1,0 +1,112 @@
+{:W('public/breadcrumbs',[
+    [
+        ['href'=>U('User/index'),'text'=>'会员管理'],
+        ['href'=>'','text'=>'添加会员']
+    ]
+])}
+</if>
+<div class="page-content">
+<div class="row">
+<div class="col-xs-12">
+<div class="col-xs-12"><br/>
+             <div>
+                 <a href="{:U('User/add_user')}"  style="padding-top:20px;color:#393939;cursor:pointer;"><span>添加会员</span></a>
+		        <span style="padding-left:30px;font-weight:bold;">会员添加历史记录</span>
+		     </div>
+		     <hr/>
+</div>
+<style>
+  .aa td{border-bottom: 1px dotted #000;padding-top:10px;padding-bottom:10px;width:20% }
+</style>
+<table width="100%">
+   <span>今天</span>
+   <div style="border-bottom:2px solid #BCBCBC;padding-top:10px"></div>
+    <volist name="list" id="vo">
+        <tr class="aa">
+            <td>
+                <if condition="$vo.type eq 1">
+                    普通会员
+                    <elseif condition="$vo.type eq 2" />
+                    超级会员
+                    <elseif condition="$vo.type eq 3" />
+                    普通网红
+                    <elseif condition="$vo.type eq 4" />
+                    加V网红
+                </if>
+            </td>
+            <td>{$vo.nickname}</td>
+            <td>{$vo.phone}</td>
+            <td>
+                <if condition="$vo.sex eq 2">女
+                    <elseif condition="$vo.sex eq 1"/>男
+                    <else/>
+                    保密
+                </if>
+            </td>
+            <td>{$vo.intime}</td>
+        </tr>
+    </volist>
+</table>
+<br/>
+<table width="100%">
+   <span>昨天</span>
+   <div style="border-bottom:2px solid #BCBCBC;padding-top:10px"></div>
+    <volist name="list2" id="vo">
+        <tr class="aa">
+            <td>
+                <if condition="$vo.type eq 1">
+                    普通会员
+                    <elseif condition="$vo.type eq 2" />
+                    超级会员
+                    <elseif condition="$vo.type eq 3" />
+                    普通网红
+                    <elseif condition="$vo.type eq 4" />
+                    加V网红
+                </if>
+            </td>
+            <td>{$vo.nickname}</td>
+            <td>{$vo.phone}</td>
+            <td>
+                <if condition="$vo.sex eq 2">女
+                    <elseif condition="$vo.sex eq 1"/>男
+                    <else/>
+                    保密
+                </if>
+            </td>
+            <td>{$vo.intime}</td>
+        </tr>
+    </volist>
+</table>
+<br/>
+<table width="100%">
+   <span>昨天之前</span>
+   <div style="border-bottom:2px solid #BCBCBC;padding-top:10px"></div>
+    <volist name="list3" id="vo">
+        <tr class="aa">
+            <td>
+                <if condition="$vo.type eq 1">
+                    普通会员
+                <elseif condition="$vo.type eq 2" />
+                    超级会员
+                <elseif condition="$vo.type eq 3" />
+                    普通网红
+                <elseif condition="$vo.type eq 4" />
+                    加V网红
+                </if>
+            </td>
+            <td>{$vo.nickname}</td>
+            <td>{$vo.phone}</td>
+            <td>
+                <if condition="$vo.sex eq 2">女
+                    <elseif condition="$vo.sex eq 1"/>男
+                    <else/>
+                    保密
+                </if>
+            </td>
+            <td>{$vo.intime}</td>
+        </tr>
+    </volist>
+</table>
+</div>
+</div>
+</div>

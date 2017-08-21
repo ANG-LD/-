@@ -1,0 +1,83 @@
+html,body{
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 100%;
+}
+body{
+	font-size: 0.24rem;
+	background:#f2f3f4;
+	color: #fff
+}
+img{
+	width: 100%;
+	height: 100%;
+	vertical-align:middle;
+}
+/*弹性盒子*/
+.layout{
+	display: box;
+	display: -webkit-box;
+	display: -moz-box;
+	box-align:center;
+	-webkit-box-align:center;
+	box-pack:center;
+	-webkit-box-pack:center;
+}
+.layout-start{
+	display: box;
+	display: -webkit-box;
+	display: -moz-box;
+	box-align:center;
+	-webkit-box-align:center;
+	box-pack:start;
+	-webkit-box-pack:start;
+}
+.layout-end{
+	display: box;
+	display: -webkit-box;
+	display: -moz-box;
+	box-align:center;
+	-webkit-box-align:center;
+	box-pack:end;
+	-webkit-box-pack:end;
+}
+.layout-justify{
+	display: box;
+	display: -moz-box;
+	display: -webkit-box;
+	box-align:center;
+	-webkit-box-align:center;
+	box-pack:justify;
+	-webkit-box-pack:justify;
+	/* overflow: hidden; */
+}
+.p_r{position: relative;}
+.p_a{position: absolute;}
+.p_f{position: fixed;}
+.w{width: 100%;}
+.w8{width: 80%;}
+.h{height: 100%;}
+.f12{font-size: 0.24rem;}
+.f14{font-size: 0.28rem;}
+.f16{font-size: 0.32rem;}
+.bor50{border-radius: 50%;}
+.p15{padding: 0.3rem}
+
+/*文本溢出*/
+.wbyc{overflow: hidden;text-overflow:ellipsis;white-space: nowrap;}
+
+
+.mscy_top{top: 0;left: 0;width: 100%;}
+.user_info_box{width: 70%;}
+.mscy_open_btn{background-color: #ea6c2a;border-radius: 0.3rem;height: 0.5rem;padding: 0 0.3rem;color: #fff;}
+.mscy_tx_img{width: 1.0rem;height: 1.0rem;margin-right: 0.2rem}
+.mscy_v{right: 0;bottom: 0;width: 0.36rem;height: 0.36rem;background:url(../images/sh_ic_v@2x.png) no-repeat;background-size: cover;}
+.mscy_bottom{bottom: 0;left: 0;width: 100%;}
+.mscy_download_box{height: 1.7rem;background-color: rgba(0,0,0,.7);padding: 0 0.3rem;}
+.logo_img{width: 1.0rem;height: 1.0rem;}
+.download_btn{display: block;background-color: #ea6c2a;border-radius: 0.04rem;color: #fff;height: 0.6rem;line-height: .6rem;padding: 0 0.3rem;text-decoration:none;}
+
+
+
+

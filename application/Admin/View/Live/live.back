@@ -1,0 +1,178 @@
+{:W('public/breadcrumbs',[
+    [
+        ['href'=>U('Live/index'),'text'=>'直播管理'],
+        ['href'=>'javascript:;','text'=>'当前直播']
+    ]
+])}
+</if>
+<script type="text/javascript" src="__ROOT__/public/admin/layer/layer.js"></script>
+<script type="text/javascript" src="__ROOT__/public/admin/js/jquery-1.7.min.js"></script>
+<div class="page-content">
+    <div id="big"></div>
+    <div id="big2"></div>
+    <div class="row">
+        <div class="col-xs-12">
+            <form class="search" action="{:U('User/index')}" method="get">
+                <input name="m" value="{:MODULE_NAME}" hidden>
+                <input name="c" value="{:CONTROLLER_NAME}" hidden>
+                <input name="a" value="{:ACTION_NAME}" hidden>
+                <input type="text" name="nickname" value="{$_GET['nickname']}" id="nickname" placeholder="搜索名称、手机号、ID" size="40" style="margin-right: 20px;">
+                <input type="submit"  class="btn" value="搜索">
+
+            </form>
+
+            <table width="100%" class="tab" style="margin-top:10px;">
+                <thead>
+                <tr><td colspan="10" align="left">
+                <span style="float:left;padding-right:30px;padding-top:8px;padding-bottom:18px">
+	              <a href="javascript:void(0);" style="text-decoration:none;color:#000000"></a>
+	            </span>
+                <span style="float:left;padding-top:8px;">每页显示
+				<select id="nus" onchange="getnums();">
+				  <volist name="nums" id="l">
+				     <option value="{$l}" <if condition=" $l eq $nus ">selected<else/></if>>{$l}</option>
+				  </volist>
+				</select>
+				条</span>
+				</td></td></tr>
+                    <tr>
+                        <td><a href="javascript:;" id="selall">全选</a></td>
+                        <td>头像</td>
+                        <td>主播名称</td>
+                        <td>主播账号</td>
+                        <td>ID</td>          
+                        <td>观看人数</td>
+                        <td>直播封面</td>
+                        <td>直播截图</td>
+                        <td>注册时间</td>
+                        <td width="190">操作</td>
+                    </tr>
+                </thead>
+                <volist name="list" id="vo">
+                    <tr align="center" onmouseout="this.style.background='#FFFFFF';" onmouseover="this.style.background='#FFFFBB';">
+                        <td align="center"><input type="checkbox" name="ids" id="ids"  value="{$vo.user_id}"/>
+                            <if condition="$_GET['p'] gt 0">
+                                {$key+1+($_GET['p']-1)*15}
+                            <else />
+                                {$key+1}
+                            </if>
+                        </td>
+                        <td><img src="{$vo.img}" style="width:50px; height:50px; border-radius:25px;" /></td>
+                        <td>{$vo.nickname}</td>
+                        <td>{$vo['phone']}</td>
+                        <td>{$vo['id']}</td>
+                        <td>{$vo['nums']}</td>
+                        <td><img onclick="view_play_img(this.src)" src="{$vo.play_img}" style="width:50px; height:50px; border-radius:25px;" /></td>
+                        <td><a href="javascript:void(0)" onClick="view_img('{$vo.view_img}',this)" >查看直播</a></td>
+                        <td>{$vo.intime|date="Y-m-d H:i",###}</td>
+                        <td>
+                            [ <a href="javascript:void(0)" onclick="out_live('{$vo.user_id}')">一键下线</a> ]
+                        </td>
+                    </tr>
+                </volist>
+            </table>
+            {$page}
+        </div>
+    </div>
+</div>
+<div id="made" class="" style="display: none;">
+    <img id="zhubo" style="width:100%;" src="">
+</div>
+<script src="/public/admin/js/layer/layer.js"></script>
+<script type="text/javascript">   
+$(function() {   
+$("#selall").toggle(function() {
+     $("input[name='ids']").each(function() {   
+     $(this).attr("checked", true); 
+     });
+},function(){
+	 $("input[name='ids']").each(function() {   
+     $(this).attr("checked", false); 
+     }); 
+});
+
+});
+
+function del(kid){
+
+    kid = kid ? kid : getChecked();
+    kid = kid.toString();
+    if(kid == ''){
+        layer.msg('你没有选择任何选项！', {offset: 95,shift: 6});
+        return false;
+    }
+    if(!confirm('确定要删除该记录？'))
+        return false;
+    $.post("{:U('del')}", {ids:kid}, function(data){
+        if( data['status'] == 'ok' ){
+            alert(data.info);
+            window.location.href = data.url;
+        }else{
+            alert(data.info);
+        }
+    },'json');
+    return false;
+}
+function getChecked() {
+var gids = new Array();
+$.each($('input:checked'), function(i, n){
+	gids.push( $(n).val() );
+});
+return gids;
+}
+
+function getnums(){
+	var nickname=$("#nickname").val();
+	var num = $("#nus").val();
+	window.location.href="{:U('Live/index')}&num="+num+"&nickname="+nickname;
+}
+
+function view_play_img(v){
+    $("#zhubo").attr('src',v);
+    layer.open({
+        type: 1,
+        title: false,
+        closeBtn: 0,
+        area: '384px',
+        skin: 'layui-layer-nobg', //没有背景色
+        shadeClose: true,
+        content: $('#made')
+    });
+}
+
+function view_img(v,id){
+    var url = "{:U('Live/check_img')}";
+    $.post(url,{img:v},function(data){
+        if(data.status == 'ok'){
+            $("#zhubo").attr('src',v);
+            layer.open({
+                type: 1,
+                title: false,
+                closeBtn: 0,
+                area: '384px',
+                skin: 'layui-layer-nobg', //没有背景色
+                shadeClose: true,
+                content: $('#made')
+            });
+        }else{
+            alert("该直播已经结束");
+            window.location.href = window.location.href;
+        }
+    },'json');
+    return false;
+}
+
+    function out_live(v){
+        var url = "{:U('Live/out_live')}";
+        $.post(url,{user_id:v},function(data){
+            console.log(data);
+            if(data.status == 'ok'){
+                alert("该主播已踢下线");
+                //window.location.href = window.location.href;
+            }else{
+                alert(data.info);
+                //window.location.href = window.location.href;
+            }
+        },'json');
+    }
+</script>

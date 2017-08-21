@@ -1,0 +1,31 @@
+
+<div class="footer">
+<p class="foot_jt"><img src="__PUBLIC__/home/images/foot_jt.png" /></p>
+<h1 class="in_tit"><img src="__PUBLIC__/home/images/in_lxbt.png" alt="联系我们" /></h1>
+<div class="w1200_mian">
+<ul class="foot_ul">
+<li>地址：{$base.address}</li>
+<li>北京总公司：{$base.tel}　济南分公司：{$base.xinxi}</li>
+<li>{$base.youbian}</li>
+</ul>
+<dl class="ewm">
+<dt><img src="{$base.logo2}" /></dt>
+<dd>扫一扫，手机浏览</dd>
+</dl>
+<div class="clear"></div>
+<dl class="foot_bot">
+<dd>
+
+<a href="{:U('Index/fangshi')}">汇款方式</a>|
+<a href="{:U('Index/wenti')}">常见问题</a>|
+<volist name="typs" id="l">
+ 
+<a href="{:U('Index/page',array(id=>$l[ty_id]))}">{$l.ty_title}</a> <if condition=" $l.ty_id eq $last.ty_id "><else/>|</if>
+</volist>
+
+<include file="Public:kefu" />
+</dd>
+<dt>{$base.beian}&nbsp;&nbsp;{$base.icp}</dt>
+</dl>
+</div>
+</div>

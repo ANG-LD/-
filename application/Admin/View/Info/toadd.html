@@ -1,0 +1,138 @@
+<include file="Public:header" />
+<load href="__PUBLIC__/admin/js/uploadify.css" />
+<load href="__PUBLIC__/admin/js/swfobject.js" />
+<script type="text/javascript" src="__PUBLIC__/admin/js/jquery.uploadify.v2.1.4.min.js"></script>
+
+<script type="text/javascript">
+ $(function($) {
+	$("#file_upload2").uploadify({
+	 		'uploader'       : '__PUBLIC__/admin/js/uploadify.swf',
+	 		'script'         : '__PUBLIC__/admin/js/uploadify.php',
+	 		'cancelImg'      : '__PUBLIC__/admin/images/cancel.png',
+	 		'folder'         : '__PUBLIC__/admin/Uploads/touxiang',
+	 		'queueID'        : 'fileQueue2',
+	 		'sizeLimit'      :	10 * 1000 * 1024,
+			'buttonImg'      : '__PUBLIC__/admin/images/llsc.jpg',
+			'width'          :  85,
+			'height'          :  28,
+	 		'fileExt'        : '*.jpg;*.gif;*.png;', //允许文件上传类型,和fileDesc一起使用.
+	 		'fileDesc'       : '*.jpg;*.gif;*.png;',  //选择文件对话框中的提示文本.
+	 		'auto'           : true,
+	 		'multi'          : false,	
+	 		'onComplete':function(event,queueId,fileObj,response,data){
+	 			$('input[name="logo"]').val(response);
+	 			$('#pic2').attr('src', response);
+	 		}
+	 	});
+
+	 });
+</script>
+<SCRIPT language=JavaScript>
+	     function checkss(){
+//             var id = $("#id").val();
+//	    	 var phone    = $("#phone").val();
+//	    	 if(phone==''){
+//                 $(".yzphone").html('填写账号！');
+//                 $("#phone").focus();
+//                 return false;
+//	    	 }else {
+//                 $(".yzphone").html('');
+//                 var result=false;
+//                 $.ajax({async:false//要设置为同步的，要不CheckUserName的返回值永远为false
+//                     ,url:'{:U("yzmobile")}',data:{id:id,mobile:phone}
+//                     ,success:function(data){
+//                         if(data == 1){
+//                             $(".yzphone").html('账号已注册');
+//                             $("#phone").focus();
+//                             result = false;
+//                         } else {
+//                             result = true;
+//                         }
+//                     }});
+//                 return result;
+//             }
+//
+	     }
+
+         function area_linke1(value){
+             $.post("{:U('get_area')}", {value:value,type:1}, function(v){
+
+                 $("#shi").html(v);
+
+             });
+         }
+         function area_linke2(value){
+             $.post("{:U('get_area')}", {value:value,type:2}, function(v){
+
+                 $("#qu").html(v);
+
+             });
+         }
+	</script>
+<div class="content">
+<!-----------------------------------------内容开始--------------------------------------------------->
+<div class="infoBox">
+<form name="form" action="{:U('doadd')}"  method="post" onsubmit="return checkss();">
+<table width="90%" border="0" cellpadding="0" cellspacing="0" id="basic">
+               <input type="hidden" value="{$u.information_id}" name="id" id="id">
+                <tr>
+                  <td  width="10%" class="infoBoxTd"><div style="width:55px;">标题:</div></td>
+		  		  <td ><input type="text" id="title"  name="title" value="{$u.title}" style="width:250px;">&nbsp;&nbsp;&nbsp;
+                  </td>
+                </tr>
+                <tr>
+                  <td  width="2%"  style="text-align:right;color:#2d52a5"><div style="width:55px;">图片:</div></td>
+		  		  <td colspan="2">
+		  		  <div class="upimg-box"><div id="fileQueue2"></div>
+                  <input id="file_upload2" type="file" />
+                  <input name="logo" type="hidden" id="fileDoc" value="{$u.img}" />
+                  &nbsp;&nbsp;<img  id="pic2" src="<if condition='$u.img eq "" '>__PUBLIC__/admin/images/nopic.gif<else/>{$u.img}</if>" width="110"  height="60"/>
+                 </div>
+		  		  </td>
+                </tr>
+                 <tr>
+                  <td  width="10%" class="infoBoxTd"><div style="width:55px;">标签:</div></td>
+		  		  <td colspan="2">
+                      <select name="lebels" id="lebels">
+                          <volist name="lebel" id="l">
+                              <option value="{$l.name}" <if condition=" $l.name eq $u.lebel ">selected</if>>{$l.name}</option>
+                          </volist>
+                      </select>
+                  </td>
+                </tr>
+                <tr>
+                    <td  width="10%" class="infoBoxTd"><div style="width:55px;">来源:</div></td>
+                    <td ><input type="text" id="source"  name="source" value="{$u.source}" style="width:250px;">&nbsp;&nbsp;&nbsp;
+                    </td>
+                </tr>
+                 <tr>
+                  <td class="infoBoxTd">内容:</td>
+		  		  <td colspan="2">
+		  		  <textarea id="content" name="content" style="width: 100%;height: 450px">{$u.content}</textarea>
+		  		  </td>
+                </tr>
+                
+              
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td class="infoBoxTd">&nbsp;</td>
+<td align="left"><input type="submit" name="submit" value="保存" class="formInput01" /></td>
+</tr>
+</table>
+</form>
+</div>
+<script>
+KindEditor.ready(function(K) {
+    k1 = K.create('#content', {});
+    k2 = K.create('#content2', {});
+    k3 = K.create('#content3', {});
+
+});
+///var ue = UE.getEditor('content');
+///var ue = UE.getEditor('content2');
+///var ue = UE.getEditor('content3');
+</script>
+<!-----------------------------------------内容结束--------------------------------------------------->
+</div>
+<include file="Public:footer" />

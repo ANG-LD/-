@@ -1,0 +1,132 @@
+<if condition="$_GET['id'] eq ''">
+	{:W('public/breadcrumbs',[
+		[
+			['href'=>U('Auth/index'),'text'=>'规则列表'],
+			['href'=>'','text'=>'添加规则']
+		]
+	])}
+<else />
+	{:W('public/breadcrumbs',[
+		[
+			['href'=>U('Auth/index'),'text'=>'规则列表'],
+			['href'=>'','text'=>'修改规则']
+		]
+	])}
+</if>
+<div class="page-content">
+	<div class="row">
+		<div class="col-xs-12">
+			<form  class="form-horizontal ajax-form" role="form" dit-action="{:U('Auth/editRule')}">
+				<div class="space-10"></div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label" for="pid">模块:</label>
+					<div class="col-sm-9">
+						<select name="pid" class="col-xs-10 col-sm-5">
+							<option value="0">--模块--</option>
+							<foreach item="v" name="blocks">
+								<option value="{$v['id']}" <if condition="$d['pid'] eq $v['id']">selected="selected"</if>>{$v['title']}</option>
+							</foreach>
+						</select>
+						<span class="help-inline col-xs-12 col-sm-7">
+							<strong class="red">*</strong>
+							<span class="middle"></span>
+						</span>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label class="col-sm-3 control-label" for="title">规则名称:</label>
+					<div class="col-sm-9">
+						<input type="text" id="title" name="title" placeholder="规则名称" class="col-xs-10 col-sm-5" value="{$d['title']}">
+						<span class="help-inline col-xs-12 col-sm-7">
+							<strong class="red">*</strong>
+							<span class="middle"></span>
+						</span>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label class="col-sm-3 control-label" for="name">节点:</label>
+					<div class="col-sm-9">
+						<input type="text" id="name" name="name" placeholder="节点" class="col-xs-10 col-sm-5" value="{$d['name']}">
+						<span class="help-inline col-xs-12 col-sm-7">
+							<strong class="red">*</strong>
+							<span class="middle">不区分大小写</span>
+						</span>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label class="col-sm-3 control-label" for="condition">附加条件:</label>
+					<div class="col-sm-9">
+						<input type="text" id="condition" name="condition" placeholder="附加条件" class="col-xs-10 col-sm-5" value="{$d['condition']}">
+						<span class="help-inline col-xs-12 col-sm-7">
+							<span class="middle">为空表示存在就验证，不为空表示按照条件验证</span>
+						</span>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label class="col-sm-3 control-label" for="status">状态:</label>
+					<div class="col-sm-9">
+						<select class="col-xs-10 col-sm-5" name="status">
+							<option value="1" <if condition="$d['status'] == '1'">selected="selected"</if>>开启</option>
+							<option value="0" <if condition="$d['status'] == '0'">selected="selected"</if>>关闭</option>
+						</select>
+						<span class="help-inline col-xs-12 col-sm-7">
+							<span class="middle"></span>
+						</span>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label class="col-sm-3 control-label" for="is_button">节点类型:</label>
+					<div class="col-sm-9">
+						<select class="col-xs-10 col-sm-5" name="is_button">
+							<option value="0" <if condition="$d['is_button'] == '0'">selected="selected"</if>>视图</option>
+							<option value="1" <if condition="$d['is_button'] == '1'">selected="selected"</if>>操作</option>
+							<option value="2" <if condition="$d['is_button'] == '2'">selected="selected"</if>>模块</option>
+						</select>
+						<span class="help-inline col-xs-12 col-sm-7">
+							<span class="middle"></span>
+						</span>
+					</div>
+				</div>
+				<div class="form-tip claerfix col-md-offset-3 red"></div>
+				<div class="clearfix form-actions">
+					<div class="col-md-offset-3 col-md-9">
+						<input type="hidden" name="id" value="{$_GET['id']}" />
+						<button class="btn btn-info" type="submit">
+							<i class="icon-ok bigger-110"></i>{$_GET['id']?'修改':'添加'}规则
+						</button>
+						<a class="btn btn-info" id="backward">返回</a>
+					</div>
+				</div>
+			</form>
+			<!-- ./ end form -->
+		</div>
+		<!-- ./ end col-xs-12 -->
+	</div>
+	<!-- ./ end row -->
+</div>
+<script>
+	$(function () {
+		$("select[name=is_button]").change(function(){
+			var val = $(this).val();
+			var type = 3;
+			switch(val){
+				case '0':
+					type = 3;
+					break;
+				case '1':
+					type = 2;
+					break;
+				case '2':
+					type = 1;
+					break;
+			}
+
+			$("input[name=type]").val(type);
+		});
+	});
+</script>

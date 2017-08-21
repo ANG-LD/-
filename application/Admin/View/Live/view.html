@@ -1,0 +1,34 @@
+{:W('Public/breadcrumbs',[
+    [
+        ['href'=>U('Live/record'),'text'=>'录播列表'],
+        ['href'=>'javascript:;','text' => '视频详情'],
+    ]
+])}
+<style>
+    #big{
+        position:absolute;
+        left:490px;
+        top:0px;
+        z-index:999;
+        display:none;
+    }
+</style>
+<!--<link href="/public/hLive/css/video.css" />-->
+<!--<script src="/public/hLive/js/videojs-live.js"></script>-->
+<!--<script src="/public/hLive/js/video.js"></script>-->
+<script src="/public/player/player/sewise.player.min.js"></script>
+<div id="Player" style="width: 1000px;height: 567px;"></div>
+<script>
+    SewisePlayer.setup({
+        server: 'vod',
+        type: 'm3u8',
+        autostart: 'true',    /*是否自动播放*/
+        poster: "{$re['play_img']}",    /*此处可填写封面地址*/
+        videourl: "{$re['url']}",    /*此处填写购买获取到的m3u8地址 必填*/
+        skin: 'vodOrange',
+        title: '幽秘录制视频',
+        claritybutton: 'disable',
+        lang: 'zh_CN'
+    },'Player');
+
+</script>

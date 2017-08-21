@@ -1,0 +1,93 @@
+{:W('public/breadcrumbs',[
+[
+['href'=>U('Charts/index'),'text'=>'统计图'],
+]
+])}
+</if>
+<script type="text/javascript" src="/public/lib/html5.js"></script>
+<script type="text/javascript" src="/public/lib/respond.min.js"></script>
+<!--<script type="text/javascript" src="/public/lib/PIE_IE678.js"></script>-->
+<script type="text/javascript" src="http://lib.h-ui.net/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<!--<script type="text/javascript" src="/public/lib/jquery/1.9.1/jquery.min.js"></script>-->
+<script type="text/javascript" src="/public/lib/layer/2.1/layer.js"></script>
+<script type="text/javascript" src="/public/static/h-ui/js/H-ui.js"></script>
+<script type="text/javascript" src="/public/static/h-ui.admin/js/H-ui.admin.js"></script>
+<script type="text/javascript" src="/public/lib/Highcharts/4.1.7/js/highcharts.js"></script>
+<script type="text/javascript" src="/public/lib/Highcharts/4.1.7/js/modules/exporting.js"></script>
+<div class="page-content">
+    <input type="text" name="start_time" value="" id="start_time" placeholder="日期时间" size="25" style="margin-right: 15px;">
+    <input type="submit"  class="btn" onclick="code($('#start_time').val())" value="搜索">
+    <div id="container" style="min-width:700px;height:400px"></div>
+    <div>当日总活跃：<span id="count"></span>人</div>
+</div>
+<script type="text/javascript">
+
+    var url = "{:U('Charts/day_code')}";
+    function code(e) {
+        $.get(url,{code:e},function (data) {
+            if (data['status'] = 'ok') {
+                var a = data.data.a;
+                var b = data.data.b;
+                $("#count").html(data.data.c);
+                $('#container').highcharts({
+                    title: {
+                        text: "平台活跃度统计",
+                        x: -20 //center
+                    },
+                    subtitle: {
+                        text: '',
+                        x: -20
+                    },
+                    xAxis: {
+                        categories: b
+                    },
+                    yAxis: {
+                        title: {
+                            text: '人数(人)'
+                        },
+                        plotLines: [{
+                            value: 0,
+                            width: 1,
+                            color: '#808080'
+                        }]
+                    },
+                    tooltip: {
+                        valueSuffix: '人数'
+                    },
+                    legend: {
+                        layout: 'vertical',
+                        align: 'right',
+                        verticalAlign: 'middle',
+                        borderWidth: 0
+                    }, series: [{
+                        name: '活跃度',
+                        data: a
+                    }]
+                });
+            }
+        }, 'json');
+    }
+    code();
+
+    $("#start_time").datetimepicker({
+        format: 'yyyy-mm-dd',
+        weekStart: 1,
+        autoclose: true,
+        todayBtn: 'linked',
+        language: 'zh-CN',
+        minView: 2
+    }).on('changeDate', function(ev) {
+        $("#end_time").datetimepicker('setStartDate', $(this).val());
+    });
+
+    $("#end_time").datetimepicker({
+        format: 'yyyy-mm-dd',
+        weekStart: 1,
+        autoclose: true,
+        todayBtn: 'linked',
+        language: 'zh-CN',
+        minView: 2
+    });
+
+</script>

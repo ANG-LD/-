@@ -1,0 +1,310 @@
+{:W('public/breadcrumbs',[
+    [
+        ['href'=>U('User/index'),'text'=>'会员管理'],
+        ['href'=>'','text'=>'会员详情']
+    ]
+])}
+</if>
+<div class="page-content">
+<div class="row">
+<div class="col-xs-12">
+<div class="" ><br/>
+             <div>
+		        <span>会员信息详情</span>
+		     </div>
+		     <hr/>
+</div>
+<style>
+  .aa td{border-bottom: 1px dotted #000;padding-top:10px;padding-bottom:10px;width:20% }
+</style>
+<div style="width:100%;">
+  <div style="width:100%;height:160px;float:left">
+      <div style="float:left;height:150px;width:113px"><img src="{$view.img}" style="width:113px;height:111px;margin-bottom:10px"><span style="padding-left:15px">{$mem.nickname}</span>&nbsp;&nbsp;<span><if condition="$mem.sex eq 1">女<elseif condition="$mem.sex eq 2"/>男<else/></if></span></div>
+      <div style="float:left;padding-left:15px">
+        <ul style="line-height:30px">
+          <li>昵称：{$view.nickname}</li>
+          <li>性别：{$view['sex'] == 1 ? '男' : ($view['sex'] == 2 ? '女' : '未知')}</li>
+          <li>手机号：{$view.phone}</li>
+          <li>地址：{$view.province}{$view.city}{$view.area}&nbsp;{$view.address}</li>
+        </ul>
+      </div>
+      <div style="float:left;padding-left:15px">
+          <ul style="line-height:30px">
+              <li>充值总额：{$view.recharge|default=0}</li>
+              <li>可提现积分：{$view['amount']|default=0}</li>
+              <li>总消费：{$view['consumer']|default=0}</li>
+          </ul>
+      </div>
+
+      <!--<div style="float:left;padding-left:15px">-->
+          <!--<ul style="line-height:30px">-->
+              <!--<li>已提现总额：{$view.withdraw|default=0}</li>-->
+          <!--</ul>-->
+      <!--</div>-->
+  </div>
+
+</div> 
+<style>
+#menu{overflow:hidden; padding-top:10px}
+#menu #nav {display:block;width:100%;padding:0;margin:0;list-style:none;}
+#menu #nav li {float:left;width:10%;}
+#menu #nav li a {display:block;line-height:27px;text-decoration:none;padding:0 0 0 5px; text-align:center; color:#333;}
+#menu_con{ width:100%;padding-top:50px}
+
+.selected{background:#C5A069;height:30px; color:#fff;}
+
+
+
+.tabs .tbas td{width:18%;border-bottom:1px dashed;line-height:35px}
+
+</style>
+<div style="width:100%;height:50px;background-color:#E4E4E4;margin-top:200px">
+    <div id="menu">
+<!--tag标题-->
+    <ul id="nav">
+        <li><a href="{:U('User/view',array('uid'=>$_GET['uid'],'type'=>1, 'str'=>CONTROLLER_NAME.'/'.ACTION_NAME))}"
+            <if condition="$_GET['type'] eq 1">class="selected"<else/>class="record-btn"</if> >充值记录</a>
+        </li>
+        <li><a href="{:U('User/view',array('uid'=>$_GET['uid'],'type'=>4, 'str'=>CONTROLLER_NAME.'/'.ACTION_NAME))}"
+            <if condition="$_GET['type'] eq 4"> class="selected"<else/>class="record-btn"</if>>积分记录</a>
+        </li>
+    </ul>
+<!--二级菜单-->
+    <div id="menu_con">
+    <div class="tag" style="display:block">
+<table width="100%" class="tabs tab" <if condition="$_GET['type'] neq 1">hidden</if>>
+    <thead>
+    <tr>
+        <td align="center">充值编号</td>
+        <td align="center">充值金额</td>
+        <!--<td align="center">充值秀豆</td>-->
+        <td align="center">充值途径</td>
+        <td align="center">充值时间</td>
+    </tr>
+    <volist name="list" id="vo">
+    <tr class="tbas">
+        <td align="center">{$vo.pay_number}</td>
+        <td align="center">¥{$vo.amount}</td>
+        <!--<td align="center">{$vo.beans}</td>-->
+        <td align="center">{$vo.pay_type}</td>
+        <td align="center">{$vo.intime}</td>
+    </tr>
+    </volist>
+    </thead>
+    </table>
+
+        <table width="100%" class="tabs tab" <if condition="$_GET['type'] neq 4">hidden</if>>
+        <thead>
+        <tr>
+            <td align="center">变更积分</td>
+            <!--<td align="center">充值秀豆</td>-->
+            <td align="center">变更说明</td>
+            <td align="center">变更时间</td>
+        </tr>
+        <volist name="list" id="vo">
+            <tr class="tbas">
+                <td align="center">
+                    ¥{$vo.amount}
+                    <php>
+                        $vo['type'] == '1' ? "+" : "-";
+                    </php>
+                </td>
+                <!--<td align="center">{$vo.beans}</td>-->
+                <td align="center">{$vo.content}</td>
+                <td align="center">{$vo.intime}</td>
+            </tr>
+        </volist>
+        </thead>
+        </table>
+
+        <table width="100%" class="tabs tab" <if condition="$_GET['type'] neq 2">hidden</if>>
+            <thead>
+            <tr align="center">
+                <td>订单号</td>
+                <td>会员昵称</td>
+                <td>会员账号</td>
+                <td>订单联系人</td>
+                <td>联系人手机</td>
+                <td>总价</td>
+                <td>实付金额</td>
+                <td>订单状态</td>
+                <td>下单时间</td>
+                <td width="190">操作</td>
+            </tr>
+            </thead>
+            <volist name="list" id="vo">
+                <tr align="center" onmouseout="this.style.background='#FFFFFF';" onmouseover="this.style.background='#FFFFBB';">
+                    <td>{$vo['order_no']}</td>
+                    <td>{$vo.nickname}</td>
+                    <td>{$vo.phone}</td>
+                    <td>{$vo.name}</td>
+                    <td>{$vo['mobile']}</td>
+                    <td>{$vo.amount}</td>
+                    <td>{$vo.paid}</td>
+                    <td>
+                        <php>
+                            $vo['status'] == '1' && print "待确认";
+                            $vo['status'] == '2' && print "待支付";
+                            $vo['status'] == '3' && print "待出票";
+                            $vo['status'] == '4' && print "已出票";
+                            $vo['status'] == '5' && print "改签申请";
+                            $vo['status'] == '6' && print "改签待支付";
+                            $vo['status'] == '7' && print "改签完成";
+                            $vo['status'] == '8' && print "退票申请";
+                            $vo['status'] == '9' && print "退票完成";
+                            $vo['status'] == '10' && print "已完成";
+                        </php>
+                    </td>
+                    <!--<td>{$vo.province}{$vo.city}{$vo.area}{$vo.address}</td>-->
+                    <td>{$vo.intime}</td>
+                    <td>
+                        [ <a href="{:U('Porder/order_view',array('id'=>$vo['order_id'], 'str'=>CONTROLLER_NAME.'/'.ACTION_NAME))}">查看详情</a> ]
+                        <!--[ <a href="{:U('User/net_reds_view',array('uid'=>$vo['user_id'], 'str'=>CONTROLLER_NAME.'/'.ACTION_NAME))}">详情</a> ]-->
+                        [ <a href="javascript:void(0);"  onclick="del({$vo.order_id});">删除</a> ]
+
+                    </td>
+                </tr>
+            </volist>
+        </table>
+
+        <table width="100%" class="tabs tab" <if condition="$_GET['type'] neq 3">hidden</if>>
+        <thead>
+        <tr>
+            <td>订单号</td>
+            <td>会员昵称</td>
+            <td>会员账号</td>
+            <td>订单联系人</td>
+            <td>联系人手机</td>
+            <td>总价</td>
+            <td>实付金额</td>
+            <td>订单状态</td>
+            <td>下单时间</td>
+            <td width="190">操作</td>
+        </tr>
+        </thead>
+        <volist name="list" id="vo">
+            <tr align="center" onmouseout="this.style.background='#FFFFFF';" onmouseover="this.style.background='#FFFFBB';">
+                <td>{$vo['order_no']}</td>
+                <td>{$vo.nickname}</td>
+                <td>{$vo.phone}</td>
+                <td>{$vo.name}</td>
+                <td>{$vo.mobile}</td>
+                <td>{$vo.amount}</td>
+                <td>{$vo.paid}</td>
+                <td>
+                    <php>
+                        $vo['status'] == '1' && print "待确认";
+                        $vo['status'] == '2' && print "待支付";
+                        $vo['status'] == '3' && print "待出票";
+                        $vo['status'] == '4' && print "待入住";
+                        $vo['status'] == '5' && print "已完成";
+                    </php>
+                </td>
+                <!--<td>{$vo.province}{$vo.city}{$vo.area}{$vo.address}</td>-->
+                <td>{$vo.intime}</td>
+                <td>
+                    [ <a href="{:U('Horder/order_view',array('id'=>$vo['order_id'], 'str'=>CONTROLLER_NAME.'/'.ACTION_NAME))}">查看详情</a> ]
+                    <!--[ <a href="{:U('User/net_reds_view',array('uid'=>$vo['user_id'], 'str'=>CONTROLLER_NAME.'/'.ACTION_NAME))}">详情</a> ]-->
+                    [ <a href="javascript:void(0);"  onclick="hotel_del({$vo.order_id});">删除</a> ]
+
+                </td>
+            </tr>
+        </volist>
+        </table>
+        {$page}
+</div>
+</div>
+</div>
+<script>
+//var tabs=function(){
+//    function tag(name,elem){
+//        return (elem||document).getElementsByTagName(name);
+//    }
+//    //获得相应ID的元素
+//    function id(name){
+//        return document.getElementById(name);
+//    }
+//    function first(elem){
+//        elem=elem.firstChild;
+//        return elem&&elem.nodeType==1? elem:next(elem);
+//    }
+//    function next(elem){
+//        do{
+//            elem=elem.nextSibling;
+//        }while(
+//            elem&&elem.nodeType!=1
+//        )
+//        return elem;
+//    }
+//    return {
+//        set:function(elemId,tabId){
+//            var elem=tag("li",id(elemId));
+//            var tabs=tag("div",id(tabId));
+//            var listNum=elem.length;
+//            var tabNum=tabs.length;
+//            for(var i=0;i<listNum;i++){
+//                    elem[i].onclick=(function(i){
+//                        return function(){
+//                            for(var j=0;j<tabNum;j++){
+//                                if(i==j){
+//                                    tabs[j].style.display="block";
+//                                    //alert(elem[j].firstChild);
+//                                    elem[j].firstChild.className="selected";
+//                                }
+//                                else{
+//                                    tabs[j].style.display="none";
+//                                    elem[j].firstChild.className="";
+//                                }
+//                            }
+//                        }
+//                    })(i)
+//            }
+//        }
+//    }
+//}();
+//tabs.set("nav","menu_con");//执行
+
+    $(".record-btn").click(function(){
+        $(this).addClass('selected');
+    })
+
+function del(kid){
+
+    kid = kid ? kid : getChecked();
+    kid = kid.toString();
+    if(kid == ''){
+        layer.msg('你没有选择任何选项！', {offset: 95,shift: 6});
+        return false;
+    }
+    if(!confirm('确定要删除该记录？'))
+        return false;
+    $.post("{:U('Porder/del_order')}", {ids:kid}, function(data){
+        if( data['status'] == 'ok' ){
+            alert(data.info);
+            location.reload("__SELF__");
+        }else{
+            alert(data.info);
+        }
+    },'json');
+    return false;
+}
+
+    function hotel_del(kid){
+        if(!confirm('确定要删除该记录？'))
+            return false;
+        $.post("{:U('Horder/del_order')}", {ids:kid}, function(data){
+            if( data['status'] == 'ok' ){
+                alert(data.info);
+                location.reload("__SELF__");
+            }else{
+                alert(data.info);
+            }
+        },'json');
+        return false;
+    }
+
+</script>
+ </div>  
+</div>
+</div>
+</div>

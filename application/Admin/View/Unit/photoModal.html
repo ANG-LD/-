@@ -1,0 +1,52 @@
+<div class="modal fade" id="photo-modal" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="photo-modal-label" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+			  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			  <h4 class="modal-title" id="photo-modal-label">图片管理</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-xs-2 border-right">
+						<p>请选择图片目录:</p>
+						<select id="image-dir-list" class="width-100">
+							<option value="0">默认</option>
+						</select>
+						<div class="space-10"></div>
+						<div id="uploadify"></div>
+					</div>
+					<div class="col-xs-10">
+						<div class="image-list">
+							<foreach item="v" name="images">
+								<div class="box"><img src="{$v['image_path']}" /></div>
+							</foreach>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<link rel="stylesheet" href="/assets/uploadify/css/uploadify.css" />
+<script type="text/javascript" src="/assets/uploadify/js/jquery.uploadify.min.js"></script>
+<script>
+$(document).ready(function(){
+	$(document).on('dblclick','div.box img',function(){
+		$('#titlepic').val($(this).attr('src'));
+		$('#photo-modal').modal('hide');
+	});
+	
+	setTimeout(function(){
+		$("#uploadify").uploadify({
+	        "buttonText"		: "上传封面",
+	        'swf'				: '/assets/uploadify/uploadify.swf',
+	        'cancelImg'			: '/assets/uploadify/cancel.png',
+	        'uploader'			: '{:U('System/upload')}',
+	        "onUploadSuccess"	: function(file, data, response) {
+	        	console.log(data);
+				$('.image-list').append('<div class="box"><img src="' + data + '"></div>');
+			}
+	    });
+	},5);
+});
+</script>
