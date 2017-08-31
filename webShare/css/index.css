@@ -1,0 +1,174 @@
+/*
+* @Author: hepeng
+* @Date:   2017-08-28 10:58:42
+* @Last Modified by:   hepeng
+* @Last Modified time: 2017-08-29 12:10:37
+*/
+
+/* 播放内容 */
+.VideoBody{
+	width: 99%;
+	height: 5.8rem;
+	position: relative;
+	margin: auto auto;
+	position: relative;
+}
+.ReturnContant{
+	position: absolute;
+	left: 0.2rem;
+	top: 0.2rem;
+}
+.VideoPlayer{
+	width: 100%;
+	height: 5.8rem;
+	border:0.02rem solid #d5d5d5;
+}
+
+
+
+/* 详情内容 */
+.DetailContant{
+	width: 100%;
+	min-height: 2rem;
+	border-bottom:0.02rem solid #d5d5d5;
+}
+.DetailContant .DetailTitle{
+	font-size: 0.36rem;
+    margin: 0.2rem 0.2rem 0.2rem 0.1rem;
+}
+.p_contant{
+	font-size: 0.32rem;
+	margin-left: 0.1rem;
+
+}
+.zanContant{
+	width: 5rem;
+    margin-left: 0.1rem;
+    height: 0.8rem;
+}
+.zanContant div{
+	float: left;
+    width: 0.6rem;
+    height: 0.6rem;
+    margin-left: 0.2rem;
+    margin-top: 0.15rem;
+    line-height: 0.6rem;
+}
+.zanImg{
+	background: url(./../images/zanImg.png)  left top no-repeat;
+	background-size: 100% 100%;
+}
+.VideoImg{
+	background: url(./../images/videoImg.png)  left top no-repeat;
+	background-size: 100% 100%;
+}
+
+
+
+/* 头像详情 */
+.HeadDetail{
+	width: 100%;
+    height: 1.5rem;
+}
+.HeadDetail .headImg,.manImg,.greatContant{
+	float: left;
+
+}
+.HeadDetail .headImg{
+	width: 1.3rem;
+    height: 1.3rem;
+    margin-top: 0.1rem;
+    margin-left: 0.2rem;
+}
+.HeadDetail p{
+	height: 1.5rem;
+	line-height: 1.5rem;
+	text-align: center;
+	margin: 0 0.4rem;
+}
+.HeadDetail .manImg{
+	width: 0.5rem;
+	height: 0.5rem;
+	margin-top: 0.5rem;
+}
+
+
+
+
+
+/* 评论内容 */
+.commentaries{
+	width: 100%;
+}
+.commentaries .commentariesTitle{
+	width: 97%;
+	height: 0.8rem;
+	background: #f1f5f6;
+	font-size: 0.36rem;
+	line-height: 0.8rem;
+	margin-left: 0.2rem;
+}
+.commentaries .commentariesContant{
+	width: 100%;
+}
+.commentaries .headContantShow{
+	width: 100%;
+	height: 0.8rem;
+	
+}
+.commentaries .headContantShow .headImgMin{
+	float: left;
+	width: 0.6rem;
+	height: 0.6rem;
+	margin-top: 0.1rem;
+	margin-left: 0.2rem;
+}
+.commentaries .headContantShow .greatContantMin{
+	float: left;
+    height: 0.6rem;
+    line-height: 0.6rem;
+    margin-top: 0.1rem;
+    margin-left: 0.2rem;
+    margin-right: 0.2rem;
+}
+.commentaries .headContantShow .manImgMin{
+	float: left;
+	width: 0.4rem;
+	height: 0.4rem;
+	margin-top: 0.2rem;
+}
+.commentariesPosted{
+	min-height: 0.5rem;
+    width: 82%;
+    line-height: 0.5rem;
+    font-size: 0.32rem;
+    padding-left: 0.7rem;
+
+}
+.TimeContant{
+	width: 90%;
+    height: 0.36rem;
+    font-size: 0.30rem;
+    padding-left: 0.65rem;
+    margin-top: 0.1rem;
+   }
+.revertContant{
+	margin-left:0.5rem;
+}
+
+.revertContantInformation{
+	width: 6rem;
+	margin: auto auto;
+	background: #eff3f4;
+}
+.InformationContant{
+	margin:0.2rem 0.2rem;
+}
+.InformationContant span{
+	color: #190000;
+	font-weight:800;
+}
+.informatingImg{
+	width: 5.5rem;
+	height: 6rem;
+}
