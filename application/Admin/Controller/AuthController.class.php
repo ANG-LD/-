@@ -212,12 +212,11 @@ class AuthController extends BaseController{
 	public function user(){
 		!empty($_GET['username'])	&&	$map['a.name'] = ['like','%'.I('username').'%'];
 		$count = M('Member')->alias('a')
-			->field('a.id,a.username,a.name,a.last_login_date,a.last_login_ip,a.login_times,a.status,c.id as gid,c.title')
 			->join('LEFT JOIN __AUTH_GROUP_ACCESS__ b ON a.id=b.uid')
 			->join('LEFT JOIN __AUTH_GROUP__ c ON b.group_id=c.id')->count();
 		$p = $this->getpage($count,10);
 		$list = M('Member')->alias('a')
-			->field('a.id,a.username,a.name,a.last_login_date,last_login_ip,a.status,c.id as gid,c.title')
+            ->field('a.id,a.username,a.name,a.last_login_date,a.last_login_ip,a.login_times,a.status,c.id as gid,c.title')
 			->join('LEFT JOIN __AUTH_GROUP_ACCESS__ b ON a.id=b.uid')
 			->join('LEFT JOIN __AUTH_GROUP__ c ON b.group_id=c.id')
 			->limit($p->firstRow,$p->listRows)
@@ -270,7 +269,7 @@ class AuthController extends BaseController{
 				$this->ajaxReturn(['status'=>'error','info'=>'请选择分组']);
 			}
 			if (!empty($password)){
-				$data['password'] = encrypt($password);
+				$data['password'] = myencrypt($password);
 			}
 
 			$map['uid'] 		= I('id');

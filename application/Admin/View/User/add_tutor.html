@@ -1,6 +1,6 @@
 <php>
-    $uid = $_GET['id'];
-    $_GET['id']?$text='编辑用户':$text='添加导师';
+    $uid = $_GET['uid'];
+    $_GET['uid']?$text='编辑导师':$text='添加导师';
 </php>
 {:W('public/breadcrumbs',[
 [
@@ -49,6 +49,18 @@
                     <div id="uparea1"></div>
                     <input type="hidden" name="img" id="image_1" value="{$re['img']}" />
                 </div>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>指点价格：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" name="teach_price" class="input-text" value="{$re['teach_price']}" placeholder="单次指点价格" id="teach_price" />
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>钻石免费次数：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" name="teach_nums" class="input-text" value="{$re['teach_nums']}" placeholder="钻石会员免费指点次数" id="teach_nums" />
             </div>
         </div>
         <div class="row cl">

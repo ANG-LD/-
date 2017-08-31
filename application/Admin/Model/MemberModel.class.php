@@ -51,10 +51,10 @@ class MemberModel extends Model
         if (empty($data['pwd'])) {
             return array('status' => 'error', 'info' => '新增记录时，密码必须填写');
         } else {
-            $data['password'] = encrypt(I('pwd'));
+            $data['password'] = myencrypt(I('pwd'));
         }
         if (!empty($data['pay_pwd'])) {
-            $data['pay_password'] = encrypt(I('pay_password'));
+            $data['pay_password'] = myencrypt(I('pay_password'));
         }
         $data['intime'] = date("Y-m-d H:i:s", time());
         $chars = "abcdefghijklmnopqrstuvwxyz0123456789";
@@ -80,10 +80,10 @@ class MemberModel extends Model
         }
     }else {
         if (!empty($data['pwd'])) {
-            $data['password'] = encrypt(I('pwd'));
+            $data['password'] = myencrypt(I('pwd'));
         }
         if (!empty($data['pay_pwd'])) {
-            $data['pay_password'] = encrypt(I('pay_pwd'));
+            $data['pay_password'] = myencrypt(I('pay_pwd'));
         }
         $data['uptime'] = date('Y-m-d H:i:s',time());
         $result = M('Member')->where(['member_id' => $data['uid']])->save($data);

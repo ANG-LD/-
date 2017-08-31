@@ -133,7 +133,7 @@ class HomeController extends CommonController
                     foreach ($list as $k=>$v){
                         $list[$k]['play_img'] = $this->url.$v['play_img'];
                         $list[$k]['img'] = $this->url.$v['img'];
-                        $list[$k]['url'] = $this->url."/App/Index/share_live/live_id/" . base64_encode($v['live_id']);
+                        $list[$k]['url'] = $this->url."/api.php/Index/share_live/live_id/" . base64_encode($v['live_id']);
                         $list[$k]['qrcode_path'] = $this->url.$v['qrcode_path'];
                         $follow = M('Follow')->where(['user_id'=>$user['user_id'],'user_id2'=>$v['user_id']])->find();
                         $follow ? $list[$k]['is_follow'] = "2" : $list[$k]['is_follow'] = "1";
@@ -181,8 +181,12 @@ class HomeController extends CommonController
      *@课程详情
      */
     public function  video_detail(){
-        $user = checklogin();
+        $uid = I('uid');
+        if($uid){
+            $user = checklogin();
+        }
         $video_id = I('video_id');
+        if(!is_numeric($video_id))      $video_id = base64_decode($video_id);
         if(empty($video_id))        error("参数错误");
         M('Video')->where(['video_id'=>$video_id])->setInc('watch_nums');
         $video = M('Video')->alias('a')
@@ -197,22 +201,31 @@ class HomeController extends CommonController
         }
         $video['collect_nums'] = M('Collection')->where(['type'=>2,'goods_id'=>$video_id])->count();
         //判断是否收藏
-        $check = M('Collection')->where(['user_id'=>$user['user_id'],'type'=>2,'goods_id'=>$video_id])->find();
-        if($check){
-            $video['is_collect'] = '1';    //1是收藏
+        if($uid){
+            $check = M('Collection')->where(['user_id'=>$user['user_id'],'type'=>2,'goods_id'=>$video_id])->find();
+            if($check){
+                $video['is_collect'] = '1';    //1是收藏
+            }else{
+                $video['is_collect'] = '2';    //2未收藏
+            }
         }else{
             $video['is_collect'] = '2';    //2未收藏
         }
-        $check = M('Follow')->where(['user_id'=>$user['user_id'],'user_id2'=>$video['user_id']])->find();
-        if($check){     //判断是否关注
-            $video['is_follow'] = '1';
-        }else{
-            if($user['user_id'] != $video['user_id']){
-                $video['is_follow'] = '2';
+        if($uid){
+            $check = M('Follow')->where(['user_id'=>$user['user_id'],'user_id2'=>$video['user_id']])->find();
+            if($check){     //判断是否关注
+                $video['is_follow'] = '1';
             }else{
-                $video['is_follow'] = '3';
+                if($user['user_id'] != $video['user_id']){
+                    $video['is_follow'] = '2';
+                }else{
+                    $video['is_follow'] = '3';
+                }
             }
+        }else{
+            $video['is_follow'] = '2';
         }
+        $video['share_url'] = $this->url."/webShare/videoDetail.html?video_id=".base64_encode($video['video_id']);
 
         //视频评论
         $list = M('CommentPosts')->alias('a')
@@ -522,17 +535,15 @@ class HomeController extends CommonController
         $map['user_id'] = ['neq',$uid];
         $count = M('User')->where($map)->count();
         $page = ceil($count/$pageSize);
-        $list = M('User')->field('user_id,sex,img,autograph,mark,hx_username,hx_password,username')
+        $list = M('User')->field('user_id,sex,img,autograph,mark,hx_username,hx_password,username,teach_price')
             ->where($map)->order("intime desc")
             ->limit(($p-1)*$pageSize,$pageSize)->select();
-        $price = M('System')->where(['id'=>1])->getField('teach_price');
-        $price = sprintf("%.2f",$price);
         foreach($list as $k=>$v){
             $list[$k]['img'] = $this->url.$v['img'];
             $sum = M('UserMark')->where(['user_id2'=>$v['user_id']])->sum('mark');
             $count = M('UserMark')->where(['user_id2'=>$v['user_id']])->count();
             $list[$k]['mark'] = sprintf("%.1f",($v['mark'] + $sum)/($count+1));
-            $list[$k]['fee'] = $price;
+            $list[$k]['fee'] = sprintf("%.2f",$v['teach_price']);
         }
         success(['banner'=>$banner,'page'=>$page,'list'=>$list]);
     }
@@ -545,51 +556,84 @@ class HomeController extends CommonController
         if($user['type'] == 1){ //判断是学生还是导师
             $user_id = I('user_id');//导师id;
             if(empty($user_id))         error("参数错误");
-            $record = M('UpgradeRecord')
-                ->where(['user_id'=>$user['user_id'],'user_id2'=>$user_id])
-                ->order("id desc")->find();         //查询是否缴费
-            if($record){
-                $class = M('TutorLiveClass')->where(['tutor_id'=>$user_id,'is_del'=>1])
-                    ->limit(1)->order("intime desc")->find();
-                if(strtotime($class['end_time'])>time()){
-                    $month = date("Y-m-01",time());     //当月时间
-                    $where['user_id'] = $user['user_id'];
-                    $where['user_id2'] = $user_id;
-                    $where['state'] = 2;
-                    $where['intime'] = ['gt',$month];
-                   $count = M('TeachOrder')->where($where)->count();
-                   if(!$count){
-                        $data = [
-                            'user_id'   => $user['user_id'],
-                            'user_id2'  => $user_id,
-                            'order_no'  => date("YmdHis").rand(100000,999999),
-                            'amount'    =>  '0',
-                            'state'     =>  2,
-                            'is_free'   =>  2,
-                            'intime'    =>  date("Y-m-d H:i:s",time()),
-                        ];
-
-                        $result = M('TeachOrder')->add($data);
-                        if($result){
-                            success('1');
-                        }
-                   }
-
-                }
-            }
-
-            $check = M('TeachOrder')->where(['user_id'=>$user['user_id'],'user_id2'=>$user_id])
+            $teacher = M('User')->where(['user_id'=>$user_id])->find();
+            $check = M('TeachOrder')->where(['user_id'=>$user['user_id'],'user_id2'=>$user_id,'state'=>'2'])
                 ->limit(1)->order("intime desc")->find();
+            $record = M('UpgradeRecord')
+                ->where(['user_id'=>$user['user_id'],'user_id2'=>$user_id,'state'=>'2'])
+                ->order("id desc")->find();         //查询是否是钻石会员
+            $class = M('TutorLiveClass')->where(['tutor_id'=>$user_id,'is_del'=>1])
+                ->limit(1)->order("intime desc")->find();     //查询导师开班结束时间
             if(!$check){
-                success("2");//不能聊天
+                if($record){
+                    if(strtotime($class['end_time'])>time()){    //判断会员是否过期
+                        $month = date("Y-m-01",time());     //当月时间
+                        $where['user_id'] = $user['user_id'];
+                        $where['user_id2'] = $user_id;
+                        $where['state'] = 2;
+                        $where['intime'] = ['gt',$month];
+                        $count = M('TeachOrder')->where($where)->count();
+                        if($count<$teacher['teach_nums']){
+                            $data = [
+                                'user_id'   => $user['user_id'],
+                                'user_id2'  => $user_id,
+                                'order_no'  => date("YmdHis").rand(100000,999999),
+                                'amount'    =>  '0',
+                                'state'     =>  2,
+                                'is_free'   =>  2,
+                                'intime'    =>  date("Y-m-d H:i:s",time()),
+                            ];
+
+                            $result = M('TeachOrder')->add($data);
+                            if($result){
+                                success('1');
+                            }
+                        }else{
+                            success("2");//不能聊天
+                        }
+
+                    }else{
+                        success("2");//不能聊天
+                    }
+                }else{
+                    success("2");//不能聊天
+                }
             }else{
                 if($check['state']== 2 && $check['teach_status'] == 1){
                     success("1");//能聊天
                 }else{
-                    if(M('TeachOrder')->where(['user_id'=>$user['user_id'],'user_id2'=>$user_id,'state'=>2])->select()){
-                        success('3');//不能聊天但是能查看记录
+                    if($record){
+                        if(strtotime($class['end_time'])>time()){    //判断会员是否过期
+                            $month = date("Y-m-01",time());     //当月时间
+                            $where['user_id'] = $user['user_id'];
+                            $where['user_id2'] = $user_id;
+                            $where['state'] = 2;
+                            $where['intime'] = ['gt',$month];
+                            $count = M('TeachOrder')->where($where)->count();
+                            if($count<$teacher['teach_nums']){
+                                $data = [
+                                    'user_id'   => $user['user_id'],
+                                    'user_id2'  => $user_id,
+                                    'order_no'  => date("YmdHis").rand(100000,999999),
+                                    'amount'    =>  '0',
+                                    'state'     =>  2,
+                                    'is_free'   =>  2,
+                                    'intime'    =>  date("Y-m-d H:i:s",time()),
+                                ];
+
+                                $result = M('TeachOrder')->add($data);
+                                if($result){
+                                    success('1');
+                                }
+                            }else{
+                                success('3');
+                            }
+
+                        }else{
+                            success('3');
+                        }
                     }else{
-                        success("2");//不能聊天；
+                        success('3');
                     }
                 }
             }
@@ -604,11 +648,7 @@ class HomeController extends CommonController
                 if($check['state']== 2 && $check['teach_status'] == 1){
                     success("1");//能聊天
                 }else{
-                    if(M('TeachOrder')->where(['user_id'=>$user_id,'user_id2'=>$user['user_id'],'state'=>2])->select()){
-                        success('3');//不能聊天但是能查看记录
-                    }else{
-                        success("2");//不能聊天；
-                    }
+                    success('3');
                 }
             }
         }
@@ -623,7 +663,7 @@ class HomeController extends CommonController
             $user = checklogin();
             $user_id = I('user_id');
             if(empty($user_id))             error("参数错误");
-            $data['amount'] = M('System')->where(['id'=>1])->getField('teach_price');
+            $data['amount'] = M('User')->where(['user_id'=>$user_id])->getField('teach_price');
             $data['user_id'] = $user['user_id'];
             $data['user_id2'] = $user_id;
             $data['order_no'] = date("YmdHis").rand(100000,999999);
@@ -737,8 +777,10 @@ class HomeController extends CommonController
      */
     public function teach_fee(){
         $user = checklogin();
-        $price = M('System')->where(['id'=>1])->getField('teach_price');
-        $price = sprintf("%.2f",$price);
+        $user_id = I('user_id');
+        $user = M('User')->where(['user_id'=>$user_id])->find();
+        if(!$user)      error("参数错误");
+        $price = sprintf("%.2f",$user['user_id']);
         success($price);
     }
 
@@ -756,12 +798,10 @@ class HomeController extends CommonController
         $map['tuijian'] = 2;
         $map['user_id'] = ['neq',$uid];
         $name = I('name');
-        $price = M('System')->where(['id'=>1])->getField('teach_price');
-        $price = sprintf("%.2f",$price);
         !empty($name)       &&      $map['username|ID'] = ['like','%'.$name.'%'];
         $count = M('User')->where($map)->count();
         $page = ceil($count/$pageSize);
-        $list = M('User')->field('user_id,sex,img,autograph,mark,hx_username,hx_password,username')
+        $list = M('User')->field('user_id,sex,img,autograph,mark,hx_username,hx_password,username,teach_price')
             ->where($map)->order("intime desc")
             ->limit(($p-1)*$pageSize,$pageSize)->select();
         foreach($list as $k=>$v){
@@ -769,7 +809,7 @@ class HomeController extends CommonController
             $sum = M('UserMark')->where(['user_id2'=>$v['user_id']])->sum('mark');
             $count = M('UserMark')->where(['user_id2'=>$v['user_id']])->count();
             $list[$k]['mark'] = sprintf("%.1f",($v['mark'] + $sum)/($count+1));
-            $list[$k]['fee'] = $price;
+            $list[$k]['fee'] = sprintf("%.2f",$v['teach_price']);
         }
         success(['page'=>$page,'list'=>$list]);
     }
@@ -877,7 +917,7 @@ class HomeController extends CommonController
         $count = M('LiveStore')
             ->where(['user_id'=>$user_id])->count();
         $page = ceil($count/$pageSize);
-        $live = M('LiveStore')->field('live_id,title,url,intime,play_img')
+        $live = M('LiveStore')->field('live_store_id,live_id,title,url,intime,play_img')
             ->where(['user_id'=>$user_id])
             ->limit(($p-1)*$pageSize,$pageSize)
             ->order("intime desc")
@@ -886,11 +926,37 @@ class HomeController extends CommonController
             foreach($live as $k=>$v){
                 $live[$k]['play_img'] = $this->url.$v['play_img'];
                 $live[$k]['date_value'] = translate_date(date("Y-m-d H:i:s",$v['intime']));
+                $live[$k]['share_url'] = $this->url.'/api.php/Home/share_live_store/live_store_id/'.base64_encode($v['live_store_id']);
             }
         }else{
             $live = [];
         }
         success(['page'=>$page,'list'=>$live,'count'=>$count]);
+    }
+
+    /*分享页面*/
+
+    public function share_live_store(){
+        $live_store_id = base64_decode(I('live_store_id'));
+        $live = M('LiveStore')->alias('a')
+            ->field('a.live_store_id,a.play_img,a.title,a.url,a.intime,c.is_free,
+            b.img,b.username,b.company,b.duty,b.ID')
+            ->join('__USER__ b on a.user_id = b.user_id')
+            ->join('__LIVE__ c on a.live_id = c.live_id')
+            ->where(['a.live_store_id'=>$live_store_id])
+            ->find();
+        if(strpos($_SERVER['HTTP_USER_AGENT'], 'iPhone')||strpos($_SERVER['HTTP_USER_AGENT'], 'iPad')){
+            $url = 'https://itunes.apple.com/cn/app/id1250688772?mt=8';
+        }else if(strpos($_SERVER['HTTP_USER_AGENT'], 'Android')){
+            $url = 'http://www.duluozb.com/download/duluo.apk';
+        }
+        $live['down_url'] = $url;
+        $this->assign('live',$live);
+        if($live['is_free'] == 2){
+            $this->display('Home/share_live_store2');
+        }else{
+            $this->display();
+        }
     }
 
     /**

@@ -237,7 +237,7 @@ class UserController extends BaseController
         if(IS_POST){
             echo json_encode(D('User')->auth());
         }else {
-            $this->display('User/add_user');
+            $this->display('User/add_tutor');
         }
     }
 
@@ -588,7 +588,7 @@ class UserController extends BaseController
     public function is_del_user(){
         $map=array();
 
-        !empty($_GET['nickname']) && $map['nickname|phone'] = $_GET['nickname'];
+        !empty($_GET['nickname']) && $map['username|phone'] = $_GET['nickname'];
         $map['is_del'] = 2;
         $map['type'] = 1;
         $num  = I('num');
@@ -881,7 +881,7 @@ class UserController extends BaseController
      */
     public function is_del_tutor(){
         $map=array();
-        !empty($_GET['nickname']) && $map['nickname|phone'] = $_GET['nickname'];
+        !empty($_GET['nickname']) && $map['username|phone'] = $_GET['nickname'];
         $map['is_del'] = 2;
         $map['type'] = 2;
         $num  = I('num');

@@ -280,7 +280,8 @@ class IndexController extends CommonController {
         //(empty($title)) ? error('参数错误!') : true;
         if(empty($title))       $title = $u['username'].'的直播间';
         if ($u['is_banned']!=1){error('已被禁播');}
-
+        $is_free = I('is_free');
+        if(!$is_free)           $is_free = '2';
         if ($log && $lag){
             $gwd = $lag.','.$log;
             $baidu_apikey = M('System')->getFieldById(1,'baidu_apikey');
@@ -341,6 +342,7 @@ class IndexController extends CommonController {
             'room_id'=>$create['data']['id'],
             'intime'=>$time,
             'date'=>date('Y-m-d',$time),
+            'is_free'=>$is_free,
 //            'log'=>$log,
 //            'lag'=>$lag,
 //            'sheng'=>$sheng,
@@ -402,7 +404,7 @@ class IndexController extends CommonController {
         $live_id = base64_decode(I('live_id'));
         $live = M('Live')
             ->alias('a')
-            ->field('a.live_id,a.play_img,a.title,a.play_address_m3u8,a.live_status,b.img,b.username,b.company,b.duty,b.ID')
+            ->field('a.live_id,a.play_img,a.title,a.play_address_m3u8,a.live_status,a.is_free,b.img,b.username,b.company,b.duty,b.ID')
             ->join('__USER__ b on a.user_id=b.user_id')
             ->where(['a.live_id'=>$live_id,'a.live_status'=>1])
             ->find();
@@ -422,7 +424,11 @@ class IndexController extends CommonController {
         }
         $live['down_url'] = $url;
         $this->assign('live',$live);
-        $this->display();
+        if($live['is_free'] == 2){
+            $this->display('Index/share_live2');
+        }else{
+            $this->display();
+        }
     }
 
     /**
@@ -504,14 +510,12 @@ class IndexController extends CommonController {
                     'b.type'=>1,
                     'b.is_del'=>1,
                     'a.is_hot'=>1,
-                      'a.is_tuijian'=>2,
                 ];
                 $date = [
                     'a.live_status'=>1,
                     'b.type'=>1,
                     'b.is_del'=>1,
                     'a.is_hot'=>1,
-                    'a.is_tuijian'=>1,
                 ];
                 $sex = I('sex');  $province = I('province');
                 if($sex){
@@ -523,39 +527,25 @@ class IndexController extends CommonController {
                     $date['a.sheng'] = $province;
                 }
 
-                $list1 =  M('Live')
-                    ->alias('a')
-                    ->field('a.*,b.phone,b.img,b.sex,b.username,b.ID,b.hx_username,b.grade,b.province,b.city,b.zan,b.money,b.get_money,b.url,b.type')
-                    ->join('__USER__ b on a.user_id=b.user_id')
-                    ->where($data)
-                    ->order('location asc')
-                    ->select();
                 switch ($regular){
                     case 1:
-                        $order = 'a.intime desc';
+                        $order = 'a.is_tuijian desc,a.intime desc';
                         break;
                     case 2:
-                        $order = 'a.watch_nums desc';
+                        $order = 'a.is_tuijian desc,a.watch_nums desc';
                         break;
                     case 3:
-                        $order = 'b.get_money desc';
+                        $order = 'a.is_tuijian desc,b.get_money desc';
                         break;
                 }
 
-                $list2 = M('Live')
+                $list =  M('Live')
                     ->alias('a')
                     ->field('a.*,b.phone,b.img,b.sex,b.username,b.ID,b.hx_username,b.grade,b.province,b.city,b.zan,b.money,b.get_money,b.url,b.type')
                     ->join('__USER__ b on a.user_id=b.user_id')
-                    ->where($date)
+                    ->where($data)->limit(($page-1)*$pageSize,$pageSize)
                     ->order($order)
                     ->select();
-                if ($list1 && $list2){
-                    $list = array_merge($list1,$list2);
-                }elseif($list1 && !$list2){
-                    $list = $list1;
-                }elseif (!$list1 && $list2){
-                    $list = $list2;
-                }
                 if ($list){
                     foreach ($list as $k=>$v){
                         $list[$k]['play_img'] = C('IMG_PREFIX').$v['play_img'];
@@ -569,38 +559,39 @@ class IndexController extends CommonController {
                         $get_gradeinfo = get_gradeinfo($v['grade']);
                         $list[$k]['grade_img'] = $get_gradeinfo['img'];
                         $list[$k]['name'] = $get_gradeinfo['name'];
+                        $list[$k]['watch_nums'] = $v['nums'];
                     }
-                    $list = array_slice($list,($page-1)*$pageSize,$pageSize);
+
                 }else{$list=[];}
 
 
-                if ($version_number==$ios_version){
-                    $dat = [
-                        'a.is_del'=>1,
-                        'b.is_del'=>1,
-                    ];
-                    $live_store = M('Live_store')
-                        ->alias('a')
-                        ->field('a.*,b.phone,b.img,b.sex,b.username,b.ID,b.hx_username,b.grade,b.province,b.city,b.money,b.get_money,c.watch_nums,c.sheng,c.shi,c.qu,b.type')
-                        ->join('__USER__ b on a.user_id=b.user_id')
-                        ->join('__LIVE__ c on a.live_id=c.live_id')
-                        ->where($dat)
-                        ->order('rand()')
-                        ->limit(10)
-                        ->select();
-                    if ($live_store){
-                        foreach ($live_store as $k=>$v){
-                            $live_store[$k]['play_img'] = C('IMG_PREFIX').$v['play_img'];
-                            $live_store[$k]['img'] = C('IMG_PREFIX').$v['img'];
-                            $live_store[$k]['lebel'] = explode(',',$v['lebel']);
-                            $live_store[$k]['is_type'] = "2";
-
-                            $is_follow = M('Follow')->where(['user_id'=>$user['user_id'],'user_id2'=>$v['user_id']])->find();
-                            $is_follow ? $live_store[$k]['is_follow'] = "2" : $live_store[$k]['is_follow'] = "1";
-                        }
-                    }else{$live_store=[];}
-                    $list = array_merge($list,$live_store);
-                }
+//                if ($version_number==$ios_version){
+//                    $dat = [
+//                        'a.is_del'=>1,
+//                        'b.is_del'=>1,
+//                    ];
+//                    $live_store = M('Live_store')
+//                        ->alias('a')
+//                        ->field('a.*,b.phone,b.img,b.sex,b.username,b.ID,b.hx_username,b.grade,b.province,b.city,b.money,b.get_money,c.watch_nums,c.sheng,c.shi,c.qu,b.type')
+//                        ->join('__USER__ b on a.user_id=b.user_id')
+//                        ->join('__LIVE__ c on a.live_id=c.live_id')
+//                        ->where($dat)
+//                        ->order('rand()')
+//                        ->limit(10)
+//                        ->select();
+//                    if ($live_store){
+//                        foreach ($live_store as $k=>$v){
+//                            $live_store[$k]['play_img'] = C('IMG_PREFIX').$v['play_img'];
+//                            $live_store[$k]['img'] = C('IMG_PREFIX').$v['img'];
+//                            $live_store[$k]['lebel'] = explode(',',$v['lebel']);
+//                            $live_store[$k]['is_type'] = "2";
+//
+//                            $is_follow = M('Follow')->where(['user_id'=>$user['user_id'],'user_id2'=>$v['user_id']])->find();
+//                            $is_follow ? $live_store[$k]['is_follow'] = "2" : $live_store[$k]['is_follow'] = "1";
+//                        }
+//                    }else{$live_store=[];}
+//                    $list = array_merge($list,$live_store);
+//                }
 
 
                 success($list);
@@ -671,12 +662,13 @@ class IndexController extends CommonController {
                     ->join('__USER__ c on c.user_id=b.user_id')
                     ->where(['a.user_id'=>$user['user_id'],'b.live_status'=>1,'c.is_del'=>1])
                     ->order('b.watch_nums desc')
+                    ->limit(($page-1)*$pageSize,$pageSize)
                     ->select();
                 if ($live){
                     foreach ($live as $k=>$v){
                         $live[$k]['play_img'] = C('IMG_PREFIX').$v['play_img'];
                         $live[$k]['img'] = C('IMG_PREFIX').$v['img'];
-                        $live[$k]['url'] = C('IMG_PREFIX')."/api.php/Index/share_live/live_id/" . base64_encode($v['live_id']);
+                        $live[$k]['url'] = C('IMG_PREFIX')."/App/Index/share_live/live_id/" . base64_encode($v['live_id']);
                         $live[$k]['qrcode_path'] = C('IMG_PREFIX').$v['qrcode_path'];
                         $live[$k]['is_type'] = "1";
                         $follow2 = M('Follow')->where(['user_id'=>$user['user_id'],'user_id2'=>$v['user_id']])->find();
@@ -688,29 +680,30 @@ class IndexController extends CommonController {
                     }
                 }else{$live=[];}
                 //录播
-                $live_store = M('Follow')
-                    ->alias('a')
-                    ->field('b.*,c.phone,c.img,c.sex,c.username,c.ID,c.hx_username,c.grade,c.province,c.city,c.money,c.get_money,d.watch_nums,d.sheng,d.shi,d.qu,c.type')
-                    ->join('__LIVE_STORE__ b on a.user_id2=b.user_id')
-                    ->join('__USER__ c on b.user_id=c.user_id')
-                    ->join('__LIVE__ d on d.live_id=b.live_id')
-                    ->where(['a.user_id'=>$user['user_id'],'c.is_del'=>1,'b.is_del'=>1])
-                    ->select();
-                if ($live_store){
-                    foreach ($live_store as $k=>$v){
-                        $live_store[$k]['play_img'] = C('IMG_PREFIX').$v['play_img'];
-                        $live_store[$k]['img'] = C('IMG_PREFIX').$v['img'];
-                        $live_store[$k]['is_type'] = "2";
-                        $follow2 = M('Follow')->where(['user_id'=>$user['user_id'],'user_id2'=>$v['user_id']])->find();
-                        $follow2 ? $live_store[$k]['is_follow'] = "2" : $live_store[$k]['is_follow'] = "1";
+                /* $live_store = M('Follow')
+                     ->alias('a')
+                     ->field('b.*,c.phone,c.img,c.sex,c.username,c.ID,c.hx_username,c.grade,c.province,c.city,c.money,c.get_money,d.watch_nums,d.sheng,d.shi,d.qu,c.type')
+                     ->join('__LIVE_STORE__ b on a.user_id2=b.user_id')
+                     ->join('__USER__ c on b.user_id=c.user_id')
+                     ->join('__LIVE__ d on d.live_id=b.live_id')
+                     ->where(['a.user_id'=>$user['user_id'],'c.is_del'=>1,'b.is_del'=>1])
+                     ->select();
+                 if ($live_store){
+                     foreach ($live_store as $k=>$v){
+                         $live_store[$k]['play_img'] = C('IMG_PREFIX').$v['play_img'];
+                         $live_store[$k]['img'] = C('IMG_PREFIX').$v['img'];
+                         $live_store[$k]['is_type'] = "2";
+                         $follow2 = M('Follow')->where(['user_id'=>$user['user_id'],'user_id2'=>$v['user_id']])->find();
+                         $follow2 ? $live_store[$k]['is_follow'] = "2" : $live_store[$k]['is_follow'] = "1";
 
-                        $get_gradeinfo = get_gradeinfo($v['grade']);
-                        $live_store[$k]['grade_img'] = $get_gradeinfo['img'];
-                        $live_store[$k]['name'] = $get_gradeinfo['name'];
-                    }
-                }else{$live_store=[];}
-                $lista = array_merge($live,$live_store);
-                $list['list'] = array_slice($lista,($page-1)*$pageSize,$pageSize);
+                         $get_gradeinfo = get_gradeinfo($v['grade']);
+                         $live_store[$k]['grade_img'] = $get_gradeinfo['img'];
+                         $live_store[$k]['name'] = $get_gradeinfo['name'];
+                     }
+                 }else{$live_store=[];}
+                 $lista = array_merge($live,$live_store);
+                 $list['list'] = array_slice($lista,($page-1)*$pageSize,$pageSize);*/
+                $list['list'] = $live;
                 success($list);
                 break;
             case 3:
@@ -733,7 +726,7 @@ class IndexController extends CommonController {
                     foreach ($list as $k=>$v){
                         $list[$k]['play_img'] = C('IMG_PREFIX').$v['play_img'];
                         $list[$k]['img'] = C('IMG_PREFIX').$v['img'];
-                        $list[$k]['url'] = C('IMG_PREFIX')."/api.php/Index/share_live/live_id/" . base64_encode($v['live_id']);
+                        $list[$k]['url'] = C('IMG_PREFIX')."/App/Index/share_live/live_id/" . base64_encode($v['live_id']);
                         $list[$k]['qrcode_path'] = C('IMG_PREFIX').$v['qrcode_path'];
                         $follow = M('Follow')->where(['user_id'=>$user['user_id'],'user_id2'=>$v['user_id']])->find();
                         $follow ? $list[$k]['is_follow'] = "2" : $list[$k]['is_follow'] = "1";
@@ -781,7 +774,7 @@ class IndexController extends CommonController {
                     foreach ($list as $k=>$v){
                         $list[$k]['play_img'] = C('IMG_PREFIX').$v['play_img'];
                         $list[$k]['img'] = C('IMG_PREFIX').$v['img'];
-                        $list[$k]['url'] = C('IMG_PREFIX')."/api.php/Index/share_live/live_id/" . base64_encode($v['live_id']);
+                        $list[$k]['url'] = C('IMG_PREFIX')."/App/Index/share_live/live_id/" . base64_encode($v['live_id']);
                         $list[$k]['qrcode_path'] = C('IMG_PREFIX').$v['qrcode_path'];
                         $follow = M('Follow')->where(['user_id'=>$user['user_id'],'user_id2'=>$v['user_id']])->find();
                         $follow ? $list[$k]['is_follow'] = "2" : $list[$k]['is_follow'] = "1";
@@ -877,40 +870,44 @@ class IndexController extends CommonController {
         if(!$live_id)                   error("参数错误");
         $live = M('Live')->where(['live_id'=>$live_id])->find();
         if(!$live)                      error("参数错误");
-        $user_id  = $live['user_id'];
-        $record = M('UpgradeRecord')
-            ->where(['user_id'=>$user['user_id'],'user_id2'=>$user_id])
-            ->order("id desc")->find();         //查询是否缴费
-        $system = M('System')->where(['id'=>1])->find();
-        if($record){
-            $class = M('TutorLiveClass')->where(['tutor_id'=>$user_id,'is_del'=>1])
-                ->limit(1)->order("intime desc")->find();
-            if(strtotime($class['end_time'])>time()){
-                if($record['state'] == 1){
-                    $action = '当月观看该导师直播数已用完';
-                    $num = $system['gao_watch_num'];
-                }else{
-                    $action = '当月观看该导师直播数已用完';
-                    $num = $system['zuan_watch_num'];
+        if($live['is_free'] == 2){
+            success("ok");
+        }else {
+            $user_id = $live['user_id'];
+            $record = M('UpgradeRecord')
+                ->where(['user_id' => $user['user_id'], 'user_id2' => $user_id])
+                ->order("id desc")->find();         //查询是否缴费
+            $system = M('System')->where(['id' => 1])->find();
+            if ($record) {
+                $class = M('TutorLiveClass')->where(['tutor_id' => $user_id, 'is_del' => 1])
+                    ->limit(1)->order("intime desc")->find();
+                if (strtotime($class['end_time']) > time()) {
+                    if ($record['state'] == 1) {
+                        $action = '当月观看该导师直播数已用完';
+                        $num = $system['gao_watch_num'];
+                    } else {
+                        $action = '当月观看该导师直播数已用完';
+                        $num = $system['zuan_watch_num'];
+                    }
+                } else {
+                    $action = '你尚未成为该导师的会员';
+                    $num = $system['pu_watch_num'];
                 }
-            }else{
+            } else {
                 $action = '你尚未成为该导师的会员';
                 $num = $system['pu_watch_num'];
             }
-        }else{
-            $action = '你尚未成为该导师的会员';
-            $num = $system['pu_watch_num'];
-        }
 
-        $month = $month     = date("Y-m-01",time());     //当月时间
-        $where['user_id']   = $user['user_id'];
-        $where['user_id2']  = $user_id;
-        $where['intime']    = ['gt',$month];
-        $count = M('live_watch_record')->where($where)->count();
-        if($count<$num){
-            success('ok');
-        }else{
-            error($action);
+            $month = $month = date("Y-m-01", time());     //当月时间
+            $where['user_id'] = $user['user_id'];
+            $where['user_id2'] = $user_id;
+            $where['intime'] = ['gt', $month];
+            $count = M('live_watch_record')->where($where)->count();
+            if ($count < $num) {
+                success('ok');
+            } else {
+                error($action);
+            }
         }
     }
 
@@ -920,6 +917,7 @@ class IndexController extends CommonController {
      * @进入直播间
      */
     public function into_live(){
+
         $user = checklogin();
         $user_id = I('uid');
         $live_id = I('live_id');
@@ -2553,6 +2551,30 @@ class IndexController extends CommonController {
         }else{
             error('失败!');
         }
+    }
+
+    //测试
+    public function test1(){
+        import('Vendor.Lunar');
+        $time = time();
+        $year = date("Y",$time) + 543;
+        $class = new \Lunar();
+        $data = $class->convertSolarToLunar(date("Y",$time),date("m",$time),date('d',$time));
+        $foli = file_get_contents("./webShare/foli/foli.txt");
+        $foli = json_decode($foli,true);
+        $str = $data[1]."-".$data[2];
+        foreach ($foli as $v){
+            if($str == $v['day']){
+                $res = $v['desc'];
+                break;
+            }
+        }
+        if($res){
+            $str = $res;
+        }else{
+            $str = $year.'年 农历岁次'.$data[3].'年';
+        }
+        success($str);
     }
 
 

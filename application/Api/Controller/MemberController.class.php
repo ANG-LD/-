@@ -390,13 +390,16 @@ class MemberController extends CommonController
         $map['b.is_del'] = 1;
         $count = M('TutorClassSign')->alias('a')
             ->join("LEFT JOIN __TUTOR_CLASS__ b on a.tutor_class_id = b.id")
+            ->group('a.tutor_class_id')
             ->where($map)
             ->count();
         $page = ceil($count/$pageSize);
         $list = M('TutorClassSign')->alias('a')
-            ->field('a.number,a.amount,b.id,b.name,b.img,b.intro,b.value,b.limit_value,b.province,b.city,b.address')
+            ->field('a.tutor_class_id,b.id,b.name,b.img,b.intro,b.value,b.limit_value,b.province,b.city,
+            b.address,sum(a.amount) as amount,sum(a.number) as number')
             ->join("LEFT JOIN __TUTOR_CLASS__ b on a.tutor_class_id = b.id")
             ->where($map)->order("a.id desc")
+            ->group('a.tutor_class_id')
             ->limit(($p-1)*$pageSize,$pageSize)
             ->select();
         foreach($list as $k=>$v){
@@ -431,7 +434,7 @@ class MemberController extends CommonController
             ->select();
         $date = date("Y-m-d",time());
         foreach($list as $k=>$v){
-            $code = M('UpgradeRecord')->field('state,date_value')->where(['user_id2'=>$v['user_id2']])->order("id desc")->limit(1)->find();
+            $code = M('UpgradeRecord')->field('state,date_value')->where(['user_id2'=>$v['user_id2'],'user_id'=>$user['user_id']])->order("id desc")->limit(1)->find();
             $list[$k]['state'] = $code['state'];
             $list[$k]['date_value'] = $code['date_value'];
             if($code['date_value']<$date){
@@ -1756,6 +1759,79 @@ class MemberController extends CommonController
         }
         success($result);
     }
+
+    /**
+     * @返回生成的签名
+     */
+    public function get_sign(){
+        $params = $_POST['params'];
+        $get_sign = sign($params);
+        success(rawurlencode($get_sign));
+    }
+
+    /**
+     * @支付宝认证信息
+     */
+    public function alipay_approve(){
+        $user = checklogin();
+        $code = trim(I('code'));
+        empty($code) ? error('参数错误!') : true;
+        $system = M('System')->field('alipay_appid,alipay_privatekey,alipay_publickey')->where(['id'=>1])->find();
+        import('Vendor.aop.AopClient');
+        $c = new \AopClient;
+        $c->gatewayUrl = "https://openapi.alipay.com/gateway.do";
+        $c->appId = $system['alipay_appid'];
+        $c->rsaPrivateKey = $system['alipay_privatekey'];
+        $c->signType= "RSA2";
+        $c->alipayrsaPublicKey = $system['alipay_publickey'];
+
+        $request= new \AlipaySystemOauthTokenRequest();
+        $request->setCode($code);
+        $request->setGrantType("authorization_code");
+        $response= $c->execute($request);
+        $rs = json_decode($response,true);
+        if ($rs['error_response']){
+            error('未知错误');
+        }else{
+            $request2= new \AlipayUserUserinfoShareRequest();
+            $response2= $c->execute($request2,$rs['alipay_system_oauth_token_response']['access_token']);
+            $rss = json_decode($response2,true);
+            if ($rss['error_response']){
+                error('未知错误');
+            }else{
+                if ($rss['alipay_user_userinfo_share_response']['is_certified']=='F'){
+                    error('支付宝未实名认证!');
+                }elseif($rss['alipay_user_userinfo_share_response']['is_certified']=='T'){
+                    $alipay = M('User_alipay')->where(['user_id'=>$user['user_id']])->find();
+                    $alipay ? error('已认证过') : true;
+                    $result = $rss['alipay_user_userinfo_share_response'];
+                    $date = [
+                        'user_id'=>$user['user_id'],
+                        'avatar'=>$result['avatar'],
+                        'nick_name'=>$result['nick_name'],
+                        'province'=>$result['province'],
+                        'city'=>$result['city'],
+                        'gender'=>$result['gender'],
+                        'alipay_user_id'=>$result['alipay_user_id'],
+                        'user_type'=>$result['user_type'],
+                        'user_status'=>$result['user_status'],
+                        'is_certified'=>$result['is_certified'],
+                        'is_student_certified'=>$result['is_student_certified'],
+                        'intime'=>time()
+                    ];
+                    if (M('User_alipay')->add($date)){
+                        M('User')->where(['user_id'=>$user['user_id']])->save(['is_authen'=>2,'uptime'=>time()]);
+                        success('认证成功!');
+                    }else{
+                        error('认证失败!');
+                    }
+                }else{
+                    error('未知错误');
+                }
+            }
+        }
+    }
+
 
 
 }

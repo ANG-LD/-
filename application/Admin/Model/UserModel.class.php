@@ -51,14 +51,22 @@ class UserModel extends Model
         $data['area'] ? $data['area'] : $data['area'] = '';
         $data['address'] = I('address');
         if(empty($data['sex']))         $data['sex'] = 1;
+        if($data['type'] == 2){
+         if(!is_numeric($data['teach_nums'])){
+             return array('status' => 'error', 'info' => '指点次数不正确');
+         }
+         if($data['teach_price']<0){
+             return array('status' => 'error', 'info' => '指点价格不正确');
+         }
+        }
         if (empty($data['uid'])) {
             if (empty($data['pwd'])) {
                 return array('status' => 'error', 'info' => '新增记录时，密码必须填写');
             } else {
-                $data['pwd'] = encrypt(I('pwd'));
+                $data['pwd'] = myencrypt(I('pwd'));
             }
             if (!empty($data['pay_pwd'])) {
-                $data['pay_password'] = encrypt(I('pay_password'));
+                $data['pay_password'] = myencrypt(I('pay_password'));
             }
             $data['intime'] = date("Y-m-d H:i:s", time());
             $chars = "abcdefghijklmnopqrstuvwxyz0123456789";

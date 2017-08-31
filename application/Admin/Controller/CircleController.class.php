@@ -372,13 +372,12 @@ class CircleController extends BaseController
         $map = ['a.is_del'=>'1'];
         $this->assign('nus', $num);
         $count = M("TopicalPosts")->alias('a')
-            ->field("a.title,a.intime,a.zan,a.ping,b.username,b.phone")
             ->join("LEFT JOIN __USER__ b on a.user_id = b.user_id")
             ->join("LEFT JOIN __TOPICAL_MODULE__ c on a.module_id = c.module_id")
             ->where($map)->count(); // 查询满足要求的总记录数
         $p = $this->getpage($count, $num);
         $list =  M("TopicalPosts")->alias('a')
-            ->field("a.post_id,a.title,a.intime,a.zan,a.ping,b.username,b.phone,b.img,c.title as tags")
+            ->field("a.post_id,a.title,a.intime,a.zan,a.ping,a.content,b.username,b.phone,b.img,c.title as tags")
             ->join("LEFT JOIN __USER__ b on a.user_id = b.user_id")
             ->join("INNER JOIN __TOPICAL_MODULE__ c on a.module_id = c.module_id")
             ->where($map)->limit($p->firstRow, $p->listRows)->order('a.intime desc')->select();

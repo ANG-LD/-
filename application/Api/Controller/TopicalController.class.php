@@ -142,8 +142,12 @@ class TopicalController extends CommonController
         $p = I('p');
         empty($p)   && $p = 1;
         $num    ?   $num    : $num = 10;
+        $map['a.is_del'] = '1';
+        $shield = M('Shield')->where(['user_id'=>$member['user_id']])->getField('user_id2',true);
+        if($shield)         $map['a.user_id'] = ['not in',$shield];
         $count = M('TopicalPosts')->alias('a')
                 ->join("INNER JOIN __USER__ b on a.user_id = b.user_id")
+                ->where($map)
                 ->count();
         $page = ceil($count/$num);
         $list = M('TopicalPosts')->alias('a')
@@ -151,13 +155,9 @@ class TopicalController extends CommonController
                 a.title,a.post_id,a.thumb,a.img,a.zan,a.ping,a.content,a.img,a.intime')
                 ->join("INNER JOIN __USER__ b on a.user_id = b.user_id")
                 ->limit(($p-1)*$num,$num)->where(['a.is_del'=>'1'])
-                ->order("a.intime desc")
+                ->where($map)->order("a.intime desc")
                 ->select();
         foreach($list as $k=>$v){
-            $check = M('Shield')->where(['user_id'=>$member['user_id'],'user_id2'=>$v['user_id']])->find();
-            if($check){
-                unset($list[$k]);
-            }else {
                 //判断时间
                 $list[$k]['date_value'] = translate_date($v['intime']);
                 if (!empty($v['head_img'])) {
@@ -193,7 +193,6 @@ class TopicalController extends CommonController
                             $list[$k]['is_follow'] = '3';
                         }
                     }
-                }
             $check = M('ZanPosts')->where(['type'=>'1','user_id'=>$member['user_id'],'post_id'=>$v['post_id']])->find();
             if($check){
                 $list[$k]['is_zan'] = '1';
@@ -202,7 +201,6 @@ class TopicalController extends CommonController
             }
 
         }
-        $list = array_values($list);
         success(['banner'=>$banner,'module'=>$module,'list'=>$list,'page'=>$page]);
     }
 
@@ -218,6 +216,8 @@ class TopicalController extends CommonController
             $num   ?  $num   :  $num = 10;
             $map['a.is_del'] = '1';
             !empty($_POST['module_id'])      &&  $map['a.module_id'] = I('module_id');
+            $shield = M('Shield')->where(['user_id'=>$member['user_id']])->getField('user_id2',true);
+            if($shield)         $map['a.user_id'] = ['not in',$shield];
             $this->url = C('IMG_PREFIX');
             $count = M('TopicalPosts')->alias('a')
                 ->join("INNER JOIN __USER__ b on a.user_id = b.user_id")
@@ -230,10 +230,6 @@ class TopicalController extends CommonController
                 ->limit(($p-1)*$num,$num)->where(['a.is_del'=>'1'])
                 ->where($map)->order("a.intime desc")->select();
             foreach($list as $k=>$v) {
-                $check = M('Shield')->where(['user_id'=>$member['user_id'],'user_id2'=>$v['user_id']])->find();
-                if($check){
-                    unset($list[$k]);
-                }else{
                 if (!empty($v['head_img'])) {
                     $list[$k]['head_img'] = $this->url . $v['head_img'];
                 }
@@ -275,11 +271,9 @@ class TopicalController extends CommonController
 
                 $list[$k]['date_value'] = translate_date($v['intime']);
             }
-            }
-            $list = array_values($list);
-            success(['list'=>$list,'page'=>$page]);
 
-            }
+            success(['list'=>$list,'page'=>$page]);
+        }
     }
 
     /**
@@ -375,12 +369,16 @@ class TopicalController extends CommonController
     public function posts_view()
     {
         if (IS_POST) {
-            $member = checklogin();
+            $uid  = I('uid');
+            if($uid) {
+                $member = checklogin();
+            }
             $post_id = I('post_id');
+            if(!is_numeric($post_id))       $post_id = base64_decode($post_id);
             $this->url = C('IMG_PREFIX');
             $re = M('TopicalPosts')->alias('a')
                 ->field('b.user_id,b.username,b.img as head_img,b.sex,b.hx_username,b.alias,b.hx_password,
-                a.title,a.post_id,a.thumb,a.img,a.zan,a.ping,a.content,a.img,a.intime')
+                a.title,a.post_id,a.thumb,a.img,a.zan,a.ping,a.content,a.img,a.intime,a.post_id')
                 ->join("LEFT JOIN __USER__ b on a.user_id = b.user_id")
                 ->where(['a.post_id' => $post_id])
                 ->find();
@@ -408,19 +406,27 @@ class TopicalController extends CommonController
                     $re['thumb'] = [];
                 }
 
-                //判断是否关注主播
-                if (M('Follow')->where(['user_id2' => $re['user_id'], 'user_id' => $member['user_id']])->find()) {
-                    $re['is_follow'] = '1';
-                } else {
-                    if ($member['user_id'] != $re['user_id']) {
-                        $re['is_follow'] = '2';
+                if($uid){
+                    //判断是否关注主播
+                    if (M('Follow')->where(['user_id2' => $re['user_id'], 'user_id' => $member['user_id']])->find()) {
+                        $re['is_follow'] = '1';
                     } else {
-                        $re['is_follow'] = '3';
+                        if ($member['user_id'] != $re['user_id']) {
+                            $re['is_follow'] = '2';
+                        } else {
+                            $re['is_follow'] = '3';
+                        }
                     }
+                }else{
+                    $re['is_follow'] = '2';
                 }
-                $check = M('ZanPosts')->where(['type'=>'1','user_id'=>$member['user_id'],'post_id'=>$re['post_id']])->find();
-                if($check){
-                    $re['is_zan'] = '1';
+                if($uid){
+                    $check = M('ZanPosts')->where(['type'=>'1','user_id'=>$member['user_id'],'post_id'=>$re['post_id']])->find();
+                    if($check){
+                        $re['is_zan'] = '1';
+                    }else{
+                        $re['is_zan'] = '2';
+                    }
                 }else{
                     $re['is_zan'] = '2';
                 }
@@ -452,6 +458,7 @@ class TopicalController extends CommonController
 
                 }
                 $re['comment'] = $list;
+                $re['share_url'] = $this->url."/webShare/postDetail.html?post_id=".base64_encode($re['post_id']);
             }else{
                $re = '';
             }
@@ -595,6 +602,93 @@ class TopicalController extends CommonController
             }
         }
     }
+
+    public function my_posts(){
+        $member = checklogin();
+        $num = I('pagesize');
+        $p = I('p');
+        empty($p)   && $p = 1;
+        $num    ?   $num    : $num = 10;
+        $map['a.user_id'] = $member['user_id'];
+        $map['a.is_del'] = '1';
+        $count = M('TopicalPosts')->alias('a')
+            ->join("INNER JOIN __USER__ b on a.user_id = b.user_id")
+            ->where($map)
+            ->count();
+        $page = ceil($count/$num);
+        $list = M('TopicalPosts')->alias('a')
+            ->field('b.user_id,b.username,b.img as head_img,b.sex,b.hx_username,b.alias,b.hx_password,
+                a.title,a.post_id,a.thumb,a.img,a.zan,a.ping,a.content,a.img,a.intime')
+            ->join("INNER JOIN __USER__ b on a.user_id = b.user_id")
+            ->limit(($p-1)*$num,$num)->where(['a.is_del'=>'1'])
+            ->where($map)->order("a.intime desc")
+            ->select();
+        foreach($list as $k=>$v){
+                //判断时间
+                $list[$k]['date_value'] = translate_date($v['intime']);
+                if (!empty($v['head_img'])) {
+                    $list[$k]['head_img'] = $this->url . $v['head_img'];
+                }
+                if (!empty($v['img'])) {
+                    $img = unserialize($v['img']);
+                    foreach ($img as $key => $val) {
+                        $img[$key]['img'] = $this->url . $val['img'];
+                    }
+                    $list[$k]['img'] = $img;
+                } else {
+                    $list[$k]['img'] = [];
+                };
+
+                if (!empty($v['thumb'])) {
+                    $thumb = unserialize($v['thumb']);
+                    foreach ($thumb as $key => $val) {
+                        $thumb[$key]['img'] = $this->url . $val['img'];
+                    }
+                    $list[$k]['thumb'] = $thumb;
+                } else {
+                    $list[$k]['thumb'] = [];
+                }
+
+                //判断是否关注主播
+                if (M('Follow')->where(['user_id2' => $v['user_id'], 'user_id' => $member['user_id']])->find()) {
+                    $list[$k]['is_follow'] = '1';
+                } else {
+                    if ($member['user_id'] != $v['user_id']) {
+                        $list[$k]['is_follow'] = '2';
+                    } else {
+                        $list[$k]['is_follow'] = '3';
+                    }
+                }
+            $check = M('ZanPosts')->where(['type'=>'1','user_id'=>$member['user_id'],'post_id'=>$v['post_id']])->find();
+            if($check){
+                $list[$k]['is_zan'] = '1';
+            }else{
+                $list[$k]['is_zan'] = '2';
+            }
+
+        }
+        success(['list'=>$list,'page'=>$page]);
+    }
+
+    /**
+     *@删除帖子
+     */
+    public function del_posts(){
+        if(IS_POST){
+            $member = checklogin();
+            $post_id = I('post_id');
+            $check = M('TopicalPosts')->where(['user_id'=>$member['user_id'],'post_id'=>$post_id,'is_del'=>'1'])->find();
+            if(!$check)         error("参数错误");
+            $result = M('TopicalPosts')->where(['post_id'=>$post_id])->save(['is_del'=>'2']);
+            if($result){
+                success("删除成功");
+            }else{
+                error("操作失败");
+            }
+        }
+    }
+
+
 
 
 }

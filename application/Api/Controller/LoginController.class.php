@@ -33,7 +33,7 @@ class LoginController extends CommonController
 //            if(!preg_match('/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,20}$/',$data['password'])) error("请输入字母和数字组合的6-20位密码!");
 //            if(empty($data['repassword']))  error("确认密码不能为空");
 //            if($data['password'] !=$data['repassword']) error("两次密码输入不一致");
-//            $data['password'] = encrypt($data['password']);
+//            $data['password'] = myencrypt($data['password']);
             $data['intime'] = date("Y-m-d H:i;s",time());
             $chars = "abcdefghijklmnopqrstuvwxyz0123456789";
             mt_srand(10000000 * (double)microtime());
@@ -230,7 +230,7 @@ class LoginController extends CommonController
             if(empty($data['repassword']))  error("确认密码不能为空");
             if(!preg_match('/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,20}$/',$data['password'])) error("请输入字母和数字组合的6-20位密码!");
             if($data['password'] != $data['repassword'])  error("两次密码不一样");
-            $map['password'] = encrypt($data['password']);
+            $map['password'] = myencrypt($data['password']);
             $map['uptime']   = date("Y-m-d H:i:s",time());
             $result = M('Member')->where(['phone'=>$data['phone']])->save($map);
             if($result){

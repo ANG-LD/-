@@ -41,7 +41,7 @@
             <tr class="text-c">
                 <td><input name="checkbox" type="checkbox" value="{$vo.id}"></td>
                 <td>{$vo.id}</td>
-                <td><a href="javascript:;;" onclick="category_edit('添加分类（First）','{:U('Goods/edit_first_category')}','4','','610')"><u>{$vo.category}</u></a></td>
+                <td><a href="javascript:;;" onclick="category_edit('编辑分类（First）','{:U('Goods/edit_first_category',['id'=>$vo['id']])}','4','','610')"><u>{$vo.category}</u></a></td>
                 <td><a href="javascript:;"><img width="100" class="picture-thumb" src="{$vo.picture}"></a></td>
                 <td class="td-status">
                     <if condition="$vo['status'] eq 1">

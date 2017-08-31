@@ -106,6 +106,7 @@
 				<button  class="submit btn btn-primary radius"  type="submit"><i class="Hui-iconfont">&#xe632;</i> 保存修改</button>
 				<!--<button onClick="article_save();" class="btn btn-secondary radius" type="button"><i class="Hui-iconfont">&#xe632;</i> 保存草稿</button>-->
 				<button onClick="removeIframe();" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+				<button onClick="clearCache();" class="btn btn-default radius" type="button">&nbsp;&nbsp;清除缓存&nbsp;&nbsp;</button>
 				<input type="hidden" class="input-text" value="{$_GET['id']}" placeholder=""  name="b_id">
 			</div>
 		</div>
@@ -171,6 +172,15 @@
 				increaseArea: '20%'
 			});
 		})
+
+	function clearCache() {
+		var url = "{:U('Config/clean_cache')}";
+		$.get(url,function(data){
+			if(data.status == 'ok'){
+                layer.msg('清除缓存成功！',{icon:1,time:1000});
+			}
+		},'json');
+    }
 
 
 </script>

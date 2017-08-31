@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+	<title>名师传艺</title>
+	<!--rem单位js-->
+	<script type="text/javascript">
+		(function (doc, win) {
+		    var docEl = doc.documentElement,
+		        resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+		        recalc = function () {
+		            var clientWidth = docEl.clientWidth;
+		            if (!clientWidth) return;
+		            if(clientWidth>=640){
+		                docEl.style.fontSize = '100px';
+		            }else{
+		                docEl.style.fontSize = 100 * (clientWidth / 750) + 'px'; // iphone6
+		        }
+		    };
+		    if(!doc.addEventListener) return;
+		    win.addEventListener(resizeEvt, recalc, false);
+		    doc.addEventListener('DOMContentLoaded', recalc, false);
+		})(document, window);
+	</script>
+	<link rel="stylesheet" href="/Public/mscy/css/mscy_share.css">
+</head>
+<body>
+	<div class="bodyBg p_r">
+		<div clsss="w h">
+			<img src="{$live.play_img}" alt="">
+		</div>
+		<div class="p_f mscy_top">
+			<div class="layout-justify p15">
+				<div class="layout-start user_info_box">
+					<div class="mscy_tx_img p_r">
+						<img class="bor50" src="{$live.img}" alt="">
+						<div class="p_a mscy_v"></div>
+					</div>
+					<div class="f16 wbyc w8">{$live.username}</div>
+				</div>
+				<div class="mscy_open_btn f12 layout">开播了</div>
+			</div>
+		</div>
+		<div class="p_f mscy_bottom">
+			<div class="f16 p15">{$live.title}</div>
+			<div class="mscy_download_box layout-justify">
+				<div class="logo_img">
+					<img src="/Public/mscy/images/logo100x100@2x.png" alt="">
+				</div>
+				<div class="f14 download_title">上名师传艺 学专业知识</div>
+				<a class="download_btn f14" href="{$live.down_url}">下载</a>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
