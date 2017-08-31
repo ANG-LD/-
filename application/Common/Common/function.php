@@ -216,6 +216,9 @@ function createChatRoom($options){
     $header=array(getTokens());
     $body=json_encode($options);
     $result=postCurl($url,$body,$header);
+    if($result['error']){
+        createChatRoom($options);
+    }
     return $result;
 }
 
@@ -278,7 +281,7 @@ function check_verify($code, $id = ''){
 +----------------------------------------------------------
  * @return string 返回加密后的字符串
  */
-function encrypt($data) {
+function myencrypt($data) {
     return md5(C("AUTH_CODE") . md5($data));
 }
 
@@ -691,18 +694,13 @@ function checklogin(){
  * @获取等级名称、图标
  */
 function get_gradeinfo($grade){
-    $approve_rule = M('ApproveRule')->select();
-    foreach ($approve_rule as $k=>$v){
-        if ($grade>=$v['grade_start'] && $grade<=$v['grade_end']){
-            if ($v['grade_img']){
-                $img = C('IMG_PREFIX').$v['grade_img'];
-            }else{
-                $img = "";
-            }
-            $name = $v['name'];
-            break;
-        }
+    $approve_rule = M('Approve_rule')->where(['grade_start'=>['elt',$grade],'grade_end'=>['egt',$grade]])->find();
+    if ($approve_rule['grade_img']){
+        $img = C('IMG_PREFIX').$approve_rule['grade_img'];
+    }else{
+        $img = "";
     }
+    $name = $approve_rule['name'];
     $img ? $img = $img : $img = "";
     $name ? $name = $name : $name = "";
     $result = ['img'=>$img,'name'=>$name];
@@ -1976,21 +1974,14 @@ function std_class_object_to_array($stdclassobject)
  */
 function ascension_grade($user_id,$experience){
     $grade = M('User')->where(['user_id'=>$user_id])->getField('grade');
-    $level = M('Level')->select();
-    foreach ($level as $k=>$v){
-        if ($experience<$v['experience']){
-            $dengji = $v['level']-1;
-            break;
-        }
-    }
+    $level = M('Level')->field('level,experience')->where(['experience'=>['ELT',$experience]])->order("level_id desc")->limit(1)->find();
     $big_level = M('Level')->field('level,experience')->order('level desc')->limit(1)->find();
     if ($big_level['level']==$grade){
         true;
     }else{
-        if ($experience>$big_level['experience']){
-            $dengji = $big_level['level'];
+        if($grade != $level['level']){
+            M('User')->where(['user_id'=>$user_id])->save(['grade'=>$level['level'],'uptime'=>time()]);
         }
-        M('User')->where(['user_id'=>$user_id])->save(['grade'=>$dengji,'uptime'=>time()]);
     }
 }
 
